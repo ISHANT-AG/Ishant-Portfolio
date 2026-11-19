@@ -54,3 +54,4 @@ The script fetches the public GitHub contribution calendar without credentials, 
 
 Confirm selected artifact publication clearance and any updated role/timing/attendance details. Replace the AI-assisted cutout if a preferred current photo is supplied. Expand the selected design archive with approved investor/solar/course visuals if desired. Validate live client destinations and refresh GitHub at launch.
 # Ishant-Portfolio
+# Ishant-Portfolio
