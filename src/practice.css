@@ -1,0 +1,77 @@
+.practice-band {
+  --practice-line: #d8d6ce;
+  --practice-muted: #56544f;
+  color: #1c1c1b;
+  background: #fafaf8;
+}
+.practice-shell {
+  width: min(1320px, 100%);
+  margin-inline: auto;
+  padding: clamp(68px, 8vw, 122px) clamp(24px, 6.2vw, 92px);
+}
+.practice-band h2, .practice-band h3, .practice-band p,
+.practice-band figure, .practice-band blockquote, .practice-band dl, .practice-band dd { margin: 0; }
+.practice-band p, .practice-band dd { font-size: clamp(15px, 1.25vw, 18px); line-height: 1.55; text-wrap: pretty; }
+.practice-band p + p { margin-top: 1em; }
+.practice-band .practice-section-label {
+  font-size: clamp(22px, 3vw, 40px);
+  line-height: 1.14;
+  font-weight: 500;
+  letter-spacing: -.04em;
+}
+.practice-band em { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; }
+.practice-link {
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: .35em;
+  min-height: 42px;
+  font-size: 13px;
+  font-weight: 550;
+  text-decoration: underline;
+  text-decoration-color: #aaa79e;
+  text-underline-offset: .3em;
+}
+.practice-band a:hover, .practice-band summary:hover { color: #674785; }
+.practice-band a:focus-visible, .practice-band summary:focus-visible { outline: 2px solid #744f96; outline-offset: 4px; }
+.practice-people .practice-quote { margin: clamp(32px, 5vw, 72px) 0 clamp(32px, 5vw, 65px); }
+.practice-quote blockquote { max-width: 19ch; font-size: clamp(38px, 6.5vw, 94px); line-height: 1.02; font-weight: 450; letter-spacing: -.04em; text-wrap: balance; }
+.practice-quote blockquote em { color: #75548c; }
+.practice-quote figcaption { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 4px 24px; margin-top: 25px; }
+.practice-quote figcaption strong, .practice-references strong { display: block; font-size: 16px; font-weight: 600; }
+.practice-quote figcaption span, .practice-references small { display: block; margin-top: 2px; font-size: 13px; color: var(--practice-muted); }
+.practice-pace, .practice-curriculum { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); column-gap: clamp(24px, 5vw, 100px); padding-top: 26px; border-top: 1px solid var(--practice-line); }
+.practice-band h3 { font-size: clamp(20px, 2.2vw, 30px); font-weight: 500; letter-spacing: -.035em; line-height: 1.14; text-wrap: balance; }
+.practice-references { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; margin-top: 32px; }
+.practice-references > a { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px 15px; padding: 14px 0; border-top: 1px solid var(--practice-line); }
+.practice-references > a > span:last-child { font-size: 12px; display: inline-flex; align-items: center; gap: 4px; }
+.practice-teaching { background: #eeeae1; }
+.practice-teaching-grid, .practice-about-grid { display: grid; grid-template-columns: minmax(0, .84fr) minmax(0, 1.25fr); align-items: start; gap: clamp(28px, 5vw, 80px); }
+.practice-band .practice-heading { font-size: clamp(44px, 5.7vw, 84px); line-height: 1.01; letter-spacing: -.04em; font-weight: 500; text-wrap: balance; }
+.practice-heading + p { margin-top: 24px; }
+.practice-session { align-self: center; min-width: 0; }
+.practice-session > a, .practice-session img { display: block; width: 100%; height: auto; }
+.practice-session img { background: #161617; }
+.practice-session figcaption { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; line-height: 1.4; }
+.practice-curriculum { grid-column: 1 / -1; grid-template-columns: minmax(0, .84fr) minmax(0, 1.25fr); column-gap: clamp(28px, 5vw, 80px); }
+.practice-curriculum details { margin-top: 10px; }
+.practice-curriculum summary { display: flex; align-items: center; gap: 10px; cursor: pointer; width: fit-content; min-height: 44px; font-size: 14px; font-weight: 600; list-style: none; }
+.practice-curriculum summary::-webkit-details-marker { display: none; }
+.practice-curriculum details[open] summary svg { transform: rotate(45deg); }
+.practice-curriculum ol { padding-left: 1.4em; margin: 4px 0 14px; }
+.practice-curriculum li { padding-block: 3px; font-size: 14px; }
+.practice-curriculum .practice-in-progress { margin-top: 12px; font-size: 14px; color: var(--practice-muted); }
+.practice-about .practice-location { font-size: 13px; color: var(--practice-muted); }
+.practice-history .practice-path { margin-top: 26px; }
+.practice-path > div { display: grid; grid-template-columns: 84px 1fr; gap: 12px; border-top: 1px solid var(--practice-line); padding: 15px 0; }
+.practice-path dt { font-size: 13px; font-weight: 600; }
+.practice-path dd { color: var(--practice-muted); font-size: 15px; }
+@media (max-width: 760px) {
+  .practice-teaching-grid, .practice-about-grid, .practice-pace, .practice-curriculum, .practice-references { grid-template-columns: 1fr; }
+  .practice-pace, .practice-curriculum { gap: 12px; }
+  .practice-quote figcaption { align-items: flex-start; flex-direction: column; }
+  .practice-teaching-copy, .practice-history, .practice-pace p { max-width: 60ch; }
+  .practice-band .practice-heading br { display: none; }
+  .practice-session figcaption { font-size: 11px; }
+  .practice-path > div { grid-template-columns: 72px 1fr; gap: 12px; }
+}
