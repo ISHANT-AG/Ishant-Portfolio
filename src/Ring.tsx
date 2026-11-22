@@ -1,3 +1,4 @@
+import Lenis from 'lenis';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowDown,
@@ -18,6 +19,7 @@ import {
 import { RingScene, type SceneMode } from './ring/RingScene';
 import { getEditorialPlateUrl } from './ring/textures';
 import './ring/ring.css';
+import { animateDesignScroll } from './ring/designScroll';
 
 type LayoutMode = 'stream' | 'strips';
 
@@ -30,6 +32,35 @@ const MARQUEE_ITEMS = [
   galleryCategories[2], // idx  2 -> AUTOMATE
   galleryCategories[0], // idx  3 -> BUILD
 ];
+
+const designTags: Record<string, string> = {
+  "canva-portfolio-banner": "Personal identity",
+  "canva-claude-professionals": "AI workshops",
+  "canva-ffcs-launch": "Product launch",
+  "canva-claude-chatgpt": "AI education",
+  "design-ai-tools": "AI workshops",
+  "design-dhrugo-solar": "Solar campaign",
+  "design-rang-collage": "Campus events",
+  "design-synergy-standee": "Event signage",
+  "design-skyhills-sale": "Dubai real estate",
+  "design-workshop-speaker": "Workshop advertising",
+  "design-scribeai-mark": "Brand identity",
+  "poster-mahabaleshwar": "Travel campaign",
+  "poster-founders-table": "Founder events",
+  "design-carevyn-mark": "Brand identity",
+  "poster-rang-ruckus": "Campus events",
+  "poster-opus": "Dubai real estate",
+  "design-beachfront": "Dubai real estate",
+  "archive-chocolate-cone": "AI product imagery",
+  "archive-fluent-talk": "YouTube thumbnails",
+  "archive-stock-market-ai": "AI workshops",
+  "design-aether-desert": "Perfume campaign",
+  "design-aether-studio": "Perfume campaign",
+  "archive-nutaan-editorial": "Tech editorial",
+  "design-fit-cover": "Psychology-led design",
+  "design-dubai-cover": "Dubai real estate",
+  "design-dubai-spread": "Dubai real estate"
+};
 
 function resolveItemSrc(item: GalleryItem): string {
   if (item.visual.kind === 'image') return item.visual.src;
@@ -58,6 +89,7 @@ export default function Ring({
     motion ? 'entering' : 'ringIdle',
   );
   const [activeCategoryIdx, setActiveCategoryIdx] = useState(0);
+  const [galleryHasScrolled, setGalleryHasScrolled] = useState(false);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('stream');
   const [activeItemIdx, setActiveItemIdx] = useState(0);
   const [zoomedItemIdx, setZoomedItemIdx] = useState<number | null>(null);
@@ -102,6 +134,7 @@ export default function Ring({
   const openCategoryRef = useRef<(index?: number) => void>(() => {});
 
   const activeCategory: GalleryCategory = galleryCategories[activeCategoryIdx];
+  const designView = activeCategory.id === 'design';
   const activeItems = activeCategory.items;
   const focusedItem = activeItems[Math.min(activeItemIdx, activeItems.length - 1)] ?? activeItems[0];
   const zoomedItem =
@@ -163,6 +196,7 @@ export default function Ring({
       const curState = stateRef.current;
       if (curState !== 'ringIdle' && curState !== 'entering') return;
       resumeFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      setGalleryHasScrolled(false);
       setActiveCategoryIdx(targetIdx);
       setActiveItemIdx(0);
       setZoomedItemIdx(null);
@@ -185,6 +219,13 @@ export default function Ring({
   );
 
   openCategoryRef.current = handleOpenCategory;
+
+  useEffect(() => {
+    (window as any).__openCategory = (idx: number) => handleOpenCategory(idx);
+    return () => {
+      delete (window as any).__openCategory;
+    };
+  }, [handleOpenCategory]);
 
   const handleReturnToRing = useCallback(() => {
     const curState = stateRef.current;
@@ -442,27 +483,31 @@ export default function Ring({
     const container = streamScrollRef.current;
     if (!container) return;
 
+    if (container.scrollTop > 0 && stateRef.current === 'categoryGallery') setGalleryHasScrolled(true);
     sceneRef.current?.setGalleryScrollRatio(container.scrollTop / 460);
 
     const cards = container.querySelectorAll<HTMLElement>('[data-stream-card]');
     const viewH = container.clientHeight;
-    const midY = viewH * 0.48;
+    const viewportTop = container.getBoundingClientRect().top;
+    const listTop = container.querySelector('.cat-stream-list')?.getBoundingClientRect().top ?? viewportTop;
+    const midY = viewportTop + viewH * 0.48;
     let closestIdx = 0;
     let closestDist = Infinity;
 
     cards.forEach((card, i) => {
       const rect = card.getBoundingClientRect();
-      const center = rect.top + rect.height * 0.5;
+      const naturalTop = container.dataset.category === 'design' ? listTop + card.offsetTop : rect.top;
+      const center = naturalTop + rect.height * 0.5;
       const dist = Math.abs(center - midY);
       if (dist < closestDist) {
         closestDist = dist;
         closestIdx = i;
       }
 
-      // Subtle top-edge peel warp as cards scroll toward the upper edge (disabled when motion is off)
-      if (motionRef.current) {
-        const topZone = viewH * 0.24;
-        const peel = rect.top < topZone ? Math.min(1, Math.max(0, (topZone - rect.top) / (rect.height * 0.85))) : 0;
+      // Subtle top-edge peel warp as cards scroll toward the upper edge (disabled when motion is off or in design WebGL)
+      if (motionRef.current && container.dataset.category !== 'design') {
+        const topZone = viewportTop + viewH * 0.24;
+        const peel = naturalTop < topZone ? Math.min(1, Math.max(0, (topZone - naturalTop) / (rect.height * 0.85))) : 0;
         card.style.setProperty('--peel', peel.toFixed(3));
       } else {
         card.style.setProperty('--peel', '0');
@@ -471,6 +516,29 @@ export default function Ring({
 
     setActiveItemIdx((prev) => (prev === closestIdx ? prev : closestIdx));
   }, []);
+
+  useEffect(() => {
+    const view = streamScrollRef.current;
+    const content = view?.firstElementChild;
+    if (!motion || galleryState !== 'categoryGallery' || layoutMode !== 'stream' || !view || !(content instanceof HTMLElement)) return;
+    const scroll = new Lenis({
+      wrapper: view,
+      content,
+      autoRaf: true,
+      lerp: 0.10,
+      duration: 1.2,
+      smoothWheel: true,
+      overscroll: false,
+    });
+    return () => scroll.destroy();
+  }, [motion, galleryState, layoutMode, activeCategory.id]);
+
+  useEffect(() => {
+    const view = streamScrollRef.current;
+    if (view && designView && motion && layoutMode === 'stream' && galleryState === 'categoryGallery') {
+      return animateDesignScroll(view);
+    }
+  }, [designView, motion, layoutMode, galleryState]);
 
   // Compute dock thumbnail URL for current state
   const dockThumbSrc =
@@ -490,6 +558,8 @@ export default function Ring({
       <div
         className={`gallery-stage-frame ${isExpanded ? 'is-expanded' : ''}`}
         data-state={galleryState}
+        data-gallery-scrolled={galleryHasScrolled}
+        data-category={activeCategory.id}
         role={isExpanded ? 'dialog' : undefined}
         aria-modal={isExpanded || undefined}
         aria-label={isExpanded ? activeCategory.displayTitle + ' projects' : undefined}
@@ -503,7 +573,7 @@ export default function Ring({
                 {galleryState === 'categoryGallery'
                   ? `${activeCategory.label} · ${activeItems.length} works`
                   : galleryState === 'itemZoom' && zoomedItem
-                    ? `${zoomedItem.year} · ${zoomedItem.title}`
+                    ? `${[zoomedItem.year, zoomedItem.title].filter(Boolean).join(' · ')}`
                     : ''}
               </span>
             </>
@@ -560,6 +630,7 @@ export default function Ring({
         <div
           ref={canvasHostRef}
           className={`ring-canvas-host ${galleryState === 'ringIdle' ? 'is-interactive' : ''}`}
+          data-lenis-prevent="true"
           aria-hidden="true"
         />
 
@@ -582,24 +653,26 @@ export default function Ring({
         )}
 
         {/* Category Gallery Layer (Vertical Stream + Horizontal Slit-Strip Modes) */}
-        {(galleryState === 'categoryGallery' ||
-          galleryState === 'categoryTransition' ||
-          galleryState === 'itemZoom') && (
           <div
+            hidden={!isExpanded}
             className={`cat-gallery-layer is-${layoutMode} ${
               galleryState === 'categoryGallery' ? 'is-ready' : ''
             } ${
               galleryState === 'categoryTransition' ? 'is-transitioning' : ''
+            } ${
+              galleryState === 'returning' ? 'is-returning' : ''
             } ${galleryState === 'itemZoom' ? 'is-under-zoom' : ''}`}
             inert={galleryState !== 'categoryGallery'}
             aria-hidden={galleryState !== 'categoryGallery'}
           >
-            {layoutMode === 'stream' ? (
-              <div
+              <div hidden={layoutMode !== 'stream'}
                 ref={streamScrollRef}
                 className="cat-stream-scroll"
+                data-lenis-prevent="true"
+                data-category={activeCategory.id}
                 onScroll={handleStreamScroll}
               >
+                <div className="cat-stream-content">
                 <header className="cat-stream-hero">
                   <span className="eyebrow">
                     0{activeCategoryIdx + 1} / {activeCategory.label}
@@ -616,7 +689,8 @@ export default function Ring({
                         key={item.id}
                         className="cat-stream-card"
                         data-stream-card
-                        style={{ ['--card-i' as string]: idx }}
+                        data-project={item.id}
+                        style={{ ['--card-i' as string]: idx, ['--poster-aspect' as string]: item.visual.kind === 'image' ? item.visual.aspect : undefined }}
                       >
                         <button
                           type="button"
@@ -640,9 +714,10 @@ export default function Ring({
                             }}
                           >
                             <img src={src} alt={item.visual.alt} loading={idx === 0 ? 'eager' : 'lazy'} />
+                            {designView && <canvas className="design-scroll-surface" aria-hidden="true" />}
                           </div>
                         </button>
-                        <div className="cat-stream-meta">
+                        {designView ? <span className="design-work-tag">{designTags[item.id]}</span> : <div className="cat-stream-meta">
                           <div className="cat-stream-meta-left">
                             <span className="mono">
                               {String(idx + 1).padStart(2, '0')} /{' '}
@@ -671,13 +746,36 @@ export default function Ring({
                               </button>
                             )}
                           </div>
-                        </div>
+                        </div>}
                       </article>
                     );
                   })}
                 </div>
+                  <section hidden={!designView || galleryState !== 'categoryGallery'} className="interface-films" aria-label="UI/UX prototypes">
+                    <h4>UI/UX prototypes</h4>
+                    {[
+                      { title: "UI/UX Prototype 1", url: "https://embed.figma.com/proto/gzxlR7hHVspBSoi9tPUAwo/UI-UX?node-id=57-69&page-id=40%3A337&starting-point-node-id=56%3A17&embed-host=share&hide-ui=1" },
+                      { title: "Smoothie Website", url: "https://embed.figma.com/proto/fHjBspkvO0mPHO8dGN9qDh/smoothie-website?node-id=2-9&page-id=2%3A8&starting-point-node-id=2%3A9&embed-host=share&hide-ui=1" },
+                      { title: "UI/UX Prototype 2", url: "https://embed.figma.com/proto/gzxlR7hHVspBSoi9tPUAwo/UI-UX?node-id=28-239&p=f&viewport=-89%2C181%2C0.24&scaling=contain&content-scaling=responsive&page-id=0%3A1&embed-host=share&hide-ui=1" },
+                      { title: "Ferrari", url: "https://embed.figma.com/proto/mmMZS0i2kxlc8IqiQUh0rK/FERRARI?node-id=2-11&viewport=59%2C264%2C0.23&scaling=contain&content-scaling=fixed&starting-point-node-id=14%3A10&page-id=0%3A1&embed-host=share&hide-ui=1" },
+                      { title: "Movie Ticket Booking", url: "https://embed.figma.com/proto/fZy6Counn9ez69pIBKys5i/Movie-Ticket-Booking-App-Design--Community-?node-id=204-75&p=f&viewport=102%2C169%2C0.37&scaling=contain&content-scaling=fixed&page-id=204%3A74&embed-host=share&hide-ui=1" },
+                      { title: "Netflix App Clone", aspect: "819 / 513", previewScale: 1.35, url: "https://embed.figma.com/proto/sRR2q0e5bMzRhZocqkz3rU/Netflix-App-Clone-Design--Community-?node-id=2021-1409&page-id=2021%3A866&scaling=contain&content-scaling=fixed&embed-host=share&hide-ui=1" },
+                      { title: "Spotify App Clone", aspect: "1077 / 580", previewScale: 1.39, url: "https://embed.figma.com/proto/djM1YMr5Ve9U3ex7nxEUOn/Spotify-App-Clone-UI-Design--Community-?node-id=4003-615&viewport=40%2C183%2C0.5&scaling=contain&content-scaling=fixed&page-id=4003%3A614&embed-host=share&hide-ui=1" },
+                      { title: "Delivery App UI Kit", aspect: "1324 / 445", playerAspect: "16 / 9", previewScale: 1.13, url: "https://embed.figma.com/proto/sUg2B7CEsZ7qSwcqtSZULn/Delivery-App_UI-Kit--Community-?node-id=1165-551&viewport=1421%2C820%2C0.24&scaling=contain&content-scaling=fixed&page-id=33%3A444&embed-host=share&hide-ui=1" },
+                    ].map(({ title, url, aspect, playerAspect, previewScale }) => (
+                      <figure key={url}>
+                        <div className="prototype-viewport" style={{ aspectRatio: aspect ?? '16 / 9' }}>
+                          <iframe title={title + ' interactive prototype'} src={url}
+                            style={{ aspectRatio: playerAspect ?? aspect ?? '16 / 9', transform: `translate(-50%, -50%) scale(${previewScale ?? 1.22})` }}
+                            width="800" height="450" loading="eager" allowFullScreen />
+                        </div>
+                        <figcaption>{title} · <a href={url.replace('embed.figma.com', 'www.figma.com')} target="_blank" rel="noreferrer">Open in Figma ↗</a></figcaption>
+                      </figure>
+                    ))}
+                  </section>
+                </div>
               </div>
-            ) : (
+            {layoutMode === 'strips' && (
               <div className="cat-strips-stage" role="group" aria-label={`${activeCategory.label} strip view`}>
                 <div className="cat-strips-track">
                   {activeItems.map((item, idx) => {
@@ -712,13 +810,12 @@ export default function Ring({
                     {String(activeItemIdx + 1).padStart(2, '0')} /{' '}
                     {String(activeItems.length).padStart(2, '0')}
                   </span>
-                  <strong>{focusedItem.title}</strong>
-                  <span>{focusedItem.subtitle}</span>
+                  <strong>{designView ? designTags[focusedItem.id] : focusedItem.title}</strong>
+                  {!designView && <span>{focusedItem.subtitle}</span>}
                 </div>
               </div>
             )}
           </div>
-        )}
 
         {/* Item Zoom / Inspection Layer with rising curved dark backdrop */}
         <div
@@ -760,16 +857,16 @@ export default function Ring({
                   onMouseLeave={() => setCursorMode('none')}
                 >
                   <img
-                    src={itemMediaMap.get(zoomedItem.id) || ''}
+                    src={itemMediaMap.get(zoomedItem.id) || undefined}
                     alt={zoomedItem.visual.alt}
                     className="cat-zoom-image"
                   />
                 </div>
 
-                <div className="cat-zoom-info">
+                {designView ? <span className="design-work-tag zoom-tag">{designTags[zoomedItem.id]}</span> : <div className="cat-zoom-info">
                   <div className="cat-zoom-copy">
                     <span className="cat-zoom-eyebrow mono">
-                      {activeCategory.label} · {zoomedItem.year} · {zoomedItem.role}
+                      {[activeCategory.label, zoomedItem.year, zoomedItem.role].filter(Boolean).join(' · ')}
                     </span>
                     <h4>{zoomedItem.title}</h4>
                     <p>{zoomedItem.summary}</p>
@@ -798,7 +895,7 @@ export default function Ring({
                       </a>
                     ))}
                   </div>
-                </div>
+                </div>}
               </div>
             </>
           )}

@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
+import patternsData from './voronoi_patterns.json';
+import { triangulate2D, type VoronoiCell } from './voronoiGeometry';
 import { galleryCategories } from './galleryData';
 import {
   createCategoryTextureBundle,
@@ -468,16 +470,38 @@ const REFLECT_FRAG = /* glsl */ `
   }
 `;
 
-// --- 3D Voronoi Shatter Field with Category Tint ---
+// --- 3D Voronoi Shatter Field with Category Tint & Bevel Edges ---
 const SHARD_VERT = /* glsl */ `
+  attribute float aIsEdge;
+  attribute float aFaceMask;
+  attribute vec2 aPieceDelta;
+  attribute vec2 aPieceCenter;
+  attribute float aPieceId;
+  attribute float aProminent;
+
   varying vec2 vUv;
-  varying vec3 vViewNormal;
+  varying vec3 vNormal;
+  varying vec3 vViewPosition;
+  varying float vIsEdge;
+  varying float vFaceMask;
+  varying vec2 vPieceDelta;
+  varying vec2 vPieceCenter;
+  varying float vPieceId;
+  varying float vProminent;
 
   void main() {
     vUv = uv;
-    vec3 localNorm = normalize(vec3(position.x, 0.0, position.z + 2.40));
-    vViewNormal = normalize(normalMatrix * localNorm);
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vIsEdge = aIsEdge;
+    vFaceMask = aFaceMask;
+    vPieceDelta = aPieceDelta;
+    vPieceCenter = aPieceCenter;
+    vPieceId = aPieceId;
+    vProminent = aProminent;
+
+    vNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewPosition = -mvPos.xyz;
+    gl_Position = projectionMatrix * mvPos;
   }
 `;
 
@@ -486,15 +510,86 @@ const SHARD_FRAG = /* glsl */ `
   uniform vec3 uTint;
   uniform float uOpacity;
   uniform float uGloss;
+  uniform float uTime;
+  uniform float uBurstProgress;
+
   varying vec2 vUv;
-  varying vec3 vViewNormal;
+  varying vec3 vNormal;
+  varying vec3 vViewPosition;
+  varying float vIsEdge;
+  varying float vFaceMask;
+  varying vec2 vPieceDelta;
+  varying vec2 vPieceCenter;
+  varying float vPieceId;
+  varying float vProminent;
+
+  float hash11(float n) {
+    return fract(sin(n) * 43758.5453123);
+  }
 
   void main() {
-    vec4 tex = texture2D(uMap, vUv);
-    float glint = pow(1.0 - clamp(abs(vViewNormal.z), 0.0, 1.0), 1.8) * 0.42 + uGloss;
-    vec3 col = mix(tex.rgb, uTint, 0.12);
-    col = mix(col, vec3(1.0), clamp(glint, 0.0, 0.55));
-    gl_FragColor = vec4(col, tex.a * uOpacity);
+    vec3 nrm = normalize(vNormal);
+    vec3 viewDir = normalize(vViewPosition);
+    float NoV = clamp(abs(dot(nrm, viewDir)), 0.0, 1.0);
+    float fresnel = pow(1.0 - NoV, 2.8);
+    float rim = pow(1.0 - NoV, 1.45);
+
+    // 1. Chromatic dispersion across front face
+    float pieceSeed = hash11(vPieceId * 911.37 + vPieceCenter.x * 173.11 + vPieceCenter.y * 271.93);
+    float randAngle = pieceSeed * 6.2831853;
+    vec2 prismDir = vec2(cos(randAngle), sin(randAngle));
+    vec4 texBase = texture2D(uMap, vUv);
+    vec3 frontColor = texBase.rgb;
+
+    // 2. Crystalline facet and edge highlights (from fragmentShader_zk.glsl lines 415-422)
+    float pieceSpan = max(abs(vPieceDelta.x), abs(vPieceDelta.y * 0.92));
+    float facetLine = smoothstep(0.18, 0.48, pieceSpan) * (1.0 - smoothstep(0.48, 0.95, pieceSpan)) * 0.35;
+
+    // Specular lighting from directional light
+    vec3 halfVec = normalize(viewDir + vec3(0.15, 0.45, 0.85));
+    float spec = pow(max(dot(nrm, halfVec), 0.0), 28.0);
+
+    // 3. Cut edge walls (side bevels) - authentic gleaming glass edge shading from fragmentShader_zk.glsl
+    float frontLuma = dot(frontColor, vec3(0.2126, 0.7152, 0.0722));
+    vec3 desatFront = mix(vec3(frontLuma), frontColor, 0.25);
+    vec3 texSide = mix(vec3(frontLuma * 0.90), desatFront, 0.35);
+
+    // Clean crystalline glass edge palette (matching reference gleaming gold/white specular)
+    vec3 glassEdgePalette = vec3(1.0, 0.98, 0.92);
+    vec3 sideBase = mix(vec3(0.92, 0.94, 0.98), glassEdgePalette, 0.48);
+    vec3 sideColor = mix(sideBase, texSide, 0.28);
+
+    // High-reflection specular gleams on bevel edges
+    vec3 glassSpec = vec3(1.0, 0.99, 0.96) * (0.32 + 0.78 * rim + spec * 0.92 + uGloss * 0.50);
+    sideColor = sideColor * (0.82 + 0.28 * abs(nrm.y)) + glassSpec;
+
+    // Back face: clean naturally dimmed back surface without artificial tint wash
+    vec3 backColor = texBase.rgb * 0.75;
+
+    // Compose based on surface tag
+    vec3 col;
+    if (vIsEdge > 0.5) {
+      col = sideColor;
+    } else if (vFaceMask > 0.0) {
+      col = frontColor + vec3(1.0, 0.98, 0.94) * (spec * 0.55 + rim * 0.38 + facetLine + uGloss * 0.35);
+    } else {
+      col = backColor + vec3(1.0) * (spec * 0.35 + rim * 0.25);
+    }
+
+    col = clamp(col, 0.0, 1.0);
+
+    // Prominent shards stay 100% visible at all times.
+    // Filler shards disperse outward and fade smoothly between bp=0.18 and bp=0.68,
+    // then fade back in smoothly during return/collapse so ALL 48 pieces reassemble with zero hollow gaps!
+    float pieceAlpha = 1.0;
+    if (vProminent < 0.5) {
+      pieceAlpha = 1.0 - smoothstep(0.18, 0.68, uBurstProgress);
+    }
+
+    float alpha = texBase.a * uOpacity * pieceAlpha;
+    if (alpha < 0.005) discard;
+
+    gl_FragColor = vec4(col, alpha);
     #include <colorspace_fragment>
   }
 `;
@@ -524,30 +619,6 @@ const LOADER_ARC_FRAG = /* glsl */ `
   }
 `;
 
-type Pt = [number, number];
-
-function clipPolygonHalfPlane(poly: Pt[], px: number, py: number, nx: number, ny: number): Pt[] {
-  if (poly.length === 0) return [];
-  const out: Pt[] = [];
-  for (let i = 0; i < poly.length; i++) {
-    const a = poly[i];
-    const b = poly[(i + 1) % poly.length];
-    const da = (a[0] - px) * nx + (a[1] - py) * ny;
-    const db = (b[0] - px) * nx + (b[1] - py) * ny;
-    if (da <= 0) {
-      out.push(a);
-      if (db > 0) {
-        const t = da / (da - db);
-        out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]);
-      }
-    } else if (db <= 0) {
-      const t = da / (da - db);
-      out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]);
-    }
-  }
-  return out;
-}
-
 type ShardUnit = {
   mesh: THREE.Mesh;
   curvedCentroid: THREE.Vector3;
@@ -557,146 +628,283 @@ type ShardUnit = {
   delay: number;
   driftPhase: number;
   parallaxWeight: number;
+  spinSpeed: THREE.Vector3;
+  isProminent: boolean;
 };
 
 function buildContinuousVoronoiShards(
   material: THREE.ShaderMaterial,
   resources: { dispose: () => void }[],
 ): { group: THREE.Group; shards: ShardUnit[] } {
-  const cols = 7;
-  const rows = 5;
-  const seeds: Pt[] = [];
-  let s = 2718;
+  const pattern = (patternsData as Record<string, { meta: { width: number; height: number }; cells: VoronoiCell[] }>).a;
+  const { meta, cells: allCells } = pattern;
+  const baseW = meta.width; // 2.0
+  const baseH = meta.height; // 1.0
+
+  // Calculate 2D area for every cell in the continuous tessellation
+  const cellAreaList = (allCells || []).map((cell) => {
+    let area = 0;
+    const v = cell.vertices;
+    for (let k = 0; k < v.length; k += 2) {
+      const x1 = v[k], y1 = v[k + 1];
+      const x2 = v[(k + 2) % v.length], y2 = v[(k + 3) % v.length];
+      area += x1 * y2 - x2 * y1;
+    }
+    return { cell, area: Math.abs(area) * 0.5 };
+  });
+
+  // Identify the 16 prominent crystalline shards matching aikawakenichi.com
+  const prominentLeft = cellAreaList
+    .filter((c) => c.area >= 0.048 && c.cell.cx < 0)
+    .sort((a, b) => a.cell.cy - b.cell.cy);
+  const prominentRight = cellAreaList
+    .filter((c) => c.area >= 0.048 && c.cell.cx >= 0)
+    .sort((a, b) => a.cell.cy - b.cell.cy);
+
+  const prominentMap = new Map<number, { isLeft: boolean; rank: number; total: number }>();
+  prominentLeft.forEach((p, idx) => {
+    prominentMap.set(p.cell.id, { isLeft: true, rank: idx, total: prominentLeft.length });
+  });
+  prominentRight.forEach((p, idx) => {
+    prominentMap.set(p.cell.id, { isLeft: false, rank: idx, total: prominentRight.length });
+  });
+
+  const THICK = 0.045; // 3D physical glass thickness
+  const rFront = RADIUS + THICK * 0.5; // 2.4225
+  const rBack = RADIUS - THICK * 0.5;  // 2.3775
+
+  let s = 42;
   const rand = () => {
     s = (s * 16807) % 2147483647;
     return (s - 1) / 2147483646;
   };
 
-  const hw = FLAT_WIDTH * 0.5;
-  const hh = FLAT_HEIGHT * 0.5;
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const x = ((c + 0.18 + rand() * 0.64) / cols - 0.5) * FLAT_WIDTH;
-      const y = ((r + 0.18 + rand() * 0.64) / rows - 0.5) * FLAT_HEIGHT;
-      seeds.push([x, y]);
-    }
-  }
-
-  const baseRect: Pt[] = [
-    [-hw, -hh],
-    [hw, -hh],
-    [hw, hh],
-    [-hw, hh],
-  ];
-
   const group = new THREE.Group();
   group.visible = false;
   const shards: ShardUnit[] = [];
 
-  for (let i = 0; i < seeds.length; i++) {
-    const [sx, sy] = seeds[i];
-    let poly = baseRect.slice();
-    for (let j = 0; j < seeds.length; j++) {
-      if (i === j) continue;
-      const [ox, oy] = seeds[j];
-      const mx = (sx + ox) * 0.5;
-      const my = (sy + oy) * 0.5;
-      const nx = ox - sx;
-      const ny = oy - sy;
-      poly = clipPolygonHalfPlane(poly, mx, my, nx, ny);
-      if (poly.length < 3) break;
-    }
-    if (poly.length < 3) continue;
+  // ALL 48 Voronoi cells are built so the cylinder panel is 100% complete and gapless on collapse!
+  for (let i = 0; i < allCells.length; i++) {
+    const cell = allCells[i];
+    const prom = prominentMap.get(cell.id);
+    const isProminent = !!prom;
+    const prominentVal = isProminent ? 1.0 : 0.0;
 
-    let cx = 0;
-    let cy = 0;
-    for (const [px, py] of poly) {
-      cx += px;
-      cy += py;
+    const poly2D: [number, number][] = [];
+    for (let k = 0; k < cell.vertices.length; k += 2) {
+      poly2D.push([cell.vertices[k], cell.vertices[k + 1]]);
     }
-    cx /= poly.length;
-    cy /= poly.length;
+    const tris = triangulate2D(poly2D);
+    if (tris.length === 0) continue;
 
-    // Centroid in UV space
-    const cu = cx / (hw * 2) + 0.5;
-    const cv = cy / (hh * 2) + 0.5;
+    // Centroid in UV space [0, 1]
+    const cu = (cell.cx + baseW * 0.5) / baseW;
+    const cv = (cell.cy + baseH * 0.5) / baseH;
     const cAngle = (cu - 0.5) * PANEL_ARC;
+    const cY = (0.5 - cv) * HEIGHT;
 
     // Curved centroid directly on the 3D cylindrical surface
     const curvedCentroid = new THREE.Vector3(
       Math.sin(cAngle) * RADIUS,
-      (cv - 0.5) * HEIGHT,
+      cY,
       Math.cos(cAngle) * RADIUS,
     );
 
     const positions: number[] = [];
+    const normals: number[] = [];
     const uvs: number[] = [];
-    const indices: number[] = [];
+    const isEdges: number[] = [];
+    const faceMasks: number[] = [];
+    const pieceDeltas: number[] = [];
+    const pieceCenters: number[] = [];
+    const pieceIds: number[] = [];
+    const prominentAttrs: number[] = [];
 
-    for (let k = 0; k < poly.length; k++) {
-      const [px, py] = poly[k];
-      const u = px / (hw * 2) + 0.5;
-      const v = py / (hh * 2) + 0.5;
-      const angle = (u - 0.5) * PANEL_ARC;
+    // 1. FRONT FACE (curved on rFront cylinder)
+    for (const [i0, i1, i2] of tris) {
+      for (const idx of [i0, i1, i2]) {
+        const [x, y] = poly2D[idx];
+        const u = (x + baseW * 0.5) / baseW;
+        const v = (y + baseH * 0.5) / baseH;
+        const ang = (u - 0.5) * PANEL_ARC;
+        const vy = (0.5 - v) * HEIGHT;
 
-      // Exact curved vertex on cylinder
-      const vxCurved = Math.sin(angle) * RADIUS;
-      const vyCurved = (v - 0.5) * HEIGHT;
-      const vzCurved = Math.cos(angle) * RADIUS;
-
-      // Store positions relative to curved centroid
-      positions.push(
-        vxCurved - curvedCentroid.x,
-        vyCurved - curvedCentroid.y,
-        vzCurved - curvedCentroid.z,
-      );
-      uvs.push(u, v);
+        positions.push(
+          Math.sin(ang) * rFront - curvedCentroid.x,
+          vy - curvedCentroid.y,
+          Math.cos(ang) * rFront - curvedCentroid.z,
+        );
+        normals.push(Math.sin(ang), 0, Math.cos(ang));
+        uvs.push(u, 1 - v);
+        isEdges.push(0);
+        faceMasks.push(1);
+        pieceDeltas.push((u - cu) * 2.5, (v - cv) * 2.5);
+        pieceCenters.push(cu, 1 - cv);
+        pieceIds.push(i);
+        prominentAttrs.push(prominentVal);
+      }
     }
 
-    for (let k = 1; k < poly.length - 1; k++) {
-      indices.push(0, k, k + 1);
+    // 2. BACK FACE (curved on rBack cylinder, reversed winding)
+    for (const [i0, i1, i2] of tris) {
+      for (const idx of [i0, i2, i1]) {
+        const [x, y] = poly2D[idx];
+        const u = (x + baseW * 0.5) / baseW;
+        const v = (y + baseH * 0.5) / baseH;
+        const ang = (u - 0.5) * PANEL_ARC;
+        const vy = (0.5 - v) * HEIGHT;
+
+        positions.push(
+          Math.sin(ang) * rBack - curvedCentroid.x,
+          vy - curvedCentroid.y,
+          Math.cos(ang) * rBack - curvedCentroid.z,
+        );
+        normals.push(-Math.sin(ang), 0, -Math.cos(ang));
+        uvs.push(u, 1 - v);
+        isEdges.push(0);
+        faceMasks.push(-1);
+        pieceDeltas.push((u - cu) * 2.5, (v - cv) * 2.5);
+        pieceCenters.push(cu, 1 - cv);
+        pieceIds.push(i);
+        prominentAttrs.push(prominentVal);
+      }
+    }
+
+    // 3. SIDE WALL QUADS (connecting front & back with outward perpendicular bevel normals)
+    const vCount = poly2D.length;
+    for (let k = 0; k < vCount; k++) {
+      const [x0, y0] = poly2D[k];
+      const [x1, y1] = poly2D[(k + 1) % vCount];
+      const u0 = (x0 + baseW * 0.5) / baseW;
+      const v0 = (y0 + baseH * 0.5) / baseH;
+      const u1 = (x1 + baseW * 0.5) / baseW;
+      const v1 = (y1 + baseH * 0.5) / baseH;
+
+      const ang0 = (u0 - 0.5) * PANEL_ARC;
+      const ang1 = (u1 - 0.5) * PANEL_ARC;
+      const vy0 = (0.5 - v0) * HEIGHT;
+      const vy1 = (0.5 - v1) * HEIGHT;
+
+      const F0 = [Math.sin(ang0) * rFront - curvedCentroid.x, vy0 - curvedCentroid.y, Math.cos(ang0) * rFront - curvedCentroid.z];
+      const F1 = [Math.sin(ang1) * rFront - curvedCentroid.x, vy1 - curvedCentroid.y, Math.cos(ang1) * rFront - curvedCentroid.z];
+      const B0 = [Math.sin(ang0) * rBack - curvedCentroid.x, vy0 - curvedCentroid.y, Math.cos(ang0) * rBack - curvedCentroid.z];
+      const B1 = [Math.sin(ang1) * rBack - curvedCentroid.x, vy1 - curvedCentroid.y, Math.cos(ang1) * rBack - curvedCentroid.z];
+
+      const dx = x1 - x0;
+      const dy = y1 - y0;
+      const len = Math.hypot(dx, dy) || 1;
+      const nx = dy / len;
+      const ny = -dx / len;
+      const midAng = (ang0 + ang1) * 0.5;
+      const norm = [Math.cos(midAng) * nx, -ny, -Math.sin(midAng) * nx];
+
+      const quadVerts = [F0, F1, B1, F0, B1, B0];
+      const quadUvs = [[u0, 1 - v0], [u1, 1 - v1], [u1, 1 - v1], [u0, 1 - v0], [u1, 1 - v1], [u0, 1 - v0]];
+
+      for (let q = 0; q < 6; q++) {
+        positions.push(...quadVerts[q]);
+        normals.push(...norm);
+        uvs.push(...quadUvs[q]);
+        isEdges.push(1);
+        faceMasks.push(0);
+        pieceDeltas.push((quadUvs[q][0] - cu) * 2.5, (1 - quadUvs[q][1] - cv) * 2.5);
+        pieceCenters.push(cu, 1 - cv);
+        pieceIds.push(i);
+        prominentAttrs.push(prominentVal);
+      }
     }
 
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
     geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-    geo.setIndex(indices);
+    geo.setAttribute('aIsEdge', new THREE.Float32BufferAttribute(isEdges, 1));
+    geo.setAttribute('aFaceMask', new THREE.Float32BufferAttribute(faceMasks, 1));
+    geo.setAttribute('aPieceDelta', new THREE.Float32BufferAttribute(pieceDeltas, 2));
+    geo.setAttribute('aPieceCenter', new THREE.Float32BufferAttribute(pieceCenters, 2));
+    geo.setAttribute('aPieceId', new THREE.Float32BufferAttribute(pieceIds, 1));
+    geo.setAttribute('aProminent', new THREE.Float32BufferAttribute(prominentAttrs, 1));
     resources.push(geo);
 
     const mesh = new THREE.Mesh(geo, material);
+    mesh.renderOrder = 3;
     group.add(mesh);
 
-    const radialNorm = Math.hypot(cx / hw, cy / hh);
-    const sideSign = cx >= 0 ? 1 : -1;
-    const crackAngle = Math.atan2(cy * 1.15, cx);
+    const radialNorm = Math.hypot(cell.cx / (baseW * 0.5), cell.cy / (baseH * 0.5));
+    const sideSign = cell.cx >= 0 ? 1 : -1;
+    const crackAngle = Math.atan2(cell.cy * 1.15, cell.cx);
 
     // Crack phase: hairline crack seams open along the curved cylinder surface normal
     const crackTarget = new THREE.Vector3(
-      curvedCentroid.x + Math.sin(cAngle) * (0.08 + radialNorm * 0.08),
+      curvedCentroid.x + Math.sin(cAngle) * (0.07 + radialNorm * 0.08),
       curvedCentroid.y + Math.sin(crackAngle) * 0.06,
-      curvedCentroid.z + Math.cos(cAngle) * (0.08 + radialNorm * 0.08),
+      curvedCentroid.z + Math.cos(cAngle) * (0.07 + radialNorm * 0.08),
     );
 
-    // Burst phase: fly out to perimeter crystalline frame to clear space for gallery
-    const keepFrame = i % 3 !== 0;
-    const burstX = sideSign * (keepFrame ? 2.95 + rand() * 1.35 : 4.2 + rand() * 1.5) + curvedCentroid.x * 0.35;
-    const burstY = curvedCentroid.y * 2.2 + (rand() - 0.5) * 1.6;
-    const burstZ = curvedCentroid.z + 0.6 + rand() * 1.8;
+    let burstTarget: THREE.Vector3;
+    let rotTarget: THREE.Euler;
+
+    if (isProminent && prom) {
+      // The 16 prominent crystalline shards positioned on outer flanks (matching reference aikawakenichi.com)
+      const tFlank = prom.total > 1 ? prom.rank / (prom.total - 1) : 0.5;
+      const burstY = -1.55 + tFlank * 3.10 + (rand() - 0.5) * 0.16;
+
+      let burstX: number;
+      if (prom.isLeft) {
+        const stagger = ((prom.rank * 7) % 5) / 5.0;
+        burstX = -3.42 + stagger * 1.25 + (rand() - 0.5) * 0.14;
+        burstX = Math.min(-2.15, Math.max(-3.55, burstX));
+      } else {
+        const stagger = ((prom.rank * 7 + 2) % 5) / 5.0;
+        burstX = 3.42 - stagger * 1.25 + (rand() - 0.5) * 0.14;
+        burstX = Math.max(2.15, Math.min(3.55, burstX));
+      }
+
+      const burstZ = 2.40 + (rand() - 0.5) * 0.45;
+      burstTarget = new THREE.Vector3(burstX, burstY, burstZ);
+
+      // 3D crystalline rotation catching specular edge lighting
+      const rotX = (rand() - 0.5) * 0.70 + (tFlank - 0.5) * 0.30;
+      const rotY = sideSign * (-0.35 - rand() * 0.35);
+      const rotZ = (rand() - 0.5) * 0.60;
+      rotTarget = new THREE.Euler(rotX, rotY, rotZ);
+    } else {
+      // The 32 filler pieces: disperse outward away from center and fade out during open,
+      // and fly back in during collapse so ALL 48 pieces assemble with zero hollow gaps!
+      const radialAngle = Math.atan2(cell.cy, cell.cx);
+      const flyDistance = 1.8 + radialNorm * 1.4 + (rand() - 0.5) * 0.3;
+      let fBurstX = cell.cx + Math.cos(radialAngle) * flyDistance;
+      let fBurstY = cell.cy + Math.sin(radialAngle) * flyDistance;
+      if (Math.abs(fBurstY) < 0.5) {
+        fBurstY = (cell.cy >= 0 ? 1 : -1) * (0.85 + rand() * 0.75);
+      }
+      const fBurstZ = 2.15 + (rand() - 0.5) * 0.55;
+      burstTarget = new THREE.Vector3(fBurstX, fBurstY, fBurstZ);
+
+      const rotX = (rand() - 0.5) * 0.85;
+      const rotY = sideSign * (-0.35 - rand() * 0.40);
+      const rotZ = (rand() - 0.5) * 0.80;
+      rotTarget = new THREE.Euler(rotX, rotY, rotZ);
+    }
+
+    // Individual micro-spin rates matching vertexShader_Hk.glsl lines 181-183
+    const spinSpeed = new THREE.Vector3(
+      (0.08 + rand() * 0.16) * (rand() > 0.5 ? 1 : -1),
+      (0.10 + rand() * 0.20) * (rand() > 0.5 ? 1 : -1),
+      (0.06 + rand() * 0.14) * (rand() > 0.5 ? 1 : -1),
+    );
 
     shards.push({
       mesh,
       curvedCentroid,
       crackTarget,
-      burstTarget: new THREE.Vector3(burstX, burstY, burstZ),
-      rotTarget: new THREE.Euler(
-        (rand() - 0.5) * 2.4,
-        (rand() - 0.5) * 2.6,
-        (rand() - 0.5) * 1.8,
-      ),
-      delay: Math.max(0, 0.12 - radialNorm * 0.08) + rand() * 0.04,
+      burstTarget,
+      rotTarget,
+      delay: Math.max(0, 0.08 - radialNorm * 0.06) + rand() * 0.03,
       driftPhase: rand() * Math.PI * 2,
-      parallaxWeight: 0.10 + rand() * 0.16,
+      parallaxWeight: 0.012 + rand() * 0.015,
+      spinSpeed,
+      isProminent,
     });
   }
 
@@ -784,6 +992,9 @@ export class RingScene {
   public entranceProgress = 0;
   public transitionProgress = 0;
   public burstProgress = 0;
+  private transitionOthersAlpha = 1.0;
+  private transitionReflectAlpha = 1.0;
+  private transitionWordmarkAlpha = 1.0;
   private entranceStarted = false;
   private transitionCategoryIndex = 0;
   private shardAmbientFade = 1;
@@ -1125,6 +1336,8 @@ export class RingScene {
         uTint: { value: new THREE.Color(galleryCategories[0].theme.tint) },
         uOpacity: { value: 1 },
         uGloss: { value: 0 },
+        uTime: { value: 0 },
+        uBurstProgress: { value: 0 },
       },
       vertexShader: SHARD_VERT,
       fragmentShader: SHARD_FRAG,
@@ -1429,6 +1642,9 @@ export class RingScene {
       this.velocity = 0;
       this.transitionProgress = 1;
       this.burstProgress = 1;
+      this.transitionOthersAlpha = 0;
+      this.transitionReflectAlpha = 0;
+      this.transitionWordmarkAlpha = 0;
       this.mode = 'categoryGallery';
       this.emitTitleProgress(0);
       this.outerMeshes.forEach((m) => (m.visible = true));
@@ -1442,20 +1658,43 @@ export class RingScene {
     }
 
     this.mode = 'categoryTransition';
-    // Continuous handoff: at t=0, shards coincide with outer mesh down to subpixel
+    // Continuous handoff: front panel outer artwork & glass hidden; shards & suspended category title visible
     this.outerMeshes.forEach((m, i) => {
-      m.visible = i !== idx;
-    });
-    this.letteringMeshes.forEach((m, i) => {
       m.visible = i !== idx;
     });
     this.glassOuterMeshes.forEach((m, i) => {
       m.visible = i !== idx;
     });
+    this.letteringMeshes.forEach((m) => {
+      m.visible = true;
+    });
     this.shardGroup.visible = true;
+
+    const anim = {
+      angle: this.angle,
+      burst: 0,
+      titleY: 0,
+      titleScale: 1.0,
+      titleAlpha: 1.0,
+      othersAlpha: 1.0,
+      reflectAlpha: 1.0,
+      wordmarkAlpha: 1.0,
+    };
 
     const tl = gsap.timeline({
       onUpdate: () => {
+        this.angle = anim.angle;
+        this.targetAngle = anim.angle;
+        this.burstProgress = anim.burst;
+        this.transitionProgress = anim.burst;
+        this.transitionOthersAlpha = anim.othersAlpha;
+        this.transitionReflectAlpha = anim.reflectAlpha;
+        this.transitionWordmarkAlpha = anim.wordmarkAlpha;
+        if (this.letteringMeshes[idx]) {
+          this.letteringMeshes[idx].position.y = anim.titleY;
+          this.letteringMeshes[idx].scale.setScalar(anim.titleScale);
+          this.letteringMats[idx].uniforms.uOpacity.value = anim.titleAlpha;
+        }
         this.needsPaint = true;
       },
       onComplete: () => {
@@ -1464,33 +1703,63 @@ export class RingScene {
       },
     });
 
-    // Beat 1: align (0.0 to 0.22s) - align active panel to center
+    // Beat 1: Align active panel to center (0.0 to 0.75s, quint.out)
     tl.to(
-      this,
+      anim,
       {
         angle: snapTarget,
-        targetAngle: snapTarget,
-        velocity: 0,
-        duration: 0.22,
-        ease: 'power2.out',
+        duration: 0.75,
+        ease: 'quint.out',
       },
-      'align',
+      0,
     );
 
-    // Beat 2: shatterBurst (0.16 to 0.88s) - shards part cleanly to perimeter frame
+    // Beat 2: Others and floor reflection fade out (0.0 to 0.50s, quint.out)
     tl.to(
-      this,
+      anim,
       {
-        burstProgress: 1.0,
-        transitionProgress: 1.0,
-        duration: 0.70,
+        othersAlpha: 0,
+        reflectAlpha: 0,
+        duration: 0.50,
+        ease: 'quint.out',
+      },
+      0,
+    );
+
+    // Beat 3: Background PORTFOLIO wordmark fades smoothly (0.0 to 1.20s, quint.out)
+    tl.to(
+      anim,
+      {
+        wordmarkAlpha: 0,
+        duration: 1.20,
+        ease: 'quint.out',
+      },
+      0,
+    );
+
+    // Beat 4: 3D Voronoi shatter burst - shards disperse towards perimeter (0.0 to 1.50s, power3.inOut)
+    tl.to(
+      anim,
+      {
+        burst: 1.0,
+        duration: 1.50,
+        ease: 'power3.inOut',
+      },
+      0,
+    );
+
+    // Beat 5: Category title glides upwards and dissolves into DOM title (0.0 to 0.90s, power3.out)
+    tl.to(
+      anim,
+      {
+        titleY: 1.35,
+        titleScale: 1.28,
+        titleAlpha: 0.0,
+        duration: 0.90,
         ease: 'power3.out',
       },
-      'shatterBurst-=0.06',
+      0,
     );
-
-    // Beat 3: galleryReady (0.75s) - gallery stage revealed
-    tl.addLabel('galleryReady', 0.75);
 
     this.openTimeline = tl;
   }
@@ -1507,9 +1776,16 @@ export class RingScene {
     if (!this.motionEnabled) {
       this.transitionProgress = 0;
       this.burstProgress = 0;
+      this.transitionOthersAlpha = 1.0;
+      this.transitionReflectAlpha = 1.0;
+      this.transitionWordmarkAlpha = 1.0;
       this.mode = 'ringIdle';
       this.outerMeshes.forEach((m) => (m.visible = true));
-      this.letteringMeshes.forEach((m) => (m.visible = true));
+      this.letteringMeshes.forEach((m) => {
+        m.visible = true;
+        m.position.y = 0;
+        m.scale.setScalar(1.0);
+      });
       this.glassOuterMeshes.forEach((m) => (m.visible = true));
       this.shardGroup.visible = false;
       this.emitTitleProgress(1);
@@ -1522,11 +1798,34 @@ export class RingScene {
     this.mode = 'returning';
     this.shardGroup.visible = true;
     this.outerMeshes[idx].visible = false;
-    this.letteringMeshes[idx].visible = false;
     this.glassOuterMeshes[idx].visible = false;
+    this.letteringMeshes.forEach((m, i) => {
+      m.visible = true;
+      this.letteringMats[i].uniforms.uOpacity.value = 0.0;
+    });
+
+    const anim = {
+      burst: 1.0,
+      titleY: 1.35,
+      titleScale: 1.28,
+      titleAlpha: 0.0,
+      othersAlpha: 0.0,
+      reflectAlpha: 0.0,
+      wordmarkAlpha: 0.0,
+    };
 
     const tl = gsap.timeline({
       onUpdate: () => {
+        this.burstProgress = anim.burst;
+        this.transitionProgress = anim.burst;
+        this.transitionOthersAlpha = anim.othersAlpha;
+        this.transitionReflectAlpha = anim.reflectAlpha;
+        this.transitionWordmarkAlpha = anim.wordmarkAlpha;
+        if (this.letteringMeshes[idx]) {
+          this.letteringMeshes[idx].position.y = anim.titleY;
+          this.letteringMeshes[idx].scale.setScalar(anim.titleScale);
+          this.letteringMats[idx].uniforms.uOpacity.value = anim.titleAlpha;
+        }
         this.needsPaint = true;
       },
       onComplete: () => {
@@ -1535,27 +1834,66 @@ export class RingScene {
         this.letteringMeshes[idx].visible = true;
         this.glassOuterMeshes[idx].visible = true;
         this.shardGroup.visible = false;
+        this.burstProgress = 0;
+        this.transitionProgress = 0;
+        this.transitionOthersAlpha = 1.0;
+        this.transitionReflectAlpha = 1.0;
+        this.transitionWordmarkAlpha = 1.0;
+        if (this.letteringMeshes[idx]) {
+          this.letteringMeshes[idx].position.y = 0;
+          this.letteringMeshes[idx].scale.setScalar(1.0);
+          this.letteringMats[idx].uniforms.uOpacity.value = 1.0;
+        }
         this.cb.onTransitionComplete('ringIdle');
       },
     });
 
-    // Beat 1: shardsReassemble (0.0 to 0.60s) - shards fly directly back to curved cylinder footprint
+    // Beat 1: Shards fly back inward and reassemble into continuous cylindrical panel (0.0 to 1.20s, power3.inOut)
     tl.to(
-      this,
+      anim,
       {
-        burstProgress: 0.0,
-        transitionProgress: 0.0,
-        duration: 0.60,
+        burst: 0.0,
+        duration: 1.20,
         ease: 'power3.inOut',
       },
-      'shardsReassemble',
+      0,
     );
 
-    // Beat 2: titleReturn (0.34s) - ISHANT title returns behind ring
-    tl.addLabel('titleReturn', 0.34);
+    // Beat 2: Category title glides back down from header into ring cylinder (0.25 to 1.15s, power3.out)
+    tl.to(
+      anim,
+      {
+        titleY: 0.0,
+        titleScale: 1.0,
+        titleAlpha: 1.0,
+        duration: 0.90,
+        ease: 'power3.out',
+      },
+      0.25,
+    );
 
-    // Beat 3: idleResume (0.64s) - ring resumes idle drift
-    tl.addLabel('idleResume', 0.64);
+    // Beat 3: Background PORTFOLIO wordmark rises back up behind ring (0.35 to 1.30s, power2.out)
+    tl.to(
+      anim,
+      {
+        wordmarkAlpha: 1.0,
+        duration: 0.95,
+        ease: 'power2.out',
+      },
+      0.35,
+    );
+
+    // Beat 4: Others and floor reflection fade back in (0.40 to 1.25s, power2.out)
+    tl.to(
+      anim,
+      {
+        othersAlpha: 1.0,
+        reflectAlpha: 1.0,
+        duration: 0.85,
+        ease: 'power2.out',
+      },
+      0.40,
+    );
 
     this.returnTimeline = tl;
   }
@@ -1931,8 +2269,7 @@ export class RingScene {
     const tp = this.transitionProgress;
 
     // Monumental ISHANT reveal synchronized with tilt & cleanly hidden during open gallery
-    const openTitle = 1 - clamp01(tp / 0.18);
-    const finalTitleProgress = titleP * openTitle;
+    const finalTitleProgress = titleP * this.transitionWordmarkAlpha;
     this.emitTitleProgress(finalTitleProgress);
 
     // Wordmark plane in Three.js scene
@@ -1983,8 +2320,7 @@ export class RingScene {
         isEntering && (state.splashProgress < 1.0 || (this.loaderArcMat?.uniforms.uAlpha.value ?? 0) > 0.005);
     }
 
-    const reflectAlpha =
-      reflectP * (1 - clamp01(tp / 0.18));
+    const reflectAlpha = reflectP * this.transitionReflectAlpha;
     this.reflectGroup.visible =
       reflectAlpha > 0.004 && bp < 0.99 && (isEntering ? state.ringAlpha > 0.4 : true);
     
@@ -1999,7 +2335,7 @@ export class RingScene {
 
     for (let i = 0; i < PANEL_COUNT; i++) {
       const isSelected = i === this.transitionCategoryIndex;
-      const otherFade = (isSelected ? 1 : 1 - clamp01(tp / 0.22)) * catAlpha;
+      const otherFade = (isSelected ? 1.0 : this.transitionOthersAlpha) * catAlpha;
 
       // Artwork
       this.outerMats[i].uniforms.uOpacity.value = otherFade;
@@ -2032,9 +2368,10 @@ export class RingScene {
       this.reflectOuterMats[i].uniforms.uTime.value = this.elapsed;
     }
 
-    // Shard group matches ringGroup transform perfectly
+    // Shard group matches ringGroup transform perfectly, aligned to clicked category
     this.shardGroup.position.copy(this.ringGroup.position);
     this.shardGroup.rotation.copy(this.ringGroup.rotation);
+    this.shardGroup.rotation.y += this.transitionCategoryIndex * SPAN;
     this.shardGroup.scale.copy(this.ringGroup.scale);
 
     const showShards =
@@ -2048,8 +2385,15 @@ export class RingScene {
     if (showShards) {
       this.shardMat.uniforms.uOpacity.value = this.shardAmbientFade;
       this.shardMat.uniforms.uGloss.value = Math.sin(bp * Math.PI) * 0.18;
+      this.shardMat.uniforms.uTime.value = this.elapsed;
+      this.shardMat.uniforms.uBurstProgress.value = bp;
 
       for (const sh of this.shards) {
+        // Filler shards hide completely when fully faded (bp >= 0.72),
+        // and reactivate during collapse (bp < 0.72) to assemble the full unbroken panel
+        sh.mesh.visible = sh.isProminent || bp < 0.72;
+        if (!sh.mesh.visible) continue;
+
         if (bp <= 0.0001) {
           // Exactly matches the curved cylinder panel at t=0 and on return settlement
           sh.mesh.position.copy(sh.curvedCentroid);
@@ -2057,32 +2401,46 @@ export class RingScene {
           sh.mesh.scale.setScalar(1);
         } else {
           const local = clamp01((bp - sh.delay) / (1 - sh.delay));
-          if (local <= 0.20) {
-            const cf = easeOutCubic(local / 0.20);
+          if (local <= 0.18) {
+            const cf = easeOutCubic(local / 0.18);
             sh.mesh.position.lerpVectors(sh.curvedCentroid, sh.crackTarget, cf);
             sh.mesh.rotation.set(
-              sh.rotTarget.x * 0.04 * cf,
-              sh.rotTarget.y * 0.04 * cf,
-              sh.rotTarget.z * 0.03 * cf,
+              sh.rotTarget.x * 0.05 * cf,
+              sh.rotTarget.y * 0.05 * cf,
+              sh.rotTarget.z * 0.04 * cf,
             );
-            sh.mesh.scale.setScalar(1 - cf * 0.03);
+            sh.mesh.scale.setScalar(1 - cf * 0.02);
           } else {
-            const bf = easeOutExpo((local - 0.20) / 0.80);
+            const bf = (local - 0.18) / 0.82;
             sh.mesh.position.lerpVectors(sh.crackTarget, sh.burstTarget, bf);
-            if (this.motionEnabled && local > 0.8) {
-              sh.mesh.position.y +=
-                Math.sin(this.elapsed * 0.85 + sh.driftPhase) * 0.04 +
-                this.smoothNdcY * sh.parallaxWeight;
-              sh.mesh.position.x +=
-                Math.cos(this.elapsed * 0.65 + sh.driftPhase) * 0.03 +
-                this.smoothNdcX * sh.parallaxWeight;
+            if (this.motionEnabled && local > 0.8 && sh.isProminent) {
+              // Subtle slow micro-drift matching reference video (~1.5-2px/s) for prominent shards
+              const driftX = Math.sin(this.elapsed * 0.25 + sh.driftPhase) * 0.009;
+              const driftY = Math.cos(this.elapsed * 0.20 + sh.driftPhase * 1.3) * 0.008;
+              const subtleParallaxX = this.smoothNdcX * sh.parallaxWeight;
+              const subtleParallaxY = this.smoothNdcY * sh.parallaxWeight;
+              sh.mesh.position.x += (driftX + subtleParallaxX) * bf;
+              sh.mesh.position.y += (driftY + subtleParallaxY) * bf;
+
+              // Gentle facet spin (detailsSpin from vertexShader_Hk.glsl lines 174-202)
+              const spinTime = this.elapsed * 0.22;
+              const spinX = Math.sin(spinTime * sh.spinSpeed.x + sh.driftPhase) * 0.045;
+              const spinY = Math.sin(spinTime * sh.spinSpeed.y + sh.driftPhase * 1.1) * 0.055;
+              const spinZ = Math.sin(spinTime * sh.spinSpeed.z + sh.driftPhase * 0.9) * 0.035;
+
+              sh.mesh.rotation.set(
+                sh.rotTarget.x * (0.05 + bf * 0.95) + spinX * bf,
+                sh.rotTarget.y * (0.05 + bf * 0.95) + spinY * bf,
+                sh.rotTarget.z * (0.04 + bf * 0.96) + spinZ * bf,
+              );
+            } else {
+              sh.mesh.rotation.set(
+                sh.rotTarget.x * (0.05 + bf * 0.95),
+                sh.rotTarget.y * (0.05 + bf * 0.95),
+                sh.rotTarget.z * (0.04 + bf * 0.96),
+              );
             }
-            sh.mesh.rotation.set(
-              sh.rotTarget.x * (0.04 + bf * 0.96),
-              sh.rotTarget.y * (0.04 + bf * 0.96),
-              sh.rotTarget.z * (0.03 + bf * 0.97),
-            );
-            sh.mesh.scale.setScalar(0.97 - bf * 0.12);
+            sh.mesh.scale.setScalar(0.98 - bf * 0.08);
           }
         }
       }

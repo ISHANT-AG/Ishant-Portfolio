@@ -63,7 +63,7 @@ function isEar(poly: [number, number][], indices: number[], count: number, earIn
   return true;
 }
 
-function triangulate2D(poly: [number, number][]): [number, number, number][] {
+export function triangulate2D(poly: [number, number][]): [number, number, number][] {
   const len = poly.length;
   if (len < 3) return [];
   if (len === 3) return [[0, 1, 2]];

@@ -1,3 +1,4 @@
+import Lenis from 'lenis';
 import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { ArrowUpRight, ArrowRight, ArrowDown, Copy, Check, X, Mail, Workflow, Pause, Play } from 'lucide-react';
 import { projects, tools, type Project } from './data';
@@ -25,7 +26,7 @@ function CaseStudy({project,onClose}:{project:Project|null;onClose:()=>void}){
  const dialog=useRef<HTMLDialogElement>(null);
  useEffect(()=>{if(!project)return;const d=dialog.current!;d.showModal();const prev=document.body.style.overflow;document.body.style.overflow='hidden';d.scrollTop=0;return()=>{d.close();document.body.style.overflow=prev;};},[project]);
  if(!project)return null;
- return <dialog ref={dialog} className="case-dialog" aria-labelledby="case-title" onCancel={onClose} onClick={e=>{if(e.target===dialog.current)onClose()}}><article><div className="case-top"><span className="eyebrow">SELECTED WORK / {project.year}</span><button className="circle-button" onClick={onClose} aria-label="Close case study"><X size={22}/></button></div><div className="case-heading"><span className="eyebrow">{project.category}</span><h2 id="case-title">{project.title}</h2><p>{project.subtitle}</p></div><ProjectArt project={project} large/><div className="case-body"><div className="case-role"><span className="eyebrow">MY ROLE</span><p>{project.role}</p></div><p className="case-intro">{project.intro}</p>{project.points.map((p,i)=><section className="case-point" key={p.title}><span className="eyebrow">0{i+1}</span><div><h3>{p.title}</h3><p>{p.text}</p></div></section>)}{project.id==='fit'&&<div className="case-spreads"><figure><img src="/assets/fithappns-plan.webp" alt="Minimum-action plan with three action levels and if–then plans"/><figcaption>Make the next action specific.</figcaption></figure><figure><img src="/assets/fithappns-restart.webp" alt="Restart rule explaining how to continue after a missed day"/><figcaption>Make returning feel possible.</figcaption></figure></div>}{project.id==='dubai'&&<img className="case-spread" src="/assets/dubai-spread.webp" alt="Actual Team India Properties editorial page"/>}{project.links.length>0&&<div className="case-links">{project.links.map(l=><a className="pill-button" href={l.url} key={l.url} target="_blank" rel="noreferrer">{l.label}<ArrowUpRight size={16}/></a>)}</div>}{project.note&&<p className="evidence-note">{project.note}</p>}<button className="text-link" onClick={onClose}>Back to the portfolio <ArrowRight size={18}/></button></div></article></dialog>
+ return <dialog ref={dialog} className="case-dialog" data-lenis-prevent="true" aria-labelledby="case-title" onCancel={onClose} onClick={e=>{if(e.target===dialog.current)onClose()}}><article><div className="case-top"><span className="eyebrow">SELECTED WORK / {project.year}</span><button className="circle-button" onClick={onClose} aria-label="Close case study"><X size={22}/></button></div><div className="case-heading"><span className="eyebrow">{project.category}</span><h2 id="case-title">{project.title}</h2><p>{project.subtitle}</p></div><ProjectArt project={project} large/><div className="case-body"><div className="case-role"><span className="eyebrow">MY ROLE</span><p>{project.role}</p></div><p className="case-intro">{project.intro}</p>{project.points.map((p,i)=><section className="case-point" key={p.title}><span className="eyebrow">0{i+1}</span><div><h3>{p.title}</h3><p>{p.text}</p></div></section>)}{project.id==='fit'&&<div className="case-spreads"><figure><img src="/assets/fithappns-plan.webp" alt="Minimum-action plan with three action levels and if–then plans"/><figcaption>Make the next action specific.</figcaption></figure><figure><img src="/assets/fithappns-restart.webp" alt="Restart rule explaining how to continue after a missed day"/><figcaption>Make returning feel possible.</figcaption></figure></div>}{project.id==='dubai'&&<img className="case-spread" src="/assets/dubai-spread.webp" alt="Actual Team India Properties editorial page"/>}{project.links.length>0&&<div className="case-links">{project.links.map(l=><a className="pill-button" href={l.url} key={l.url} target="_blank" rel="noreferrer">{l.label}<ArrowUpRight size={16}/></a>)}</div>}{project.note&&<p className="evidence-note">{project.note}</p>}<button className="text-link" onClick={onClose}>Back to the portfolio <ArrowRight size={18}/></button></div></article></dialog>
 }
 function Keyboard({onOpen}:{onOpen:(id:string)=>void}){
  const [active,setActive]=useState(3);const section=useRef<HTMLElement>(null);
@@ -69,6 +70,44 @@ function ClientStrip({motion}:{motion:boolean}) {
 
 export default function App(){
  const [projectId,setProjectId]=useState<string|null>(null);const [motion,setMotion]=useState(()=>!window.matchMedia('(prefers-reduced-motion: reduce)').matches);const [copied,setCopied]=useState(false);const [copyError,setCopyError]=useState(false);
+ useEffect(() => {
+   if (!motion || projectId) return;
+   const scroll = new Lenis({
+     autoRaf: true,
+     lerp: 0.10,
+     duration: 1.2,
+     smoothWheel: true,
+     wheelMultiplier: 1.0,
+     touchMultiplier: 1.8,
+     prevent: (node) =>
+       !!node.closest('[aria-modal="true"], dialog[open], .ring-canvas-host, [data-lenis-prevent]'),
+   });
+   (window as any).__lenis = scroll;
+
+   const handleAnchorClick = (e: MouseEvent) => {
+     const target = (e.target as HTMLElement)?.closest('a');
+     if (!target) return;
+     const href = target.getAttribute('href');
+     if (href && href.startsWith('#') && href.length > 1) {
+       const dest = document.querySelector(href);
+       if (dest) {
+         e.preventDefault();
+         scroll.scrollTo(dest as HTMLElement, {
+           offset: href === '#gallery' ? 0 : -32,
+           duration: 1.2,
+         });
+         history.pushState(null, '', href);
+       }
+     }
+   };
+   document.addEventListener('click', handleAnchorClick);
+
+   return () => {
+     document.removeEventListener('click', handleAnchorClick);
+     scroll.destroy();
+     delete (window as any).__lenis;
+   };
+ }, [motion, projectId]);
  useEffect(()=>{document.documentElement.dataset.motion=String(motion)},[motion]);
  useEffect(()=>{const q=window.matchMedia('(prefers-reduced-motion: reduce)');const update=()=>setMotion(!q.matches);q.addEventListener('change',update);return()=>q.removeEventListener('change',update)},[]);
 

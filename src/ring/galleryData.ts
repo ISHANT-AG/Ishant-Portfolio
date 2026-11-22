@@ -212,7 +212,7 @@ export const galleryCategories: GalleryCategory[] = [
     id: 'design',
     label: 'DESIGN',
     displayTitle: 'Design',
-    tagline: 'Dubai property editorials and workout guides designed for follow-through.',
+    tagline: 'Brand identities, campaign posters, AI product visuals and editorial design.',
     cover: {
       type: 'image',
       src: '/assets/ring-design.jpg',
@@ -230,64 +230,89 @@ export const galleryCategories: GalleryCategory[] = [
     },
     items: [
       {
-        id: 'design-fit-cover',
-        categoryId: 'design',
-        title: 'FitHappns — 15-Minute Blueprint',
-        subtitle: fitProject.subtitle,
-        year: fitProject.year,
-        role: fitProject.role,
-        summary: fitProject.intro,
-        note: fitProject.note,
-        projectId: fitProject.id,
-        links: fitProject.links,
-        visual: {
-          kind: 'image',
-          src: '/assets/fithappns-cover.webp',
-          alt: 'FitHappns 15-minute busy professional workout guide cover',
-          aspect: '4 / 5',
-          frameBg: '#161414',
+        "id": "canva-grand-prix",
+        "categoryId": "design",
+        "title": "Spanish Grand Prix · Max vs Lewis",
+        "subtitle": "Event signage",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "Spanish Grand Prix · Max vs Lewis",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/grand-prix.webp",
+          "alt": "Spanish Grand Prix · Max vs Lewis — Event signage",
+          "aspect": "357 / 715"
         },
-        accent: '#6d323e',
+        "accent": "#292726"
       },
       {
-        id: 'design-fit-plan',
-        categoryId: 'design',
-        title: 'FitHappns — Minimum-Action Plan',
-        subtitle: 'Three action levels & if–then obstacle plans',
-        year: fitProject.year,
-        role: fitProject.role,
-        summary: fitProject.points[1].text,
-        note: fitProject.note,
-        projectId: fitProject.id,
-        links: [fitProject.links[0]],
-        visual: {
-          kind: 'image',
-          src: '/assets/fithappns-plan.webp',
-          alt: 'FitHappns minimum-action plan worksheet with Minimum, Standard and Bonus levels',
-          aspect: '4 / 5',
-          frameBg: '#f3f2ee',
+        "id": "design-synergy-standee",
+        "categoryId": "design",
+        "title": "Startup Synergy · Event standee",
+        "subtitle": "Event signage",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "A tall print standee presents the two-day Startup Synergy event programme.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/synergy-standee.webp",
+          "alt": "A tall print standee presents the two-day Startup Synergy event programme.",
+          "aspect": "1100 / 2200"
         },
-        accent: '#b47a6a',
+        "accent": "#292726"
       },
       {
-        id: 'design-fit-restart',
-        categoryId: 'design',
-        title: 'FitHappns — The Restart Rule',
-        subtitle: 'Returning after a missed day without resetting progress',
-        year: fitProject.year,
-        role: fitProject.role,
-        summary: fitProject.points[2].text,
-        note: fitProject.note,
-        projectId: fitProject.id,
-        links: [fitProject.links[0]],
-        visual: {
-          kind: 'image',
-          src: '/assets/fithappns-restart.webp',
-          alt: 'FitHappns restart rule worksheet',
-          aspect: '4 / 5',
-          frameBg: '#f3f2ee',
+        "id": "canva-ffcs-launch",
+        "categoryId": "design",
+        "title": "Your Timetable, Your Way",
+        "subtitle": "FFCS Easy · Product launch",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "A vertical launch poster uses a timetable preview to show how students can plan their week.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/ffcs-launch.webp",
+          "alt": "A vertical launch poster uses a timetable preview to show how students can plan their week.",
+          "aspect": "1080 / 1920"
         },
-        accent: '#8c5f58',
+        "accent": "#292726"
+      },
+      {
+        "id": "archive-stock-market-ai",
+        "categoryId": "design",
+        "title": "Stock Market Using AI",
+        "subtitle": "Clapingo · Workshop poster",
+        "year": "",
+        "role": "Workshop poster",
+        "summary": "A tall event poster pairs the workshop speaker with a stock chart and registration details.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/stock-market-ai.webp",
+          "alt": "A tall event poster pairs the workshop speaker with a stock chart and registration details.",
+          "aspect": "1013 / 1800"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-dhrugo-solar",
+        "categoryId": "design",
+        "title": "Smart Solar Solutions",
+        "subtitle": "Solar campaign",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "Dhrugo’s rooftop solar flyer combines installations, benefits and a QR code.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/dhrugo-solar.webp",
+          "alt": "Dhrugo’s rooftop solar flyer combines installations, benefits and a QR code.",
+          "aspect": "1489 / 2106"
+        },
+        "accent": "#292726"
       },
       {
         id: 'design-dubai-cover',
@@ -304,10 +329,30 @@ export const galleryCategories: GalleryCategory[] = [
           kind: 'image',
           src: '/assets/dubai.webp',
           alt: 'Team India Properties August 2025 Dubai investor magazine cover',
-          aspect: '3 / 4',
+          aspect: '388 / 548',
           frameBg: '#274d7a',
         },
         accent: '#58789e',
+      },
+      {
+        id: 'design-fit-cover',
+        categoryId: 'design',
+        title: 'FitHappns — 15-Minute Blueprint',
+        subtitle: fitProject.subtitle,
+        year: fitProject.year,
+        role: fitProject.role,
+        summary: fitProject.intro,
+        note: fitProject.note,
+        projectId: fitProject.id,
+        links: fitProject.links,
+        visual: {
+          kind: 'image',
+          src: '/assets/fithappns-cover.webp',
+          alt: 'FitHappns 15-minute busy professional workout guide cover',
+          aspect: '952 / 1348',
+          frameBg: '#161414',
+        },
+        accent: '#6d323e',
       },
       {
         id: 'design-dubai-spread',
@@ -324,10 +369,435 @@ export const galleryCategories: GalleryCategory[] = [
           kind: 'image',
           src: '/assets/dubai-spread.webp',
           alt: 'Team India Properties Flare residential tower editorial spread',
-          aspect: '3 / 4',
+          aspect: '2122 / 3000',
           frameBg: '#ece7df',
         },
         accent: '#b49276',
+      },
+      {
+        "id": "canva-claude-chatgpt",
+        "categoryId": "design",
+        "title": "Claude vs ChatGPT",
+        "subtitle": "Clapingo · Editorial cover",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "Green and coral illustrations introduce a practical comparison of two AI tools.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/claude-chatgpt.webp",
+          "alt": "Green and coral illustrations introduce a practical comparison of two AI tools.",
+          "aspect": "3375 / 4500"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-rang-collage",
+        "categoryId": "design",
+        "title": "Rang & Ruckus · Phase 1",
+        "subtitle": "Campus events",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "A red and yellow collage combines festival lettering, illustrations and event details.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/rang-collage.webp",
+          "alt": "A red and yellow collage combines festival lettering, illustrations and event details.",
+          "aspect": "3375 / 4219"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "poster-mahabaleshwar",
+        "categoryId": "design",
+        "title": "Mahabaleshwar",
+        "subtitle": "Travel Bug Goa",
+        "year": "",
+        "role": "Poster design",
+        "summary": "A hillside photograph and a green headline introduce the destination.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/mahabaleshwar.webp",
+          "alt": "A hillside photograph and a green headline introduce the destination.",
+          "aspect": "1600 / 2000"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "poster-founders-table",
+        "categoryId": "design",
+        "title": "The Founders’ Table",
+        "subtitle": "VIT Bhopal Startup Club",
+        "year": "",
+        "role": "Poster design",
+        "summary": "A blue-toned speaker poster featuring Clapingo founder Sameer Agrawal.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/founders-table.webp",
+          "alt": "A blue-toned speaker poster featuring Clapingo founder Sameer Agrawal.",
+          "aspect": "1600 / 2000"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-ai-tools",
+        "categoryId": "design",
+        "title": "25+ AI Tools in 3 Hours",
+        "subtitle": "AI workshops",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "A Clapingo ad placing AI tool icons above a cropped portrait.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/ai-tools.webp",
+          "alt": "A Clapingo ad placing AI tool icons above a cropped portrait.",
+          "aspect": "1875 / 1875"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "canva-claude-professionals",
+        "categoryId": "design",
+        "title": "Claude Workshop for Professionals",
+        "subtitle": "Clapingo · Workshop campaign",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "An orange headline panel and a small robot introduce a workshop for working professionals.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/claude-professionals.webp",
+          "alt": "An orange headline panel and a small robot introduce a workshop for working professionals.",
+          "aspect": "3375 / 3375"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "canva-senior-developer",
+        "categoryId": "design",
+        "title": "Still a Senior Developer?",
+        "subtitle": "Career campaign",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "Still a Senior Developer?",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/senior-developer.webp",
+          "alt": "Still a Senior Developer? — Career campaign",
+          "aspect": "3375 / 3375"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-skyhills-sale",
+        "categoryId": "design",
+        "title": "Skyhills 3",
+        "subtitle": "Dubai real estate",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "Team India Properties sales campaign for Skyhills 3.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/skyhills-sale.webp",
+          "alt": "Team India Properties sales campaign for Skyhills 3.",
+          "aspect": "1600 / 1600"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "poster-rang-ruckus",
+        "categoryId": "design",
+        "title": "Rang & Ruckus",
+        "subtitle": "VIT Bhopal Startup Club",
+        "year": "",
+        "role": "Poster design",
+        "summary": "Red stage curtains frame the event title and illustrated characters.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/rang-ruckus.webp",
+          "alt": "Red stage curtains frame the event title and illustrated characters.",
+          "aspect": "1800 / 1800"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "poster-opus",
+        "categoryId": "design",
+        "title": "The Opus Residence",
+        "subtitle": "Team India Properties",
+        "year": "",
+        "role": "Poster design",
+        "summary": "Oversized serif lettering overlays the tower against the blue city skyline.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/opus.webp",
+          "alt": "Oversized serif lettering overlays the tower against the blue city skyline.",
+          "aspect": "1800 / 1800"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-beachfront",
+        "categoryId": "design",
+        "title": "Jacob & Co. Beachfront",
+        "subtitle": "Team India Properties",
+        "year": "",
+        "role": "Property campaign",
+        "summary": "Beachfront property campaign artwork for Team India Properties.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/beachfront.webp",
+          "alt": "Beachfront property campaign artwork for Team India Properties.",
+          "aspect": "1800 / 1800"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "archive-chocolate-cone",
+        "categoryId": "design",
+        "title": "Chocolate in orbit",
+        "subtitle": "AI product visual",
+        "year": "",
+        "role": "AI product visual",
+        "summary": "A chocolate cone sits inside a ring of chocolate and scattered nuts.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/chocolate-cone.webp",
+          "alt": "A chocolate cone sits inside a ring of chocolate and scattered nuts.",
+          "aspect": "820 / 820"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "canva-venture-certificate",
+        "categoryId": "design",
+        "title": "Venture.AI 2026",
+        "subtitle": "Certificate design",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "Venture.AI 2026",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/venture-certificate.webp",
+          "alt": "Venture.AI 2026 — Certificate design",
+          "aspect": "1010 / 715"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "canva-smai-certificate",
+        "categoryId": "design",
+        "title": "Certificate of Participation",
+        "subtitle": "Certificate design",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "Certificate of Participation",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/smai-certificate.webp",
+          "alt": "Certificate of Participation — Certificate design",
+          "aspect": "839 / 592"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "archive-nutaan-editorial",
+        "categoryId": "design",
+        "title": "You Create. Nutaan Accelerates.",
+        "subtitle": "Nutaan · Editorial visual",
+        "year": "",
+        "role": "Editorial visual",
+        "summary": "A blue silhouette and a stack of service labels illustrate Nutaan’s offering.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/nutaan-editorial.webp",
+          "alt": "A blue silhouette and a stack of service labels illustrate Nutaan’s offering.",
+          "aspect": "1076 / 717"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-aether-desert",
+        "categoryId": "design",
+        "title": "Aether · Desert",
+        "subtitle": "Perfume campaign",
+        "year": "",
+        "role": "Product visual",
+        "summary": "Black Aether perfume bottle resting in golden sand",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/aether-desert.webp",
+          "alt": "Black Aether perfume bottle resting in golden sand",
+          "aspect": "1408 / 768"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-aether-studio",
+        "categoryId": "design",
+        "title": "Aether · Studio",
+        "subtitle": "Perfume campaign",
+        "year": "",
+        "role": "Product visual",
+        "summary": "Hands holding the Aether Essence of Void perfume bottle",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/aether-studio.webp",
+          "alt": "Hands holding the Aether Essence of Void perfume bottle",
+          "aspect": "2784 / 1536"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "canva-portfolio-banner",
+        "categoryId": "design",
+        "title": "Building with Code, Designing with Intent",
+        "subtitle": "Personal identity · LinkedIn banner",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "An abstract violet ribbon links the headline on the left to Ishant’s signature on the right.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/portfolio-banner.webp",
+          "alt": "An abstract violet ribbon links the headline on the left to Ishant’s signature on the right.",
+          "aspect": "1500 / 500"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-scribeai-mark",
+        "categoryId": "design",
+        "title": "ScribeAI",
+        "subtitle": "Brand identity",
+        "year": "",
+        "role": "Brand identity",
+        "summary": "ScribeAI logo design for a medical documentation product.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/scribeai-mark.webp",
+          "alt": "ScribeAI logo design for a medical documentation product.",
+          "aspect": "1606 / 344"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "canva-career-banner",
+        "categoryId": "design",
+        "title": "Your Career, Future-Ready",
+        "subtitle": "Channel identity",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "Your Career, Future-Ready",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/career-banner.webp",
+          "alt": "Your Career, Future-Ready — Channel identity",
+          "aspect": "1055 / 593"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "canva-ats-resume",
+        "categoryId": "design",
+        "title": "ATS Resume Generator",
+        "subtitle": "YouTube thumbnails",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "ATS Resume Generator",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/ats-resume.webp",
+          "alt": "ATS Resume Generator — YouTube thumbnails",
+          "aspect": "1055 / 593"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "canva-video-phase-one",
+        "categoryId": "design",
+        "title": "Video Using AI · Phase 1",
+        "subtitle": "AI course design",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "Video Using AI · Phase 1",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/video-phase-one.webp",
+          "alt": "Video Using AI · Phase 1 — AI course design",
+          "aspect": "1055 / 593"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-workshop-speaker",
+        "categoryId": "design",
+        "title": "30+ AI Tools in 2.5 Hours",
+        "subtitle": "Workshop advertising",
+        "year": "",
+        "role": "Graphic design",
+        "summary": "A horizontal workshop ad pairs a speaker portrait with a grid of AI tools.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/workshop-speaker.webp",
+          "alt": "A horizontal workshop ad pairs a speaker portrait with a grid of AI tools.",
+          "aspect": "2400 / 1350"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "design-carevyn-mark",
+        "categoryId": "design",
+        "title": "Carevyn",
+        "subtitle": "Brand identity",
+        "year": "",
+        "role": "Brand identity",
+        "summary": "Carevyn symbol and wordmark in their horizontal arrangement.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/carevyn-mark.webp",
+          "alt": "Carevyn symbol and wordmark in their horizontal arrangement.",
+          "aspect": "1800 / 1013"
+        },
+        "accent": "#292726"
+      },
+      {
+        "id": "archive-fluent-talk",
+        "categoryId": "design",
+        "title": "Fluent Talk Tips",
+        "subtitle": "Clapingo · YouTube thumbnail",
+        "year": "",
+        "role": "YouTube thumbnail",
+        "summary": "Two speakers flank a bold yellow and red conversation headline.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/posters/fluent-talk.webp",
+          "alt": "Two speakers flank a bold yellow and red conversation headline.",
+          "aspect": "1152 / 648"
+        },
+        "accent": "#292726"
       },
     ],
   },
