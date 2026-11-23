@@ -1211,18 +1211,18 @@ html[data-motion='false'] .gallery-stage-frame *, html[data-motion='false'] .gal
 }
 
 
-.cat-stream-scroll[data-category='design'] {
+.cat-stream-scroll {
   padding: clamp(44px, 8vh, 84px) 14px clamp(72px, 12vh, 140px);
 }
-.cat-stream-scroll[data-category='design'] .cat-stream-hero {
+.cat-stream-scroll .cat-stream-hero {
   margin-bottom: clamp(48px, 10vh, 96px);
 }
-.cat-stream-scroll[data-category='design'] .cat-stream-list {
+.cat-stream-scroll .cat-stream-list {
   position: relative;
   width: min(100%, 760px);
   gap: clamp(40px, 7vh, 76px);
 }
-.cat-stream-scroll[data-category='design'] .cat-stream-card {
+.cat-stream-scroll .cat-stream-card {
   position: relative;
   top: auto;
   opacity: 1;
@@ -1230,25 +1230,31 @@ html[data-motion='false'] .gallery-stage-frame *, html[data-motion='false'] .gal
   transform: none !important;
   animation: none;
   will-change: auto;
+  width: min(100%, calc(82svh * var(--poster-aspect, 1)));
+  margin-inline: auto;
 }
-.cat-stream-scroll[data-category='design'] .cat-stream-media {
+.cat-stream-scroll .cat-stream-media {
   transform: none;
   transition: none;
 }
-.cat-stream-scroll[data-category='design'] .cat-stream-media:hover {
+.cat-stream-scroll .cat-stream-media:hover {
   transform: none;
   box-shadow: none;
 }
-.cat-stream-scroll[data-category='design'] .cat-stream-frame {
+.cat-stream-scroll .cat-stream-frame {
   position: relative;
   border: 0;
   border-radius: 2px;
+  aspect-ratio: var(--poster-aspect, auto);
 }
-.cat-stream-scroll[data-category='design'] .cat-stream-frame img {
+.cat-stream-scroll .cat-stream-frame img {
   max-height: none;
   display: block;
   width: 100%;
   height: auto;
+}
+.cat-stream-scroll .cat-stream-frame::after {
+  content: none;
 }
 .design-work-tag {
   position: absolute;
@@ -1267,12 +1273,12 @@ html[data-motion='false'] .gallery-stage-frame *, html[data-motion='false'] .gal
   position: static;
   justify-self: center;
 }
-.gallery-stage-frame[data-category='design'] .cat-zoom-content {
+.gallery-stage-frame .cat-zoom-content {
   padding: 30px 16px 80px;
   gap: 6px;
 }
 @media (max-width: 700px) {
-  .cat-stream-scroll[data-category='design'] .cat-stream-list {
+  .cat-stream-scroll .cat-stream-list {
     width: min(100%, 480px);
     gap: 48px;
   }
@@ -1286,22 +1292,12 @@ html[data-motion='false'] .gallery-stage-frame *, html[data-motion='false'] .gal
   z-index: 4;
 }
 
-.cat-stream-scroll[data-category='design'] .cat-stream-card[data-project='canva-grand-prix'] {
+.cat-stream-scroll .cat-stream-card[data-project='canva-grand-prix'] {
   max-width: 357px;
   margin-inline: auto;
 }
 
-.cat-stream-scroll[data-category='design'] .cat-stream-card {
-  width: min(100%, calc(82svh * var(--poster-aspect, 1)));
-  margin-inline: auto;
-}
-.cat-stream-scroll[data-category='design'] .cat-stream-frame {
-  aspect-ratio: var(--poster-aspect, auto);
-}
-.cat-stream-scroll[data-category='design'] .cat-stream-frame::after {
-  content: none;
-}
-.gallery-stage-frame[data-category='design'] .cat-strip-slice {
+.gallery-stage-frame .cat-strip-slice {
   filter: none;
 }
 
@@ -1316,8 +1312,8 @@ html[data-motion='false'] .gallery-stage-frame *, html[data-motion='false'] .gal
 .prototype-viewport iframe:fullscreen { position: static; width: 100%; height: 100%; transform: none !important; }
 
 .interface-films[hidden], .cat-stream-scroll[hidden], .cat-gallery-layer[hidden] { display: none; }
-.gallery-stage-frame[data-category='design'][data-gallery-scrolled='true'] .cat-gallery-layer.is-ready { background: white; }
-.gallery-stage-frame[data-category='design'][data-gallery-scrolled='true']:has(.cat-gallery-layer.is-ready) .ring-canvas-host { visibility: hidden; }
+.gallery-stage-frame[data-gallery-scrolled='true'] .cat-gallery-layer.is-ready { background: white; }
+.gallery-stage-frame[data-gallery-scrolled='true']:has(.cat-gallery-layer.is-ready) .ring-canvas-host { visibility: hidden; }
 .interface-films iframe { background: white; }
 
 html.lenis, .cat-stream-scroll.lenis { scroll-behavior: auto; }

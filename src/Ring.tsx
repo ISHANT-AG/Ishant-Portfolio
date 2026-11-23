@@ -33,7 +33,8 @@ const MARQUEE_ITEMS = [
   galleryCategories[0], // idx  3 -> BUILD
 ];
 
-const designTags: Record<string, string> = {
+const workTags: Record<string, string> = {
+  // Design works
   "canva-portfolio-banner": "Personal identity",
   "canva-claude-professionals": "AI workshops",
   "canva-ffcs-launch": "Product launch",
@@ -59,7 +60,17 @@ const designTags: Record<string, string> = {
   "archive-nutaan-editorial": "Tech editorial",
   "design-fit-cover": "Psychology-led design",
   "design-dubai-cover": "Dubai real estate",
-  "design-dubai-spread": "Dubai real estate"
+  "design-dubai-spread": "Dubai real estate",
+  // Build / Code works
+  "build-codeista": "Codeista AI",
+  "build-ffcs": "FFCS-Easy Planner",
+  "build-sony": "Sony Motion Experiment",
+  "build-grip": "Grip Studio Archive",
+  "build-katosi": "Katosi Water Mission",
+  // Explore / Automation works
+  "automate-blog-tool": "Clapingo AI Blog Tool",
+  "automate-thumbnail": "Thumbnail Engine",
+  "automate-n8n": "n8n Lead Pipelines",
 };
 
 function resolveItemSrc(item: GalleryItem): string {
@@ -504,14 +515,8 @@ export default function Ring({
         closestIdx = i;
       }
 
-      // Subtle top-edge peel warp as cards scroll toward the upper edge (disabled when motion is off or in design WebGL)
-      if (motionRef.current && container.dataset.category !== 'design') {
-        const topZone = viewportTop + viewH * 0.24;
-        const peel = naturalTop < topZone ? Math.min(1, Math.max(0, (topZone - naturalTop) / (rect.height * 0.85))) : 0;
-        card.style.setProperty('--peel', peel.toFixed(3));
-      } else {
-        card.style.setProperty('--peel', '0');
-      }
+      // Cards maintain flat CSS plane; 3D top-roll curve is rendered smoothly by WebGL on all categories
+      card.style.setProperty('--peel', '0');
     });
 
     setActiveItemIdx((prev) => (prev === closestIdx ? prev : closestIdx));
@@ -535,10 +540,10 @@ export default function Ring({
 
   useEffect(() => {
     const view = streamScrollRef.current;
-    if (view && designView && motion && layoutMode === 'stream' && galleryState === 'categoryGallery') {
+    if (view && motion && layoutMode === 'stream' && galleryState === 'categoryGallery') {
       return animateDesignScroll(view);
     }
-  }, [designView, motion, layoutMode, galleryState]);
+  }, [motion, layoutMode, galleryState, activeCategory.id]);
 
   // Compute dock thumbnail URL for current state
   const dockThumbSrc =
@@ -690,7 +695,13 @@ export default function Ring({
                         className="cat-stream-card"
                         data-stream-card
                         data-project={item.id}
-                        style={{ ['--card-i' as string]: idx, ['--poster-aspect' as string]: item.visual.kind === 'image' ? item.visual.aspect : undefined }}
+                        style={{
+                          ['--card-i' as string]: idx,
+                          ['--poster-aspect' as string]:
+                            item.visual.kind === 'image' && item.visual.aspect
+                              ? item.visual.aspect
+                              : '16 / 10',
+                        }}
                       >
                         <button
                           type="button"
@@ -714,39 +725,10 @@ export default function Ring({
                             }}
                           >
                             <img src={src} alt={item.visual.alt} loading={idx === 0 ? 'eager' : 'lazy'} />
-                            {designView && <canvas className="design-scroll-surface" aria-hidden="true" />}
+                            <canvas className="design-scroll-surface" aria-hidden="true" />
                           </div>
                         </button>
-                        {designView ? <span className="design-work-tag">{designTags[item.id]}</span> : <div className="cat-stream-meta">
-                          <div className="cat-stream-meta-left">
-                            <span className="mono">
-                              {String(idx + 1).padStart(2, '0')} /{' '}
-                              {String(activeItems.length).padStart(2, '0')}
-                            </span>
-                            <div>
-                              <h4>{item.title}</h4>
-                              <p>{item.subtitle}</p>
-                            </div>
-                          </div>
-                          <div className="cat-stream-actions">
-                            <button
-                              type="button"
-                              className="cat-inline-btn"
-                              onClick={() => handleOpenZoom(idx)}
-                            >
-                              Zoom
-                            </button>
-                            {item.projectId && (
-                              <button
-                                type="button"
-                                className="cat-inline-btn is-primary"
-                                onClick={() => onOpen(item.projectId!)}
-                              >
-                                Case study <ArrowUpRight size={13} />
-                              </button>
-                            )}
-                          </div>
-                        </div>}
+                        <span className="design-work-tag">{workTags[item.id] || item.subtitle || item.title}</span>
                       </article>
                     );
                   })}
@@ -810,8 +792,7 @@ export default function Ring({
                     {String(activeItemIdx + 1).padStart(2, '0')} /{' '}
                     {String(activeItems.length).padStart(2, '0')}
                   </span>
-                  <strong>{designView ? designTags[focusedItem.id] : focusedItem.title}</strong>
-                  {!designView && <span>{focusedItem.subtitle}</span>}
+                  <strong>{workTags[focusedItem.id] || focusedItem.title}</strong>
                 </div>
               </div>
             )}
@@ -863,39 +844,7 @@ export default function Ring({
                   />
                 </div>
 
-                {designView ? <span className="design-work-tag zoom-tag">{designTags[zoomedItem.id]}</span> : <div className="cat-zoom-info">
-                  <div className="cat-zoom-copy">
-                    <span className="cat-zoom-eyebrow mono">
-                      {[activeCategory.label, zoomedItem.year, zoomedItem.role].filter(Boolean).join(' · ')}
-                    </span>
-                    <h4>{zoomedItem.title}</h4>
-                    <p>{zoomedItem.summary}</p>
-                    {zoomedItem.note && <small className="cat-zoom-note">{zoomedItem.note}</small>}
-                  </div>
-
-                  <div className="cat-zoom-links">
-                    {zoomedItem.projectId && (
-                      <button
-                        type="button"
-                        className="cat-zoom-cta is-primary"
-                        onClick={() => onOpen(zoomedItem.projectId!)}
-                      >
-                        Open case study <ArrowUpRight size={15} />
-                      </button>
-                    )}
-                    {zoomedItem.links.slice(0, 2).map((link) => (
-                      <a
-                        key={link.url}
-                        href={link.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="cat-zoom-cta"
-                      >
-                        {link.label} <ExternalLink size={13} />
-                      </a>
-                    ))}
-                  </div>
-                </div>}
+                <span className="design-work-tag zoom-tag">{workTags[zoomedItem.id] || zoomedItem.title}</span>
               </div>
             </>
           )}

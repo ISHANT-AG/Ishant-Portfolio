@@ -653,21 +653,33 @@ function buildContinuousVoronoiShards(
     return { cell, area: Math.abs(area) * 0.5 };
   });
 
-  // Identify the 16 prominent crystalline shards matching aikawakenichi.com
-  const prominentLeft = cellAreaList
-    .filter((c) => c.area >= 0.048 && c.cell.cx < 0)
-    .sort((a, b) => a.cell.cy - b.cell.cy);
-  const prominentRight = cellAreaList
-    .filter((c) => c.area >= 0.048 && c.cell.cx >= 0)
-    .sort((a, b) => a.cell.cy - b.cell.cy);
+  // Exactly 13 prominent crystalline shards matching aikawakenichi.com (Image 2)
+  // Left flank: 6 cleanly spaced perimeter shards
+  // Right flank: 6 cleanly spaced perimeter shards
+  // Center accent: 1 subtle diamond shard floating above title
+  const PROMINENT_TARGETS: { id: number; targetX: number; targetY: number; rotX: number; rotY: number; rotZ: number }[] = [
+    // Left flank (top to bottom)
+    { id: 37, targetX: -3.35, targetY: 1.55, rotX: 0.25, rotY: 0.35, rotZ: -0.20 }, // Top-left corner
+    { id: 5,  targetX: -2.85, targetY: 0.95, rotX: -0.30, rotY: 0.40, rotZ: 0.15 },  // Upper-left
+    { id: 25, targetX: -3.45, targetY: 0.35, rotX: 0.15, rotY: 0.30, rotZ: -0.35 }, // Mid-left outer
+    { id: 21, targetX: -2.95, targetY: -0.25, rotX: -0.20, rotY: 0.45, rotZ: 0.25 },// Mid-left lower
+    { id: 18, targetX: -3.50, targetY: -0.90, rotX: 0.30, rotY: 0.35, rotZ: -0.15 },// Lower-left outer
+    { id: 12, targetX: -3.05, targetY: -1.55, rotX: -0.25, rotY: 0.40, rotZ: 0.30 },// Bottom-left corner
+    // Right flank (top to bottom)
+    { id: 44, targetX: 3.40, targetY: 1.55, rotX: -0.20, rotY: -0.35, rotZ: 0.25 }, // Top-right corner
+    { id: 22, targetX: 2.85, targetY: 0.95, rotX: 0.30, rotY: -0.40, rotZ: -0.15 }, // Upper-right
+    { id: 28, targetX: 3.50, targetY: 0.30, rotX: -0.15, rotY: -0.30, rotZ: 0.35 }, // Mid-right outer
+    { id: 4,  targetX: 2.95, targetY: -0.35, rotX: 0.25, rotY: -0.45, rotZ: -0.20 },// Mid-right lower
+    { id: 10, targetX: 3.45, targetY: -0.95, rotX: -0.30, rotY: -0.35, rotZ: 0.15 },// Lower-right large
+    { id: 29, targetX: 3.10, targetY: -1.55, rotX: 0.20, rotY: -0.40, rotZ: -0.25 },// Bottom-right corner
+    // Center accent (delicate diamond floating above title)
+    { id: 26, targetX: 0.95, targetY: 1.45, rotX: 0.35, rotY: -0.25, rotZ: 0.45 },
+  ];
 
-  const prominentMap = new Map<number, { isLeft: boolean; rank: number; total: number }>();
-  prominentLeft.forEach((p, idx) => {
-    prominentMap.set(p.cell.id, { isLeft: true, rank: idx, total: prominentLeft.length });
-  });
-  prominentRight.forEach((p, idx) => {
-    prominentMap.set(p.cell.id, { isLeft: false, rank: idx, total: prominentRight.length });
-  });
+  const prominentMap = new Map<number, { targetX: number; targetY: number; rotX: number; rotY: number; rotZ: number }>();
+  for (const p of PROMINENT_TARGETS) {
+    prominentMap.set(p.id, p);
+  }
 
   const THICK = 0.045; // 3D physical glass thickness
   const rFront = RADIUS + THICK * 0.5; // 2.4225
@@ -845,40 +857,31 @@ function buildContinuousVoronoiShards(
     let rotTarget: THREE.Euler;
 
     if (isProminent && prom) {
-      // The 16 prominent crystalline shards positioned on outer flanks (matching reference aikawakenichi.com)
-      const tFlank = prom.total > 1 ? prom.rank / (prom.total - 1) : 0.5;
-      const burstY = -1.55 + tFlank * 3.10 + (rand() - 0.5) * 0.16;
+      // Exactly 13 prominent crystalline shards positioned along outer perimeter (matching reference Image 2)
+      const burstZ = 2.38 + (rand() - 0.5) * 0.25;
+      burstTarget = new THREE.Vector3(
+        prom.targetX + (rand() - 0.5) * 0.10,
+        prom.targetY + (rand() - 0.5) * 0.10,
+        burstZ,
+      );
 
-      let burstX: number;
-      if (prom.isLeft) {
-        const stagger = ((prom.rank * 7) % 5) / 5.0;
-        burstX = -3.42 + stagger * 1.25 + (rand() - 0.5) * 0.14;
-        burstX = Math.min(-2.15, Math.max(-3.55, burstX));
-      } else {
-        const stagger = ((prom.rank * 7 + 2) % 5) / 5.0;
-        burstX = 3.42 - stagger * 1.25 + (rand() - 0.5) * 0.14;
-        burstX = Math.max(2.15, Math.min(3.55, burstX));
-      }
-
-      const burstZ = 2.40 + (rand() - 0.5) * 0.45;
-      burstTarget = new THREE.Vector3(burstX, burstY, burstZ);
-
-      // 3D crystalline rotation catching specular edge lighting
-      const rotX = (rand() - 0.5) * 0.70 + (tFlank - 0.5) * 0.30;
-      const rotY = sideSign * (-0.35 - rand() * 0.35);
-      const rotZ = (rand() - 0.5) * 0.60;
-      rotTarget = new THREE.Euler(rotX, rotY, rotZ);
+      // 3D crystalline facet rotation catching specular edge reflections
+      rotTarget = new THREE.Euler(
+        prom.rotX + (rand() - 0.5) * 0.12,
+        prom.rotY + (rand() - 0.5) * 0.12,
+        prom.rotZ + (rand() - 0.5) * 0.12,
+      );
     } else {
-      // The 32 filler pieces: disperse outward away from center and fade out during open,
-      // and fly back in during collapse so ALL 48 pieces assemble with zero hollow gaps!
+      // The 35 filler pieces: disperse outward away from center and fade out during open,
+      // and fly back in during collapse so ALL 48 pieces reassemble with zero hollow gaps!
       const radialAngle = Math.atan2(cell.cy, cell.cx);
-      const flyDistance = 1.8 + radialNorm * 1.4 + (rand() - 0.5) * 0.3;
+      const flyDistance = 2.4 + radialNorm * 1.5 + (rand() - 0.5) * 0.3;
       let fBurstX = cell.cx + Math.cos(radialAngle) * flyDistance;
       let fBurstY = cell.cy + Math.sin(radialAngle) * flyDistance;
-      if (Math.abs(fBurstY) < 0.5) {
-        fBurstY = (cell.cy >= 0 ? 1 : -1) * (0.85 + rand() * 0.75);
+      if (Math.abs(fBurstY) < 0.6) {
+        fBurstY = (cell.cy >= 0 ? 1 : -1) * (1.1 + rand() * 0.8);
       }
-      const fBurstZ = 2.15 + (rand() - 0.5) * 0.55;
+      const fBurstZ = 2.05 + (rand() - 0.5) * 0.5;
       burstTarget = new THREE.Vector3(fBurstX, fBurstY, fBurstZ);
 
       const rotX = (rand() - 0.5) * 0.85;
