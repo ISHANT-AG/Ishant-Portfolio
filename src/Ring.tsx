@@ -1,3 +1,4 @@
+import BuildPosts from './BuildPosts';
 import Lenis from 'lenis';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -64,9 +65,9 @@ const workTags: Record<string, string> = {
   // Build / Code works
   "build-codeista": "Codeista AI",
   "build-ffcs": "FFCS-Easy Planner",
-  "build-sony": "Sony Motion Experiment",
-  "build-grip": "Grip Studio Archive",
-  "build-katosi": "Katosi Water Mission",
+  "build-sony": "Sony WH-1000XM6 · Motion study",
+  "build-grip": "GRIP · Interactive bottle",
+  "build-katosi": "KATOSI · Music experience",
   // Explore / Automation works
   "automate-blog-tool": "Clapingo AI Blog Tool",
   "automate-thumbnail": "Thumbnail Engine",
@@ -733,6 +734,7 @@ export default function Ring({
                     );
                   })}
                 </div>
+                {activeCategory.id === 'build' && galleryState === 'categoryGallery' && <BuildPosts />}
                   <section hidden={!designView || galleryState !== 'categoryGallery'} className="interface-films" aria-label="UI/UX prototypes">
                     <h4>UI/UX prototypes</h4>
                     {[
@@ -827,6 +829,17 @@ export default function Ring({
                 />
               </div>
               <div key={zoomedItem.id} className="cat-zoom-content">
+                {zoomedItem.categoryId === 'build' && zoomedItem.links[0] ? (
+                  zoomedItem.id === 'build-krazlo' ? (
+                    <div className="build-page-capture" tabIndex={0} role="region" aria-label="Krazlo scrollable homepage preview" data-lenis-prevent>
+                      <img src="/assets/explore-sites/krazlo-full.webp" alt="Krazlo homepage, full-page capture" />
+                    </div>
+                  ) : (
+                    <iframe className="build-live-frame" title={zoomedItem.title + ' live website'}
+                      src={zoomedItem.links[0].url} sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
+                      allowFullScreen />
+                  )
+                ) : (
                 <div
                   className="cat-zoom-media-wrap"
                   onClick={handleCloseZoom}
@@ -843,8 +856,15 @@ export default function Ring({
                     className="cat-zoom-image"
                   />
                 </div>
+                )}
 
-                <span className="design-work-tag zoom-tag">{workTags[zoomedItem.id] || zoomedItem.title}</span>
+                {zoomedItem.categoryId === 'build' && zoomedItem.links[0] ? (
+                  <div className="build-preview-caption">
+                    <strong>{workTags[zoomedItem.id] || zoomedItem.title}</strong>
+                    {zoomedItem.id === 'build-ffcs' && <span>Co-built with Prisha Sharma · 2,500+ users during FFCS week</span>}
+                    <a href={zoomedItem.links[0].url} target="_blank" rel="noreferrer">{zoomedItem.id === 'build-krazlo' ? 'Page capture · Open original ↗' : 'Open in new tab ↗'}</a>
+                  </div>
+                ) : (<span className="design-work-tag zoom-tag">{workTags[zoomedItem.id] || zoomedItem.title}</span>)}
               </div>
             </>
           )}

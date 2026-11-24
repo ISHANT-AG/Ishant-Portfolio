@@ -87,6 +87,126 @@ const fitProject = byId('fit');
 const dubaiProject = byId('dubai');
 const aiProject = byId('ai');
 
+const buildSites = [
+  {
+    "name": "KATOSI",
+    "domain": "katosi-theta.vercel.app",
+    "src": "/assets/explore-sites/katosi-theta.webp",
+    "id": "build-katosi"
+  },
+  {
+    "name": "Cloth Studio",
+    "domain": "cloth-studio-sigma.vercel.app",
+    "src": "/assets/explore-sites/cloth-studio-sigma.webp",
+    "id": "build-cloth-studio-sigma"
+  },
+  {
+    "name": "GRIP Bottle",
+    "domain": "grip-bottle.vercel.app",
+    "src": "/assets/explore-sites/grip-bottle.webp",
+    "id": "build-grip"
+  },
+  {
+    "name": "Sony WH-1000XM6",
+    "domain": "sony-headphone-1000.vercel.app",
+    "src": "/assets/explore-sites/sony-headphone-1000.webp",
+    "id": "build-sony"
+  },
+  {
+    "name": "Krazlo",
+    "domain": "krazlo.com",
+    "src": "/assets/explore-sites/krazlo.webp",
+    "id": "build-krazlo"
+  },
+  {
+    "name": "Dhrugo",
+    "domain": "dhrugo.com",
+    "src": "/assets/explore-sites/dhrugo.webp",
+    "id": "build-dhrugo"
+  },
+  {
+    "name": "S8 Analytics",
+    "domain": "www.s8analytics.com",
+    "src": "/assets/explore-sites/s8analytics.webp",
+    "id": "build-s8analytics"
+  },
+  {
+    "name": "Skorsi",
+    "domain": "www.skorsi.com",
+    "src": "/assets/explore-sites/skorsi.webp",
+    "id": "build-skorsi"
+  },
+  {
+    "name": "Digital Dilight",
+    "domain": "www.digitaldilight.com",
+    "src": "/assets/explore-sites/digitaldilight.webp",
+    "id": "build-digitaldilight"
+  },
+  {
+    "name": "Llarron",
+    "domain": "www.llarron.com",
+    "src": "/assets/explore-sites/llarron.webp",
+    "id": "build-llarron"
+  },
+  {
+    "name": "Ralsha",
+    "domain": "www.ralsha.com",
+    "src": "/assets/explore-sites/ralsha.webp",
+    "id": "build-ralsha"
+  },
+  {
+    "name": "JIB Solar",
+    "domain": "www.jibsolar.in",
+    "src": "/assets/explore-sites/jibsolar.webp",
+    "id": "build-jibsolar"
+  },
+  {
+    "name": "Zenovix Technologies",
+    "domain": "www.zenovixtechnologies.com",
+    "src": "/assets/explore-sites/zenovixtechnologies.webp",
+    "id": "build-zenovixtechnologies"
+  },
+  {
+    "name": "Noble Care",
+    "domain": "www.noblecare4u.com",
+    "src": "/assets/explore-sites/noblecare4u.webp",
+    "id": "build-noblecare4u"
+  },
+  {
+    "name": "Central Filings",
+    "domain": "www.centralfilings.com",
+    "src": "/assets/explore-sites/centralfilings.webp",
+    "id": "build-centralfilings"
+  },
+  {
+    "name": "Codeista AI",
+    "domain": "www.codeistaai.com",
+    "src": "/assets/explore-sites/codeistaai.webp",
+    "id": "build-codeista"
+  },
+  {
+    "name": "Adviora Consulting",
+    "domain": "www.advioraconsulting.com",
+    "src": "/assets/explore-sites/advioraconsulting.webp",
+    "id": "build-advioraconsulting"
+  },
+  {
+    "name": "K2W Finance",
+    "domain": "www.k2wfinance.com",
+    "src": "/assets/explore-sites/k2wfinance.webp",
+    "id": "build-k2wfinance"
+  }
+];
+const featuredBuildIds = new Set(["build-katosi", "build-grip", "build-sony", "build-codeista"]);
+function websiteItem(site: typeof buildSites[number]): GalleryItem {
+  return {
+    id: site.id, categoryId: 'build', title: site.name, subtitle: site.name, year: '', role: '', summary: '',
+    links: [{ label: 'Visit website', url: `https://${site.domain}/` }],
+    visual: { kind: 'image', src: site.src, alt: site.name + ' homepage', aspect: '16 / 10' },
+    accent: '#292726',
+  };
+}
+
 export const galleryCategories: GalleryCategory[] = [
   {
     id: 'build',
@@ -110,6 +230,20 @@ export const galleryCategories: GalleryCategory[] = [
     },
     items: [
       {
+        id: 'build-katosi',
+        categoryId: 'build',
+        title: 'KATOSI',
+        subtitle: 'Music & creative development',
+        year: '2026',
+        role: 'Code by Ishant · Review with Shivi',
+        summary:
+          'An atmospheric browser-native music experiment exploring orbital motion, spatial layout and quiet visual rhythm.',
+        note: 'Code by me. Review with Shivi.',
+        links: [{ label: "Visit website", url: "https://katosi-theta.vercel.app/" }],
+        visual: { kind: "image", src: "/assets/explore-sites/katosi-theta.webp", alt: "KATOSI homepage", aspect: "16 / 10" },
+        accent: '#9173b0',
+      },
+      {
         id: 'build-codeista',
         categoryId: 'build',
         title: webProject.title,
@@ -119,14 +253,8 @@ export const galleryCategories: GalleryCategory[] = [
         summary: webProject.intro,
         note: 'Codeista AI capture from shipped delivery; scope varies across engagements.',
         projectId: webProject.id,
-        links: webProject.links,
-        visual: {
-          kind: 'image',
-          src: '/assets/codeista.png',
-          alt: 'Actual Codeista AI website — Think. Code. Build.',
-          aspect: '16 / 9',
-          frameBg: '#0c0820',
-        },
+        links: [{ label: "Visit website", url: "https://www.codeistaai.com/" }, ...webProject.links],
+        visual: { kind: "image", src: "/assets/explore-sites/codeistaai.webp", alt: "Codeista AI homepage", aspect: "16 / 10" },
         accent: '#3d3369',
       },
       {
@@ -141,10 +269,10 @@ export const galleryCategories: GalleryCategory[] = [
         projectId: ffcsProject.id,
         links: ffcsProject.links,
         visual: {
-          kind: 'plate',
-          plateId: 'ffcs',
-          alt: 'Illustrative timetable planning diagram for FFCS-Easy, co-built equally with Prisha Sharma',
-          captionBadge: 'ILLUSTRATIVE CONCEPT PLATE',
+          kind: 'image',
+          src: '/assets/explore-sites/ffcs-easy.webp',
+          alt: 'FFCS-Easy semester planner showing the year and branch selection screen',
+          aspect: '16 / 10',
         },
         accent: '#6f7ee0',
       },
@@ -158,14 +286,8 @@ export const galleryCategories: GalleryCategory[] = [
         summary: sonyProject.intro,
         note: sonyProject.note,
         projectId: sonyProject.id,
-        links: sonyProject.links,
-        visual: {
-          kind: 'image',
-          src: '/assets/sony.jpg',
-          alt: 'Sony WH-1000XM6 independent concept animation frame',
-          aspect: '16 / 9',
-          frameBg: '#0f1416',
-        },
+        links: [{ label: "Visit website", url: "https://sony-headphone-1000.vercel.app/" }, ...sonyProject.links],
+        visual: { kind: "image", src: "/assets/explore-sites/sony-headphone-1000.webp", alt: "Sony WH-1000XM6 homepage", aspect: "16 / 10" },
         accent: '#2c3c44',
       },
       {
@@ -178,34 +300,11 @@ export const galleryCategories: GalleryCategory[] = [
         summary:
           'A bottle, a temperature state and tactile browser interaction — built as a focused motion and micro-interaction study.',
         note: 'Creative development experiment.',
-        links: [{ label: 'Open GRIP live demo', url: 'https://grip-bottle.vercel.app' }],
-        visual: {
-          kind: 'plate',
-          plateId: 'grip',
-          alt: 'Authored visual study for the GRIP interactive product concept',
-          captionBadge: 'CREATIVE EXPERIMENT',
-        },
+        links: [{ label: "Visit website", url: "https://grip-bottle.vercel.app/" }],
+        visual: { kind: "image", src: "/assets/explore-sites/grip-bottle.webp", alt: "GRIP Bottle homepage", aspect: "16 / 10" },
         accent: '#8da17d',
       },
-      {
-        id: 'build-katosi',
-        categoryId: 'build',
-        title: 'KATOSI',
-        subtitle: 'Music & creative development',
-        year: '2026',
-        role: 'Code by Ishant · Review with Shivi',
-        summary:
-          'An atmospheric browser-native music experiment exploring orbital motion, spatial layout and quiet visual rhythm.',
-        note: 'Code by me. Review with Shivi.',
-        links: [{ label: 'Open KATOSI live demo', url: 'https://katosi-theta.vercel.app' }],
-        visual: {
-          kind: 'plate',
-          plateId: 'katosi',
-          alt: 'Authored visual study for the KATOSI creative development music experiment',
-          captionBadge: 'CREATIVE EXPERIMENT',
-        },
-        accent: '#9173b0',
-      },
+      ...buildSites.filter(site => !featuredBuildIds.has(site.id)).map(site => websiteItem(site)),
     ],
   },
   {
@@ -805,7 +904,7 @@ export const galleryCategories: GalleryCategory[] = [
     id: 'automate',
     label: 'EXPLORE',
     displayTitle: 'Explore',
-    tagline: 'Inside my AI practice at Clapingo, from live video demos to tools for the content team.',
+    tagline: 'I make AI videos, work through questions live and build tools for the people producing the next one.',
     cover: {
       type: 'image',
       src: '/assets/ring-explore.jpg',
@@ -822,6 +921,38 @@ export const galleryCategories: GalleryCategory[] = [
       reflectTint: '#ffaf41',
     },
     items: [
+      {
+        id: 'explore-live-video',
+        categoryId: 'automate',
+        title: 'From a character sheet to a 24-second film',
+        subtitle: 'Clapingo · Live AI sessions',
+        year: '',
+        role: 'Live instructor',
+        summary: 'I led two live AI sessions. In this demo, I showed working professionals how to keep a character consistent across three eight-second scenes, from the first image prompt to the animated clip.',
+        links: [],
+        visual: {
+          kind: 'image',
+          src: '/assets/clapingo-live-session.webp',
+          alt: 'Ishant presenting the character-sheet and video prompt document during a live session',
+        },
+        accent: '#597467',
+      },
+      {
+        id: 'explore-recorded-courses',
+        categoryId: 'automate',
+        title: 'Producing four paid AI courses',
+        subtitle: 'Clapingo · Recorded courses',
+        year: '',
+        role: 'Solo course production',
+        summary: 'I produced four recorded courses covering image generation, presentations, prompt engineering and video. I created the lessons and finished videos, using an AI presenter and generated voiceover.',
+        links: [],
+        visual: {
+          kind: 'image',
+          src: '/assets/posters/video-phase-one.webp',
+          alt: 'Course artwork for Video Using AI, Phase 1',
+        },
+        accent: '#86639e',
+      },
       {
         id: 'automate-blog-tool',
         categoryId: 'automate',
