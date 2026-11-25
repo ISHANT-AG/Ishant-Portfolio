@@ -2385,6 +2385,7 @@ export class RingScene {
       this.innerMats[i].uniforms.uOpacity.value = otherFade;
 
       // Cut seam edges
+      this.edgeMats[i].visible = this.outerMeshes[i].visible && this.mode !== 'categoryGallery';
       this.edgeMats[i].uniforms.uOpacity.value = otherFade;
 
       // Floor reflection
