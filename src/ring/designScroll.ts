@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-// Vertex shader ported from Aikawa Kenichi
-// Completely steady in the viewport; smoothly arches backward in 3D as it exits the top rim without fluttering/shaking
+// Exact vertex shader from Aikawa Kenichi
+// Renders the signature 3D wave and backwards cylindrical roll as cards reach the top threshold
 const VERTEX_SHADER = /* glsl */ `
 precision highp float;
 
@@ -12,6 +12,7 @@ varying float vTopFade;
 
 uniform vec2 iResolution;
 uniform vec2 uSize;
+uniform float uScrollPos;
 uniform float uRollTopBend;
 uniform float uRollTopFade;
 uniform float uRollTopFadeStart;
@@ -19,6 +20,10 @@ uniform float uRollTopRadius;
 uniform float uRollTopRange;
 uniform float uRollTopReturn;
 uniform float uRollTopStart;
+uniform float uRollTopWaveAmp;
+uniform float uRollTopWaveFreq;
+uniform float uRollTopWaveSmooth;
+uniform float uRollTopWaveSpacing;
 
 void main() {
 	vUv = uv;
@@ -27,7 +32,7 @@ void main() {
 
 	float rollPower = max(
 		max(abs(uRollTopBend), abs(uRollTopFade)),
-		abs(uRollTopRadius)
+		max(abs(uRollTopRadius), abs(uRollTopWaveAmp))
 	);
 
 	vTopFade = 0.0;
@@ -44,10 +49,20 @@ void main() {
 		float curlReturn = sin(rollReturn * PI);
 		float sCurve = (curlEnter * 0.92) - (curlReturn * uRollTopReturn * 0.48);
 		float lift = smoothstep(0.62, 0.98, band) * uRollTopBend * 0.18;
+		float waveMask = sin(band * PI);
+		float wavePhase = (
+			(nPos.x / max(uSize.x * 0.5, 1.0)) * PI * uRollTopWaveFreq / max(uRollTopWaveSpacing, 0.001)
+			- uScrollPos * 0.01
+		);
+		float primaryWave = sin(wavePhase);
+		float secondaryWave = sin(wavePhase * 0.52 - 0.95);
+		float tertiaryWave = sin(wavePhase * 0.31 + 1.2);
+		float smoothWave = (primaryWave * 0.68) + (secondaryWave * 0.22) + (tertiaryWave * 0.10);
+		float surfaceWave = mix(primaryWave, smoothWave, clamp(uRollTopWaveSmooth, 0.0, 1.0)) * uRollTopWaveAmp * waveMask;
 
-		// Steady, elegant cylindrical roll backwards off top rim without any oscillation or shaking
-		nPos.y += lift / max(uSize.y, 1.0);
+		nPos.y += lift;
 		nPos.z -= sCurve * uRollTopRadius * rollMask;
+		nPos.z += surfaceWave;
 
 		vTopFade = pow(smoothstep(uRollTopFadeStart, 1.0, band), 0.7) * uRollTopFade;
 	}
@@ -56,14 +71,60 @@ void main() {
 }
 `;
 
-// Sample the artwork once and encode its linear RGB for the display.
+// Fragment shader with prismatic chromatic aberration and top-fade on curl
 const FRAGMENT_SHADER = /* glsl */ `
 precision highp float;
+
 varying vec2 vUv;
+varying float vTopFade;
+
 uniform sampler2D tDiffuse;
+uniform float uEffectsAberration;
+uniform float uEffectsBlurFade;
 
 void main() {
-  gl_FragColor = texture2D(tDiffuse, vUv);
+  float alphaBase = 1.0 - vTopFade;
+  if (alphaBase <= 0.0001) {
+    discard;
+  }
+
+  vec2 uvCover = vUv;
+  float fadeBlur = clamp(vTopFade * uEffectsBlurFade, 0.0, 0.08);
+  vec2 blurOffset = vec2(0.0, fadeBlur);
+  vec2 aberrationOffset = vec2(uEffectsAberration * vTopFade, 0.0);
+
+  vec4 c = texture2D(tDiffuse, uvCover);
+  vec3 image = c.rgb;
+
+  if (fadeBlur > 0.0001) {
+    vec3 sampleCenter = c.rgb;
+    vec3 sampleNearA = texture2D(tDiffuse, uvCover - blurOffset * 0.5).rgb;
+    vec3 sampleNearB = texture2D(tDiffuse, uvCover + blurOffset * 0.5).rgb;
+    vec3 sampleFarA  = texture2D(tDiffuse, uvCover - blurOffset).rgb;
+    vec3 sampleFarB  = texture2D(tDiffuse, uvCover + blurOffset).rgb;
+
+    vec3 blurred = (
+      sampleCenter * 0.32 +
+      sampleNearA * 0.24 +
+      sampleNearB * 0.24 +
+      sampleFarA * 0.10 +
+      sampleFarB * 0.10
+    );
+
+    float chromaMix = clamp(vTopFade, 0.0, 1.0);
+    if (chromaMix > 0.0001 && abs(uEffectsAberration) > 0.0001) {
+      vec3 chroma = vec3(
+        texture2D(tDiffuse, uvCover + aberrationOffset).r,
+        blurred.g,
+        texture2D(tDiffuse, uvCover - aberrationOffset).b
+      );
+      image = mix(blurred, chroma, chromaMix);
+    } else {
+      image = blurred;
+    }
+  }
+
+  gl_FragColor = vec4(image, alphaBase * c.a);
   #include <colorspace_fragment>
 }
 `;
@@ -121,13 +182,9 @@ export function animateDesignScroll(view: HTMLElement) {
   camera.position.z = view.clientHeight / Math.tan((fov * Math.PI) / 360) / 2;
   camera.lookAt(0, 0, 0);
 
-  // High-density plane geometry so vertex top wave curves smoothly
-  const geometry = new THREE.PlaneGeometry(1, 1, 32, 64);
-
   const resolution = new THREE.Vector2(view.clientWidth, view.clientHeight);
   const entries: CardEntry[] = [];
 
-  // Declare all state variables upfront to prevent any TDZ issues
   let frameId = 0;
 
   function wake() {
@@ -142,11 +199,19 @@ export function animateDesignScroll(view: HTMLElement) {
 
     entries.forEach((entry) => {
       const rect = entry.mediaEl.getBoundingClientRect();
-      entry.width = Math.max(rect.width, 1);
-      entry.height = Math.max(rect.height, 1);
-      entry.x = rect.left - viewRect.left - viewRect.width * 0.5 + rect.width * 0.5;
-      entry.pageTop = rect.top - viewRect.top + scrollPos;
+      const newW = Math.max(rect.width, 1);
+      const newH = Math.max(rect.height, 1);
 
+      if (Math.abs(entry.width - newW) > 1 || Math.abs(entry.height - newH) > 1) {
+        entry.mesh.geometry.dispose();
+        entry.mesh.geometry = new THREE.PlaneGeometry(newW, newH, 32, 64);
+        entry.width = newW;
+        entry.height = newH;
+        entry.mesh.material.uniforms.uSize.value.set(newW, newH);
+      }
+
+      entry.x = rect.left - viewRect.left - viewRect.width * 0.5 + newW * 0.5;
+      entry.pageTop = rect.top - viewRect.top + scrollPos;
     });
   }
 
@@ -154,6 +219,10 @@ export function animateDesignScroll(view: HTMLElement) {
     const mediaEl = card.querySelector<HTMLElement>('.cat-stream-frame') || card;
     const imgEl = card.querySelector<HTMLImageElement>('img');
     if (!imgEl) return;
+
+    const initialW = Math.max(mediaEl.offsetWidth, 100);
+    const initialH = Math.max(mediaEl.offsetHeight, 100);
+    const geometry = new THREE.PlaneGeometry(initialW, initialH, 32, 64);
 
     const texture = new THREE.Texture();
     texture.colorSpace = THREE.SRGBColorSpace;
@@ -168,15 +237,22 @@ export function animateDesignScroll(view: HTMLElement) {
       uniforms: {
         tDiffuse: { value: texture },
         iResolution: { value: resolution },
-        uSize: { value: new THREE.Vector2(card.offsetWidth, card.offsetHeight) },
-        // Aikawa tuning parameters for top rim curve (active only when band > 0)
-        uRollTopBend: { value: 36.0 },
+        uSize: { value: new THREE.Vector2(initialW, initialH) },
+        uScrollPos: { value: 0 },
+        // Exact Aikawa parameters tuned with lower threshold ("a little below it")
+        uRollTopBend: { value: 48.0 },
         uRollTopFade: { value: 1.0 },
-        uRollTopFadeStart: { value: 0.25 },
-        uRollTopRadius: { value: 380.0 },
-        uRollTopRange: { value: 0.26 },
+        uRollTopFadeStart: { value: 0.30 },
+        uRollTopRadius: { value: 500.0 },
+        uRollTopRange: { value: 0.28 },
         uRollTopReturn: { value: 0.30 },
-        uRollTopStart: { value: 0.08 },
+        uRollTopStart: { value: 0.19 }, // Lower threshold ("a little below it") leaving clean whitespace below header
+        uRollTopWaveAmp: { value: 38.0 },
+        uRollTopWaveFreq: { value: 1.45 },
+        uRollTopWaveSmooth: { value: 0.68 },
+        uRollTopWaveSpacing: { value: 1.22 },
+        uEffectsAberration: { value: 0.018 },
+        uEffectsBlurFade: { value: 0.03 },
       },
     });
 
@@ -191,8 +267,8 @@ export function animateDesignScroll(view: HTMLElement) {
       mesh,
       texture,
       loaded: false,
-      width: Math.max(mediaEl.offsetWidth, 1),
-      height: Math.max(mediaEl.offsetHeight, 1),
+      width: initialW,
+      height: initialH,
       x: 0,
       pageTop: 0,
     };
@@ -230,15 +306,17 @@ export function animateDesignScroll(view: HTMLElement) {
     wake();
   }
 
+  let lastScrollPos = -999999;
+  let stillCount = 0;
+
   function tick() {
     frameId = 0;
     const scrollPos = view.scrollTop;
     const viewH = view.clientHeight;
 
-    // Update meshes using cached pageTop for 100% linear, jitter-free positioning
     entries.forEach((entry) => {
       const cardTop = entry.pageTop - scrollPos;
-      const inView = cardTop + entry.height >= -120 && cardTop <= viewH + 120;
+      const inView = cardTop + entry.height >= -250 && cardTop <= viewH + 250;
 
       if (!inView || !entry.loaded) {
         entry.mesh.visible = false;
@@ -251,15 +329,24 @@ export function animateDesignScroll(view: HTMLElement) {
       const y = viewH * 0.5 - cardTop - entry.height * 0.5;
 
       entry.mesh.position.set(entry.x, y, 0);
-      entry.mesh.scale.set(entry.width, entry.height, 1);
+      entry.mesh.scale.set(1, 1, 1);
 
-      entry.mesh.material.uniforms.uSize.value.set(entry.width, entry.height);
+      entry.mesh.material.uniforms.uScrollPos.value = scrollPos;
     });
 
     if (renderer) {
       renderer.render(scene, camera);
     }
 
+    // Keep ticking while actively scrolling so animation is continuous and buttery smooth
+    if (Math.abs(scrollPos - lastScrollPos) > 0.05) {
+      lastScrollPos = scrollPos;
+      stillCount = 0;
+      frameId = requestAnimationFrame(tick);
+    } else if (stillCount < 5) {
+      stillCount++;
+      frameId = requestAnimationFrame(tick);
+    }
   }
 
   view.addEventListener('scroll', wake, { passive: true });
@@ -278,7 +365,6 @@ export function animateDesignScroll(view: HTMLElement) {
       e.mesh.material.dispose();
       e.texture.dispose();
     });
-    geometry.dispose();
 
     if (renderer) {
       renderer.dispose();
