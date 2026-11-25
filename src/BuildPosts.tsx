@@ -10,17 +10,24 @@ const posts = [
     "title": "Multi-PDF Topic Extractor",
     "link": "https://lnkd.in/p/guiMc7yf",
     "body": "🚀 Built something I'm excited to share: Multi-PDF Topic Extractor\nEver needed to compare how different sources explain the same concept? I built a tool that lets you upload up to 5 PDFs, enter any topic or keyword, and instantly see how each document defines and discusses it — side by side.\n\n🔍 Key features:\n ✅ Extracts & compares topics across multiple PDFs at once\n ✅ TF-IDF + Cosine Similarity for relevance scoring\n ✅ 100% offline & local — no data leaves your machine\n ✅ Side-by-side and grid views for easy comparison\n ✅ One-click summary download\n\n🛠️ Tech stack: Python, Flask, pdfplumber, scikit-learn\nThis started as a way to speed up research and cross-referencing across documents, and turned into a fully local, privacy-first tool. Would love your thoughts and feedback!\n\n🔗 GitHub: https://lnkd.in/d-8ZTxwU\n#Python #MachineLearning #NLP #OpenSource #Flask #BuildInPublic #WebDev"
-  }
+  },
+  {
+  "title": "Personal Finance Manager",
+  "link": "https://lnkd.in/p/gziG_kf9",
+  "body": "I built my own finance manager from scratch.\n\nNot because I couldn't find an app.\nBecause I wanted one that thinks like me.\n\nTwo accounts — Saving and Living.\nSeparate wallets. Separate logic. Same dashboard.\n\nWhat it tracks:\n→ Wallet balance (real-time)\n→ Investment portfolio (buy/sell/allocate)\n→ Money I've lent. Money I owe.\n→ Pending income pipeline\n→ Full transaction history + CSV export\n→ Hostel budget tracker with daily spend caps\n\nAnd one number at the top — Total Actual Wealth.\nNot just cash. Wallet + Investments + Lent − Borrowed.\nThe real number.\n\nBuilt in Python. Terminal first. Then added a full web dashboard — HTML, CSS, JS. Runs locally. Data stays local. No subscriptions. No bloat.\n\nBecause if you can't track it, you can't grow it.\n\n🔗 GitHub: https://lnkd.in/g8XvGmw5",
+  "image": "/assets/finance-manager-post.webp"
+}
 ];
 
 export default function BuildPosts() {
   return (
     <section className="interface-films build-posts" aria-label="Project posts">
       <h4>Project posts</h4>
-      {posts.map(({ title, body, link, media }) => (
+      {posts.map(({ title, body, link, media, image }) => (
         <article key={link}>
           <h5>{title}</h5>
-          <video controls playsInline preload="metadata" poster={media + ".jpg"} src={media + ".mp4"} aria-label={title + " demo"} />
+          {media && <video controls playsInline preload="metadata" poster={media + ".jpg"} src={media + ".mp4"} aria-label={title + " demo"} />}
+          {image && <img src={image} alt="Personal Finance Manager project preview" loading="lazy" style={{ width: "100%", height: "auto" }} />}
           <p>{body}</p>
           <a href={link} target="_blank" rel="noreferrer">View original on LinkedIn ↗</a>
         </article>

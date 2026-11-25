@@ -358,6 +358,8 @@
 .cat-gallery-layer.is-ready {
   opacity: 1;
   pointer-events: auto;
+  background: rgba(255, 255, 255, var(--scroll-p, 0));
+  transition: background-color 0.12s ease-out;
 }
 
 .cat-gallery-layer.is-returning {
@@ -388,6 +390,12 @@
   text-align: center;
   padding: 84px 16px 32px;
   gap: 12px;
+}
+
+.cat-gallery-layer.is-ready .cat-stream-hero {
+  will-change: transform, opacity;
+  transform: translate3d(0, calc(var(--scroll-p, 0) * -52px), 0);
+  opacity: max(0, calc(1 - var(--scroll-p, 0) * 1.35));
 }
 
 .cat-stream-hero .eyebrow {
@@ -1313,7 +1321,6 @@ html[data-motion='false'] .gallery-stage-frame *, html[data-motion='false'] .gal
 
 .interface-films[hidden], .cat-stream-scroll[hidden], .cat-gallery-layer[hidden] { display: none; }
 .gallery-stage-frame[data-gallery-scrolled='true'] .cat-gallery-layer.is-ready { background: white; }
-.gallery-stage-frame[data-gallery-scrolled='true']:has(.cat-gallery-layer.is-ready) .ring-canvas-host { visibility: hidden; }
 .interface-films iframe { background: white; }
 
 html.lenis, .cat-stream-scroll.lenis { scroll-behavior: auto; }

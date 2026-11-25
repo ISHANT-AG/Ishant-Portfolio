@@ -209,6 +209,12 @@ export default function Ring({
       if (curState !== 'ringIdle' && curState !== 'entering') return;
       resumeFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       setGalleryHasScrolled(false);
+      sceneRef.current?.setGalleryScrollRatio(0);
+      if (streamScrollRef.current) {
+        streamScrollRef.current.scrollTop = 0;
+        streamScrollRef.current.style.setProperty('--scroll-p', '0');
+      }
+      sectionRef.current?.querySelector<HTMLElement>('.gallery-stage-frame')?.style.setProperty('--scroll-p', '0');
       setActiveCategoryIdx(targetIdx);
       setActiveItemIdx(0);
       setZoomedItemIdx(null);
@@ -245,10 +251,14 @@ export default function Ring({
 
     setZoomedItemIdx(null);
     setCursorMode('none');
+    setGalleryHasScrolled(false);
+    sceneRef.current?.setGalleryScrollRatio(0);
 
     if (streamScrollRef.current) {
       streamScrollRef.current.scrollTop = 0;
+      streamScrollRef.current.style.setProperty('--scroll-p', '0');
     }
+    sectionRef.current?.querySelector<HTMLElement>('.gallery-stage-frame')?.style.setProperty('--scroll-p', '0');
 
     if (webglFallback || !sceneRef.current) {
       setGalleryState('ringIdle');
@@ -495,8 +505,13 @@ export default function Ring({
     const container = streamScrollRef.current;
     if (!container) return;
 
-    if (container.scrollTop > 0 && stateRef.current === 'categoryGallery') setGalleryHasScrolled(true);
-    sceneRef.current?.setGalleryScrollRatio(container.scrollTop / 460);
+    const scrollRatio = Math.min(1, Math.max(0, container.scrollTop / 360));
+    sceneRef.current?.setGalleryScrollRatio(scrollRatio);
+    container.style.setProperty('--scroll-p', scrollRatio.toFixed(3));
+    const stage = container.closest<HTMLElement>('.gallery-stage-frame');
+    stage?.style.setProperty('--scroll-p', scrollRatio.toFixed(3));
+
+    setGalleryHasScrolled(container.scrollTop > 380);
 
     const cards = container.querySelectorAll<HTMLElement>('[data-stream-card]');
     const viewH = container.clientHeight;
@@ -536,8 +551,9 @@ export default function Ring({
       smoothWheel: true,
       overscroll: false,
     });
+    scroll.on('scroll', handleStreamScroll);
     return () => scroll.destroy();
-  }, [motion, galleryState, layoutMode, activeCategory.id]);
+  }, [motion, galleryState, layoutMode, activeCategory.id, handleStreamScroll]);
 
   useEffect(() => {
     const view = streamScrollRef.current;

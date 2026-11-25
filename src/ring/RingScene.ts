@@ -41,6 +41,10 @@ const FLAT_WIDTH = PANEL_ARC * RADIUS * 0.92;
 const FLAT_HEIGHT = HEIGHT * 1.04;
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const smoothstep = (min: number, max: number, value: number) => {
+  const x = clamp01((value - min) / (max - min));
+  return x * x * (3 - 2 * x);
+};
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const easeInOutQuart = (t: number) =>
@@ -1001,6 +1005,8 @@ export class RingScene {
   private entranceStarted = false;
   private transitionCategoryIndex = 0;
   private shardAmbientFade = 1;
+  private galleryScrollRatio = 0;
+  private targetGalleryScrollRatio = 0;
   private lastTitleProgress = -1;
   private baseRingY = 0.05;
   private baseCamZ = 9.6;
@@ -1638,6 +1644,8 @@ export class RingScene {
     this.shardMat.uniforms.uMap.value = this.bundles[idx].outerTex;
     this.shardMat.uniforms.uTint.value.set(galleryCategories[idx].theme.tint);
     this.shardAmbientFade = 1;
+    this.galleryScrollRatio = 0;
+    this.targetGalleryScrollRatio = 0;
 
     if (!this.motionEnabled) {
       this.angle = snapTarget;
@@ -1775,6 +1783,8 @@ export class RingScene {
     this.shardMat.uniforms.uMap.value = this.bundles[idx].outerTex;
     this.shardMat.uniforms.uTint.value.set(galleryCategories[idx].theme.tint);
     this.shardAmbientFade = 1;
+    this.galleryScrollRatio = 0;
+    this.targetGalleryScrollRatio = 0;
 
     if (!this.motionEnabled) {
       this.transitionProgress = 0;
@@ -1902,7 +1912,7 @@ export class RingScene {
   }
 
   public setGalleryScrollRatio(ratio: number) {
-    this.shardAmbientFade = clamp01(1 - ratio * 2.1);
+    this.targetGalleryScrollRatio = clamp01(ratio);
     this.needsPaint = true;
   }
 
@@ -2188,9 +2198,20 @@ export class RingScene {
     const dt = Math.min(Math.max((now - this.lastTime) / 1000, 0), 0.05);
     this.lastTime = now;
 
+    // Smoothly interpolate gallery scroll ratio for organic shard response
+    const scrollDelta = this.targetGalleryScrollRatio - this.galleryScrollRatio;
+    if (Math.abs(scrollDelta) > 0.0005) {
+      this.galleryScrollRatio += scrollDelta * 0.18;
+      this.needsPaint = true;
+    } else {
+      this.galleryScrollRatio = this.targetGalleryScrollRatio;
+    }
+
     const changingView =
       this.mode !== 'itemZoom' &&
-      (this.mode !== 'categoryGallery' || this.shardAmbientFade > 0.01);
+      (this.mode !== 'categoryGallery' ||
+        this.shardAmbientFade > 0.001 ||
+        Math.abs(scrollDelta) > 0.0005);
     const active =
       this.visible &&
       !document.hidden &&
@@ -2377,11 +2398,16 @@ export class RingScene {
     this.shardGroup.rotation.y += this.transitionCategoryIndex * SPAN;
     this.shardGroup.scale.copy(this.ringGroup.scale);
 
+    if (this.mode === 'categoryGallery') {
+      const scrollS = this.galleryScrollRatio;
+      this.shardAmbientFade = clamp01(1.0 - smoothstep(0.04, 0.85, scrollS));
+    }
+
     const showShards =
       (this.mode === 'categoryTransition' ||
         this.mode === 'categoryGallery' ||
         this.mode === 'returning') &&
-      this.shardAmbientFade > 0.01;
+      this.shardAmbientFade > 0.001;
 
     this.shardGroup.visible = showShards;
 
@@ -2425,15 +2451,47 @@ export class RingScene {
               sh.mesh.position.x += (driftX + subtleParallaxX) * bf;
               sh.mesh.position.y += (driftY + subtleParallaxY) * bf;
 
+              // Smooth scroll-driven dispersal matching reference recording:
+              // Left shards glide outward to left, right shards to right, center accent glides upward
+              if (this.galleryScrollRatio > 0.0001) {
+                const s = this.galleryScrollRatio;
+                let dispX = 0;
+                let dispY = 0;
+                const dispZ = -0.38 * s;
+
+                if (sh.burstTarget.x < -0.5) {
+                  // Left flank (6 shards)
+                  dispX = -1.45 * s;
+                  dispY = Math.sign(sh.burstTarget.y) * 0.48 * s;
+                } else if (sh.burstTarget.x > 0.5) {
+                  // Right flank (6 shards)
+                  dispX = 1.45 * s;
+                  dispY = Math.sign(sh.burstTarget.y) * 0.48 * s;
+                } else {
+                  // Center accent diamond (id 26)
+                  dispX = 0.25 * s;
+                  dispY = 1.10 * s;
+                }
+
+                sh.mesh.position.x += dispX * bf;
+                sh.mesh.position.y += dispY * bf;
+                sh.mesh.position.z += dispZ * bf;
+              }
+
               // Gentle facet spin (detailsSpin from vertexShader_Hk.glsl lines 174-202)
               const spinTime = this.elapsed * 0.22;
               const spinX = Math.sin(spinTime * sh.spinSpeed.x + sh.driftPhase) * 0.045;
               const spinY = Math.sin(spinTime * sh.spinSpeed.y + sh.driftPhase * 1.1) * 0.055;
               const spinZ = Math.sin(spinTime * sh.spinSpeed.z + sh.driftPhase * 0.9) * 0.035;
 
+              // Crystalline edge tilt during scroll dispersal
+              const s = this.galleryScrollRatio;
+              const scrollRotX = (sh.burstTarget.y >= 0 ? 0.35 : -0.35) * s;
+              const scrollRotY = (sh.burstTarget.x >= 0 ? -0.45 : 0.45) * s;
+
               sh.mesh.rotation.set(
-                sh.rotTarget.x * (0.05 + bf * 0.95) + spinX * bf,
-                sh.rotTarget.y * (0.05 + bf * 0.95) + spinY * bf,
+                sh.rotTarget.x * (0.05 + bf * 0.95) + spinX * bf + scrollRotX * bf,
+                sh.rotTarget.y * (0.05 + bf * 0.95) + spinY * bf + scrollRotY * bf,
                 sh.rotTarget.z * (0.04 + bf * 0.96) + spinZ * bf,
               );
             } else {

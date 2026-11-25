@@ -87,122 +87,11 @@ const fitProject = byId('fit');
 const dubaiProject = byId('dubai');
 const aiProject = byId('ai');
 
-const buildSites = [
-  {
-    "name": "KATOSI",
-    "domain": "katosi-theta.vercel.app",
-    "src": "/assets/explore-sites/katosi-theta.webp",
-    "id": "build-katosi"
-  },
-  {
-    "name": "Cloth Studio",
-    "domain": "cloth-studio-sigma.vercel.app",
-    "src": "/assets/explore-sites/cloth-studio-sigma.webp",
-    "id": "build-cloth-studio-sigma"
-  },
-  {
-    "name": "GRIP Bottle",
-    "domain": "grip-bottle.vercel.app",
-    "src": "/assets/explore-sites/grip-bottle.webp",
-    "id": "build-grip"
-  },
-  {
-    "name": "Sony WH-1000XM6",
-    "domain": "sony-headphone-1000.vercel.app",
-    "src": "/assets/explore-sites/sony-headphone-1000.webp",
-    "id": "build-sony"
-  },
-  {
-    "name": "Krazlo",
-    "domain": "krazlo.com",
-    "src": "/assets/explore-sites/krazlo.webp",
-    "id": "build-krazlo"
-  },
-  {
-    "name": "Dhrugo",
-    "domain": "dhrugo.com",
-    "src": "/assets/explore-sites/dhrugo.webp",
-    "id": "build-dhrugo"
-  },
-  {
-    "name": "S8 Analytics",
-    "domain": "www.s8analytics.com",
-    "src": "/assets/explore-sites/s8analytics.webp",
-    "id": "build-s8analytics"
-  },
-  {
-    "name": "Skorsi",
-    "domain": "www.skorsi.com",
-    "src": "/assets/explore-sites/skorsi.webp",
-    "id": "build-skorsi"
-  },
-  {
-    "name": "Digital Dilight",
-    "domain": "www.digitaldilight.com",
-    "src": "/assets/explore-sites/digitaldilight.webp",
-    "id": "build-digitaldilight"
-  },
-  {
-    "name": "Llarron",
-    "domain": "www.llarron.com",
-    "src": "/assets/explore-sites/llarron.webp",
-    "id": "build-llarron"
-  },
-  {
-    "name": "Ralsha",
-    "domain": "www.ralsha.com",
-    "src": "/assets/explore-sites/ralsha.webp",
-    "id": "build-ralsha"
-  },
-  {
-    "name": "JIB Solar",
-    "domain": "www.jibsolar.in",
-    "src": "/assets/explore-sites/jibsolar.webp",
-    "id": "build-jibsolar"
-  },
-  {
-    "name": "Zenovix Technologies",
-    "domain": "www.zenovixtechnologies.com",
-    "src": "/assets/explore-sites/zenovixtechnologies.webp",
-    "id": "build-zenovixtechnologies"
-  },
-  {
-    "name": "Noble Care",
-    "domain": "www.noblecare4u.com",
-    "src": "/assets/explore-sites/noblecare4u.webp",
-    "id": "build-noblecare4u"
-  },
-  {
-    "name": "Central Filings",
-    "domain": "www.centralfilings.com",
-    "src": "/assets/explore-sites/centralfilings.webp",
-    "id": "build-centralfilings"
-  },
-  {
-    "name": "Codeista AI",
-    "domain": "www.codeistaai.com",
-    "src": "/assets/explore-sites/codeistaai.webp",
-    "id": "build-codeista"
-  },
-  {
-    "name": "Adviora Consulting",
-    "domain": "www.advioraconsulting.com",
-    "src": "/assets/explore-sites/advioraconsulting.webp",
-    "id": "build-advioraconsulting"
-  },
-  {
-    "name": "K2W Finance",
-    "domain": "www.k2wfinance.com",
-    "src": "/assets/explore-sites/k2wfinance.webp",
-    "id": "build-k2wfinance"
-  }
-];
-const featuredBuildIds = new Set(["build-katosi", "build-grip", "build-sony", "build-codeista"]);
-function websiteItem(site: typeof buildSites[number]): GalleryItem {
+function websiteItem(id: string, name: string, url: string, cover: string): GalleryItem {
   return {
-    id: site.id, categoryId: 'build', title: site.name, subtitle: site.name, year: '', role: '', summary: '',
-    links: [{ label: 'Visit website', url: `https://${site.domain}/` }],
-    visual: { kind: 'image', src: site.src, alt: site.name + ' homepage', aspect: '16 / 10' },
+    id: 'build-' + id, categoryId: 'build', title: name, subtitle: name, year: '', role: '', summary: '',
+    links: [{ label: 'Visit website', url }],
+    visual: { kind: 'image', src: '/assets/explore-sites/' + cover, alt: name + ' website', aspect: '16 / 10' },
     accent: '#292726',
   };
 }
@@ -243,20 +132,23 @@ export const galleryCategories: GalleryCategory[] = [
         visual: { kind: "image", src: "/assets/explore-sites/katosi-theta.webp", alt: "KATOSI homepage", aspect: "16 / 10" },
         accent: '#9173b0',
       },
+      websiteItem("cloth-studio-sigma", "Cloth Studio", "https://cloth-studio-sigma.vercel.app/", "cloth-studio-sigma.webp"),
       {
-        id: 'build-codeista',
+        id: 'build-grip',
         categoryId: 'build',
-        title: webProject.title,
-        subtitle: `Codeista AI · one of ${ledger.length} commercial sites`,
-        year: webProject.year,
-        role: webProject.role,
-        summary: webProject.intro,
-        note: 'Codeista AI capture from shipped delivery; scope varies across engagements.',
-        projectId: webProject.id,
-        links: [{ label: "Visit website", url: "https://www.codeistaai.com/" }, ...webProject.links],
-        visual: { kind: "image", src: "/assets/explore-sites/codeistaai.webp", alt: "Codeista AI homepage", aspect: "16 / 10" },
-        accent: '#3d3369',
+        title: 'GRIP',
+        subtitle: 'Interactive product concept',
+        year: '2026',
+        role: 'Solo · Creative development experiment',
+        summary:
+          'A bottle, a temperature state and tactile browser interaction — built as a focused motion and micro-interaction study.',
+        note: 'Creative development experiment.',
+        links: [{ label: "Visit website", url: "https://grip-bottle.vercel.app/" }],
+        visual: { kind: "image", src: "/assets/explore-sites/grip-bottle.webp", alt: "GRIP Bottle homepage", aspect: "16 / 10" },
+        accent: '#8da17d',
       },
+      websiteItem("clapingo", "Clapingo \u00b7 Contributed", "https://clapingo.com/", "clapingo.webp"),
+      websiteItem("c2c", "Clapingo C2C Admin", "https://c2c.clapingo.com/admin", "c2c.webp"),
       {
         id: 'build-ffcs',
         categoryId: 'build',
@@ -271,11 +163,17 @@ export const galleryCategories: GalleryCategory[] = [
         visual: {
           kind: 'image',
           src: '/assets/explore-sites/ffcs-easy.webp',
-          alt: 'FFCS-Easy semester planner showing the year and branch selection screen',
+          alt: 'FFCS-Easy semester planner opening screen with Pick, Plan, Register',
           aspect: '16 / 10',
         },
         accent: '#6f7ee0',
       },
+      websiteItem("fithappns", "FitHappns", "https://www.fithappns.com/ggl", "fithappns.webp"),
+      websiteItem("centralfilings", "Central Filings", "https://www.centralfilings.com/", "centralfilings.webp"),
+      websiteItem("zenovixtechnologies", "Zenovix Technologies", "https://www.zenovixtechnologies.com/", "zenovixtechnologies.webp"),
+      websiteItem("jibsolar", "JIB Solar", "https://www.jibsolar.in/", "jibsolar.webp"),
+      websiteItem("digitaldilight", "Digital Dilight", "https://www.digitaldilight.com/", "digitaldilight.webp"),
+      websiteItem("k2wfinance", "K2W Finance", "https://www.k2wfinance.com/", "k2wfinance.webp"),
       {
         id: 'build-sony',
         categoryId: 'build',
@@ -291,20 +189,28 @@ export const galleryCategories: GalleryCategory[] = [
         accent: '#2c3c44',
       },
       {
-        id: 'build-grip',
+        id: 'build-codeista',
         categoryId: 'build',
-        title: 'GRIP',
-        subtitle: 'Interactive product concept',
-        year: '2026',
-        role: 'Solo · Creative development experiment',
-        summary:
-          'A bottle, a temperature state and tactile browser interaction — built as a focused motion and micro-interaction study.',
-        note: 'Creative development experiment.',
-        links: [{ label: "Visit website", url: "https://grip-bottle.vercel.app/" }],
-        visual: { kind: "image", src: "/assets/explore-sites/grip-bottle.webp", alt: "GRIP Bottle homepage", aspect: "16 / 10" },
-        accent: '#8da17d',
+        title: webProject.title,
+        subtitle: `Codeista AI · one of ${ledger.length} commercial sites`,
+        year: webProject.year,
+        role: webProject.role,
+        summary: webProject.intro,
+        note: 'Codeista AI capture from shipped delivery; scope varies across engagements.',
+        projectId: webProject.id,
+        links: [{ label: "Visit website", url: "https://www.codeistaai.com/" }, ...webProject.links],
+        visual: { kind: "image", src: "/assets/explore-sites/codeistaai.webp", alt: "Codeista AI homepage", aspect: "16 / 10" },
+        accent: '#3d3369',
       },
-      ...buildSites.filter(site => !featuredBuildIds.has(site.id)).map(site => websiteItem(site)),
+      websiteItem("dhrugo", "Dhrugo", "https://dhrugo.com/", "dhrugo.webp"),
+      websiteItem("s8analytics", "S8 Analytics", "https://www.s8analytics.com/", "s8analytics.webp"),
+      websiteItem("skorsi", "Skorsi", "https://www.skorsi.com/", "skorsi.webp"),
+      websiteItem("llarron", "Llarron", "https://www.llarron.com/", "llarron.webp"),
+      websiteItem("ralsha", "Ralsha", "https://www.ralsha.com/", "ralsha.webp"),
+      websiteItem("noblecare4u", "Noble Care", "https://www.noblecare4u.com/", "noblecare4u.webp"),
+      websiteItem("advioraconsulting", "Adviora Consulting", "https://www.advioraconsulting.com/", "advioraconsulting.webp"),
+      websiteItem("eazyvegan", "EazyVegan", "https://eazyvegan.lovable.app/", "eazyvegan.webp"),
+      websiteItem("rishuslay", "Rishu Aggarwal \u00b7 Portfolio", "https://rishuslay.vercel.app/", "rishuslay.webp"),
     ],
   },
   {
