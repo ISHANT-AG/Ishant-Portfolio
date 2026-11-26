@@ -215,10 +215,6 @@ export function Teaching() {
                   <span className="course-domain">{c.domain}</span>
                   <h4>{c.title}</h4>
                   <p>{c.summary}</p>
-                  <div className="course-assignment">
-                    <span className="assignment-label">Assignment:</span>
-                    <span>{c.assignment}</span>
-                  </div>
                   <a href="#gallery" className="course-explore-link">
                     Explore in gallery <ArrowUpRight size={14} />
                   </a>
