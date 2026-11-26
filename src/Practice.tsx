@@ -30,12 +30,15 @@ const liveSessions = [
 ];
 
 const learnerLogos = [
-  { name: 'TCS', file: '/assets/learners/tcs.webp' },
-  { name: 'Cisco', file: '/assets/learners/cisco.webp' },
-  { name: 'Google', file: '/assets/learners/google.webp' },
-  { name: 'IBM', file: '/assets/learners/ibm.webp' },
-  { name: 'Infosys', file: '/assets/learners/infosys.webp' },
-  { name: 'Microsoft', file: '/assets/learners/microsoft.webp' },
+  { name: 'Google', file: '/assets/learners/google.svg' },
+  { name: 'Microsoft', file: '/assets/learners/microsoft.svg' },
+  { name: 'IBM', file: '/assets/learners/ibm.svg' },
+  { name: 'Cisco', file: '/assets/learners/cisco.svg' },
+  { name: 'Accenture', file: '/assets/learners/accenture.svg' },
+  { name: 'Infosys', file: '/assets/learners/infosys.svg' },
+  { name: 'TCS', file: '/assets/learners/tcs.svg' },
+  { name: 'HCLTech', file: '/assets/learners/hcl.svg' },
+  { name: 'HP', file: '/assets/learners/hp.svg' },
 ];
 
 const recordedCourses = [
@@ -231,18 +234,12 @@ export function Teaching() {
             <h3>Learners from top companies across the globe</h3>
             <p>Thousands of working professionals and leaders from top industry enterprises learn AI and communication at Clapingo:</p>
           </div>
-          <div className="learner-marquee-wrap" aria-label="Logos of companies where learners work">
-            <div className="learner-marquee-track">
-              {[0, 1].map((copy) => (
-                <div key={copy} className="learner-marquee-group" aria-hidden={copy === 1 || undefined}>
-                  {learnerLogos.map((logo) => (
-                    <div key={logo.name} className="learner-logo-pill">
-                      <img src={logo.file} alt={logo.name} title={logo.name} loading="lazy" />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
+          <div className="learner-logos-grid" aria-label="Logos of top companies where learners work">
+            {learnerLogos.map((logo) => (
+              <div key={logo.name} className="learner-logo-pill" title={logo.name}>
+                <img src={logo.file} alt={logo.name} loading="lazy" />
+              </div>
+            ))}
           </div>
         </div>
 
