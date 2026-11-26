@@ -1347,3 +1347,25 @@ html.lenis, .cat-stream-scroll.lenis { scroll-behavior: auto; }
 .build-posts h5 { margin: 0; font-size: clamp(1.25rem, 3vw, 2rem); }
 .build-posts p { max-width: 68ch; white-space: pre-line; overflow-wrap: anywhere; line-height: 1.6; }
 .build-posts a { text-decoration: underline; text-underline-offset: .2em; }
+
+.explore-card-caption { margin-top: 14px; text-align: left; }
+.explore-card-caption h4 { margin: 0; font-size: clamp(18px, 2vw, 24px); }
+.explore-card-caption p { margin: 5px 0 0; max-width: 65ch; color: #514e4c; line-height: 1.5; }
+
+@media (min-width: 760px) {
+  .cat-stream-scroll[data-category='automate'] .cat-stream-list {
+    width: min(100%, 1100px);
+  }
+  .cat-stream-scroll[data-category='automate'] .cat-stream-card {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(24px, 4vw, 56px);
+    width: 100%;
+  }
+  .explore-card-caption { margin-top: 0; }
+}
+
+.cat-stream-frame:has(.explore-play) img { object-fit: contain; }
+.explore-play { position: absolute; bottom: 12px; left: 12px; z-index: 2; padding: 6px 12px; color: white; background: #202020; border-radius: 16px; }
+.explore-player { display: block; width: 100%; max-height: 70svh; object-fit: contain; background: #131313; }

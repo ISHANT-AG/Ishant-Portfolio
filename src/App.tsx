@@ -51,7 +51,7 @@ const clientMarks = [
   ['Central Filings','central-light.webp'], ['Llarron','llarron.webp'], ['Ralsha','ralsha.webp'],
   ['JIB Solar','jib.webp'], ['Noble Care','noble.webp'], ['Dhrugo','dhrugo.webp'],
   ['Upskillbee','upskill.svg'], ['K2WFinance','k2.webp'],
-  ['Krazlo','krazlo.webp'], ['S8 Analytics','s8.webp'],
+  ['Krazlo','krazlo.webp'], ['S8 Analytics','s8.webp'], ['Lalima','lalima.webp'],
 ];
 
 function ClientStrip({motion}:{motion:boolean}) {

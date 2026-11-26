@@ -36,6 +36,7 @@ export type GalleryItem = {
   summary: string;
   note?: string;
   projectId?: string;
+  videoSrc?: string;
   links: { label: string; url: string }[];
   visual: GalleryVisual;
   accent: string;
@@ -85,7 +86,6 @@ const ffcsProject = byId('ffcs');
 const sonyProject = byId('sony');
 const fitProject = byId('fit');
 const dubaiProject = byId('dubai');
-const aiProject = byId('ai');
 
 function websiteItem(id: string, name: string, url: string, cover: string): GalleryItem {
   return {
@@ -844,78 +844,425 @@ export const galleryCategories: GalleryCategory[] = [
         accent: '#597467',
       },
       {
-        id: 'explore-recorded-courses',
-        categoryId: 'automate',
-        title: 'Producing four paid AI courses',
-        subtitle: 'Clapingo · Recorded courses',
-        year: '',
-        role: 'Solo course production',
-        summary: 'I produced four recorded courses covering image generation, presentations, prompt engineering and video. I created the lessons and finished videos, using an AI presenter and generated voiceover.',
-        links: [],
-        visual: {
-          kind: 'image',
-          src: '/assets/posters/video-phase-one.webp',
-          alt: 'Course artwork for Video Using AI, Phase 1',
+        "id": "explore-video",
+        "categoryId": "automate",
+        "title": "Video Using AI · Phase 1",
+        "subtitle": "Video Using AI · Phase 1",
+        "role": "",
+        "year": "",
+        "summary": "I wrote the lessons and produced the recorded demos for Clapingo’s introductory AI video course.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/video.webp",
+          "alt": "Video Using AI · Phase 1"
         },
-        accent: '#86639e',
+        "accent": "#86639e"
       },
       {
-        id: 'automate-blog-tool',
-        categoryId: 'automate',
-        title: 'Clapingo AI Blog Image Tool',
-        subtitle: aiProject.subtitle,
-        year: aiProject.year,
-        role: aiProject.role,
-        summary: aiProject.intro,
-        note: aiProject.note,
-        projectId: aiProject.id,
-        links: [aiProject.links[0]],
-        visual: {
-          kind: 'plate',
-          plateId: 'ai-blog',
-          alt: 'Illustrative workflow diagram of the Clapingo AI Blog Image Tool reducing daily blog-visual production from 120 to 15 minutes',
-          captionBadge: 'ILLUSTRATIVE WORKFLOW DIAGRAM',
+        "id": "explore-slides",
+        "categoryId": "automate",
+        "title": "The AI Presentation Edge",
+        "subtitle": "The AI Presentation Edge",
+        "role": "",
+        "year": "",
+        "summary": "I created a course that shows learners how to take a rough idea, organize the story and build a slide deck with AI.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/slides.webp",
+          "alt": "The AI Presentation Edge"
         },
-        accent: '#7c6dc7',
+        "accent": "#86639e"
       },
       {
-        id: 'automate-thumbnail',
-        categoryId: 'automate',
-        title: 'Thumbnail Engine',
-        subtitle: 'Brand-consistent YouTube visual production',
-        year: aiProject.year,
-        role: 'Solo · React, TypeScript & creative system design',
-        summary:
-          'A dedicated creative utility built to produce brand-consistent YouTube thumbnails quickly while keeping human framing and final editorial review in control.',
-        note: 'Illustrative system overview; inspect the public repository for full implementation.',
-        projectId: aiProject.id,
-        links: [aiProject.links[1]],
-        visual: {
-          kind: 'plate',
-          plateId: 'ai-thumb',
-          alt: 'Illustrative composition plate for the Thumbnail Engine creative system',
-          captionBadge: 'ILLUSTRATIVE SYSTEM PLATE',
+        "id": "explore-prompts",
+        "categoryId": "automate",
+        "title": "The Prompt Engineering Mastery Program",
+        "subtitle": "The Prompt Engineering Mastery Program",
+        "role": "",
+        "year": "",
+        "summary": "I developed a program that introduces generative AI and teaches learners how to give a model clearer instructions.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/prompts.webp",
+          "alt": "The Prompt Engineering Mastery Program"
         },
-        accent: '#916ec2',
+        "accent": "#86639e"
       },
       {
-        id: 'automate-n8n',
-        categoryId: 'automate',
-        title: 'n8n Discovery & Lead Pipelines',
-        subtitle: 'Connected workflows with structured handoffs',
-        year: aiProject.year,
-        role: 'Solo · n8n and Apify integration',
-        summary:
-          'I connected n8n and Apify to search Google Maps for businesses by category and location, remove duplicate entries and export the results to a spreadsheet.',
-        note: 'Illustrative architecture diagram of described n8n workflows.',
-        links: [{ label: 'See the n8n workflow', url: 'https://www.linkedin.com/feed/update/urn:li:activity:7511341739245391872/' }],
-        visual: {
-          kind: 'plate',
-          plateId: 'ai-n8n',
-          alt: 'Illustrative pipeline architecture for n8n business discovery, deduplication and lead handoff workflows',
-          captionBadge: 'ILLUSTRATIVE PIPELINE DIAGRAM',
+        "id": "explore-images",
+        "categoryId": "automate",
+        "title": "AI Image Formula",
+        "subtitle": "AI Image Formula",
+        "role": "",
+        "year": "",
+        "summary": "I created lessons on describing a subject, setting and visual style so learners could turn their ideas into AI-generated images.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/images.webp",
+          "alt": "AI Image Formula"
         },
-        accent: '#c47d78',
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-medynex",
+        "categoryId": "automate",
+        "title": "Medynex app tutorial",
+        "subtitle": "Medynex app tutorial",
+        "role": "",
+        "year": "",
+        "summary": "I edited a step-by-step walkthrough that shows how to sign in, find reports and book an appointment. The timeline shows how I matched each instruction to the relevant app screen.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/medynex.webp",
+          "alt": "Medynex app tutorial"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-smart-ats",
+        "categoryId": "automate",
+        "title": "Smart ATS product walkthrough",
+        "subtitle": "Smart ATS product walkthrough",
+        "role": "",
+        "year": "",
+        "summary": "I edited a demo of the hiring platform, moving from the opening title into screen recordings of the employer and job seeker workflows.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/smart-ats.webp",
+          "alt": "Smart ATS product walkthrough"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-phone-stand",
+        "categoryId": "automate",
+        "title": "Phone stand · CAD design",
+        "subtitle": "Phone stand · CAD design",
+        "role": "",
+        "year": "",
+        "summary": "I modeled a desktop phone stand in SolidWorks. The angled back supports the phone, a small front lip holds it in place, and the folded profile forms the base.",
+        "links": [
+          {
+            "label": "Download SolidWorks part",
+            "url": "/assets/explore/phone-stand.SLDPRT"
+          }
+        ],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/phone-stand.webp",
+          "alt": "Phone stand · CAD design"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-phir-utho",
+        "categoryId": "automate",
+        "title": "Phir Utho · Vertical video",
+        "subtitle": "Phir Utho · Vertical video",
+        "role": "",
+        "year": "",
+        "summary": "I edited this illustrated vertical short with Hindi text, sequencing the scenes for a phone screen.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/phir-utho.webp",
+          "alt": "Phir Utho · Vertical video"
+        },
+        "accent": "#86639e",
+        "videoSrc": "/assets/explore/phir-utho.mp4"
+      },
+      {
+        "id": "explore-reel-two",
+        "categoryId": "automate",
+        "title": "ISH Logs · Portrait study",
+        "subtitle": "ISH Logs · Portrait study",
+        "role": "",
+        "year": "",
+        "summary": "I used a tightly framed face as the focus of this vertical reel edit.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/reel-two.webp",
+          "alt": "ISH Logs · Portrait study"
+        },
+        "accent": "#86639e",
+        "videoSrc": "/assets/explore/reel-two.mp4"
+      },
+      {
+        "id": "explore-reel-three",
+        "categoryId": "automate",
+        "title": "ISH Logs · Flight through clouds",
+        "subtitle": "ISH Logs · Flight through clouds",
+        "role": "",
+        "year": "",
+        "summary": "I built this short around the movement of an aircraft through clouds and into the light.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/reel-three.webp",
+          "alt": "ISH Logs · Flight through clouds"
+        },
+        "accent": "#86639e",
+        "videoSrc": "/assets/explore/reel-three.mp4"
+      },
+      {
+        "id": "explore-reel-one",
+        "categoryId": "automate",
+        "title": "ISH Logs · Morning light",
+        "subtitle": "ISH Logs · Morning light",
+        "role": "",
+        "year": "",
+        "summary": "I edited a quiet scene around a cup by a window, using the rising steam and sunlight to carry the shot.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/reel-one.webp",
+          "alt": "ISH Logs · Morning light"
+        },
+        "accent": "#86639e",
+        "videoSrc": "/assets/explore/reel-one.mp4"
+      },
+      {
+        "id": "explore-ai-film",
+        "categoryId": "automate",
+        "title": "AI video · Character scene",
+        "subtitle": "AI video · Character scene",
+        "role": "",
+        "year": "",
+        "summary": "I created a widescreen AI video built around a character in a dimly lit setting.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/ai-film.webp",
+          "alt": "AI video · Character scene"
+        },
+        "accent": "#86639e",
+        "videoSrc": "/assets/explore/ai-film.mp4"
+      },
+      {
+        "id": "explore-logo-motion",
+        "categoryId": "automate",
+        "title": "AI video · Logo reveal",
+        "subtitle": "AI video · Logo reveal",
+        "role": "",
+        "year": "",
+        "summary": "I used AI animation to draw a glowing logo out of trails of golden light.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/logo-motion.webp",
+          "alt": "AI video · Logo reveal"
+        },
+        "accent": "#86639e",
+        "videoSrc": "/assets/explore/logo-motion.mp4"
+      },
+      {
+        "id": "explore-ai-vertical",
+        "categoryId": "automate",
+        "title": "AI video · Animated character",
+        "subtitle": "AI video · Animated character",
+        "role": "",
+        "year": "",
+        "summary": "I created a vertical AI clip featuring a small animated character carrying bricks through a construction site.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/ai-vertical.webp",
+          "alt": "AI video · Animated character"
+        },
+        "accent": "#86639e",
+        "videoSrc": "/assets/explore/ai-vertical.mp4"
+      },
+      {
+        "id": "explore-practice",
+        "categoryId": "automate",
+        "title": "Live practice · Presentations with AI",
+        "subtitle": "Live practice · Presentations with AI",
+        "role": "",
+        "year": "",
+        "summary": "I led a live Clapingo class where learners could try the AI presentation workflow and ask questions as they built their slides.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/practice.webp",
+          "alt": "Live practice · Presentations with AI"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-headshots",
+        "categoryId": "automate",
+        "title": "Live practice · LinkedIn headshots",
+        "subtitle": "Live practice · LinkedIn headshots",
+        "role": "",
+        "year": "",
+        "summary": "I demonstrated how to prompt for studio lighting and professional clothing while preserving the person’s features in a LinkedIn headshot.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/headshots.webp",
+          "alt": "Live practice · LinkedIn headshots"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-bonuses",
+        "categoryId": "automate",
+        "title": "Clapingo bonus resources",
+        "subtitle": "Clapingo bonus resources",
+        "role": "",
+        "year": "",
+        "summary": "I contributed to Clapingo’s bonus library, including prompt bundles, AI tool guides and job-search resources.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/bonuses.webp",
+          "alt": "Clapingo bonus resources"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-meet",
+        "categoryId": "automate",
+        "title": "International client meetings",
+        "subtitle": "International client meetings",
+        "role": "",
+        "year": "",
+        "summary": "I met clients from around the world on Google Meet to discuss their needs and close deals.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/meet.webp",
+          "alt": "International client meetings"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-walkthrough",
+        "categoryId": "automate",
+        "title": "Client walkthroughs",
+        "subtitle": "Client walkthroughs",
+        "role": "",
+        "year": "",
+        "summary": "I shared my screen to explain the work and answer client questions.",
+        "links": [],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/walkthrough.webp",
+          "alt": "Client walkthroughs"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-leads",
+        "categoryId": "automate",
+        "title": "Google Maps Lead Finder",
+        "subtitle": "Google Maps Lead Finder",
+        "role": "",
+        "year": "",
+        "summary": "I built an n8n and Apify workflow that finds businesses by category and location and exports the results to Excel.",
+        "links": [
+          {
+            "label": "Read on LinkedIn",
+            "url": "https://lnkd.in/p/gGayxcwk"
+          }
+        ],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/leads.webp",
+          "alt": "Google Maps Lead Finder"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-batch",
+        "categoryId": "automate",
+        "title": "Automating batch production",
+        "subtitle": "Automating batch production",
+        "role": "",
+        "year": "",
+        "summary": "I built a workflow that filters incoming files, sorts the outputs into folders and checks each one before upload. A batch expected to take nearly two weeks took one day.",
+        "links": [
+          {
+            "label": "Read on LinkedIn",
+            "url": "https://lnkd.in/p/gi-p2Cg9"
+          }
+        ],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/batch.webp",
+          "alt": "Automating batch production"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-thumbnails",
+        "categoryId": "automate",
+        "title": "Building a thumbnail engine",
+        "subtitle": "Building a thumbnail engine",
+        "role": "",
+        "year": "",
+        "summary": "I built a tool for Clapingo that turns uploaded brand assets into YouTube thumbnails, cutting repetitive layout work.",
+        "links": [
+          {
+            "label": "Read on LinkedIn",
+            "url": "https://lnkd.in/p/g5bMrnXY"
+          }
+        ],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/thumbnails.webp",
+          "alt": "Building a thumbnail engine"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-presentation-post",
+        "categoryId": "automate",
+        "title": "How I make presentations with AI",
+        "subtitle": "How I make presentations with AI",
+        "role": "",
+        "year": "",
+        "summary": "I shared how I use AI to research a topic and structure a deck, leaving more time to refine the ideas on each slide.",
+        "links": [
+          {
+            "label": "Read on LinkedIn",
+            "url": "https://lnkd.in/p/gg_9UcsV"
+          }
+        ],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/presentation-post.webp",
+          "alt": "How I make presentations with AI"
+        },
+        "accent": "#86639e"
+      },
+      {
+        "id": "explore-blog-post",
+        "categoryId": "automate",
+        "title": "Behind the blog image tool",
+        "subtitle": "Behind the blog image tool",
+        "role": "",
+        "year": "",
+        "summary": "I built an internal tool for Clapingo that cut daily production time for blog images from about two hours to 15 minutes.",
+        "links": [
+          {
+            "label": "Read on LinkedIn",
+            "url": "https://lnkd.in/p/g_htYKvj"
+          }
+        ],
+        "visual": {
+          "kind": "image",
+          "src": "/assets/explore/blog-post.webp",
+          "alt": "Behind the blog image tool"
+        },
+        "accent": "#86639e"
       },
     ],
   },

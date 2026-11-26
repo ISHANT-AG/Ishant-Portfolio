@@ -730,7 +730,7 @@ export default function Ring({
                           }}
                           onMouseMove={(e) => updateCursorPosition(e.clientX, e.clientY)}
                           onMouseLeave={() => setCursorMode('none')}
-                          aria-label={`Inspect ${item.title}`}
+                          aria-label={`${item.videoSrc ? "Play" : "Inspect"} ${item.title}`}
                         >
                           <div
                             className="cat-stream-frame"
@@ -743,9 +743,15 @@ export default function Ring({
                           >
                             <img src={src} alt={item.visual.alt} loading={idx === 0 ? 'eager' : 'lazy'} />
                             <canvas className="design-scroll-surface" aria-hidden="true" />
+                            {item.videoSrc && <span className="explore-play">▶ Play video</span>}
                           </div>
                         </button>
-                        <span className="design-work-tag">{workTags[item.id] || item.subtitle || item.title}</span>
+                        {item.categoryId === 'automate' ? (
+                          <div className="explore-card-caption">
+                            <h4>{item.title}</h4>
+                            <p>{item.summary}</p>
+                          </div>
+                        ) : (<span className="design-work-tag">{workTags[item.id] || item.subtitle || item.title}</span>)}
                       </article>
                     );
                   })}
@@ -795,7 +801,7 @@ export default function Ring({
                         onMouseLeave={() => setCursorMode('none')}
                         onFocus={() => setActiveItemIdx(idx)}
                         onClick={() => handleOpenZoom(idx)}
-                        aria-label={`Inspect ${item.title}`}
+                        aria-label={`${item.videoSrc ? "Play" : "Inspect"} ${item.title}`}
                       >
                         <img src={src} alt={item.visual.alt} />
                         <span className="cat-strip-index mono">
@@ -855,6 +861,8 @@ export default function Ring({
                       src={zoomedItem.links[0].url} sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
                       allowFullScreen />
                   )
+                ) : zoomedItem.videoSrc ? (
+                  <video className="explore-player" src={zoomedItem.videoSrc} poster={itemMediaMap.get(zoomedItem.id)} controls autoPlay playsInline aria-label={zoomedItem.title} />
                 ) : (
                 <div
                   className="cat-zoom-media-wrap"
@@ -879,6 +887,12 @@ export default function Ring({
                     <strong>{workTags[zoomedItem.id] || zoomedItem.title}</strong>
                     {zoomedItem.id === 'build-ffcs' && <span>Co-built with Prisha Sharma · 2,500+ users during FFCS week</span>}
                     <a href={zoomedItem.links[0].url} target="_blank" rel="noreferrer">{zoomedItem.id === 'build-krazlo' ? 'Page capture · Open original ↗' : 'Open in new tab ↗'}</a>
+                  </div>
+                ) : zoomedItem.categoryId === 'automate' ? (
+                  <div className="build-preview-caption">
+                    <strong>{zoomedItem.title}</strong>
+                    <span>{zoomedItem.summary}</span>
+                    {zoomedItem.links.map(link => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>)}
                   </div>
                 ) : (<span className="design-work-tag zoom-tag">{workTags[zoomedItem.id] || zoomedItem.title}</span>)}
               </div>
