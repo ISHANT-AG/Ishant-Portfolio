@@ -523,7 +523,7 @@ export default function Ring({
 
     cards.forEach((card, i) => {
       const rect = card.getBoundingClientRect();
-      const naturalTop = container.dataset.category === 'design' ? listTop + card.offsetTop : rect.top;
+      const naturalTop = listTop + card.offsetTop;
       const center = naturalTop + rect.height * 0.5;
       const dist = Math.abs(center - midY);
       if (dist < closestDist) {
@@ -557,7 +557,7 @@ export default function Ring({
 
   useEffect(() => {
     const view = streamScrollRef.current;
-    if (view && activeCategory.id !== 'automate' && motion && layoutMode === 'stream' && galleryState === 'categoryGallery') {
+    if (view && motion && layoutMode === 'stream' && galleryState === 'categoryGallery') {
       return animateDesignScroll(view);
     }
   }, [motion, layoutMode, galleryState, activeCategory.id]);
@@ -742,7 +742,6 @@ export default function Ring({
                             }}
                           >
                             <img src={src} alt={item.visual.alt} loading={idx === 0 ? 'eager' : 'lazy'} />
-                            {item.categoryId !== 'automate' && <canvas className="design-scroll-surface" aria-hidden="true" />}
                             {item.videoSrc && <span className="explore-play">▶ Play video</span>}
                           </div>
                         </button>
