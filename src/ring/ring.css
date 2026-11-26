@@ -1366,6 +1366,18 @@ html.lenis, .cat-stream-scroll.lenis { scroll-behavior: auto; }
   .explore-card-caption { margin-top: 0; }
 }
 
-.cat-stream-frame:has(.explore-play) img { object-fit: contain; }
+.cat-stream-scroll[data-category='automate'] .cat-stream-frame {
+  aspect-ratio: auto;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+.cat-stream-scroll[data-category='automate'] .cat-stream-frame img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 76svh;
+  object-fit: contain;
+}
 .explore-play { position: absolute; bottom: 12px; left: 12px; z-index: 2; padding: 6px 12px; color: white; background: #202020; border-radius: 16px; }
-.explore-player { display: block; width: 100%; max-height: 70svh; object-fit: contain; background: #131313; }
+.explore-player { display: block; margin-inline: auto; width: auto; height: auto; max-width: 100%; max-height: 70svh; object-fit: contain; background: #131313; }

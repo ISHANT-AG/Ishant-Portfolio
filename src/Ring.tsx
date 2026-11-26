@@ -557,7 +557,7 @@ export default function Ring({
 
   useEffect(() => {
     const view = streamScrollRef.current;
-    if (view && motion && layoutMode === 'stream' && galleryState === 'categoryGallery') {
+    if (view && activeCategory.id !== 'automate' && motion && layoutMode === 'stream' && galleryState === 'categoryGallery') {
       return animateDesignScroll(view);
     }
   }, [motion, layoutMode, galleryState, activeCategory.id]);
@@ -742,7 +742,7 @@ export default function Ring({
                             }}
                           >
                             <img src={src} alt={item.visual.alt} loading={idx === 0 ? 'eager' : 'lazy'} />
-                            <canvas className="design-scroll-surface" aria-hidden="true" />
+                            {item.categoryId !== 'automate' && <canvas className="design-scroll-surface" aria-hidden="true" />}
                             {item.videoSrc && <span className="explore-play">▶ Play video</span>}
                           </div>
                         </button>
