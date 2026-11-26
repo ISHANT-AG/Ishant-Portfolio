@@ -1,13 +1,76 @@
-import { ArrowUpRight, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import './practice.css';
 
 const recommendations = 'https://www.linkedin.com/in/ishant-agarwal-266b22364/details/recommendations/';
 const foundersTable = 'https://www.linkedin.com/feed/update/urn:li:activity:7479411279942590464/';
+
+const liveSessions = [
+  {
+    title: 'Character Consistency & AI Video',
+    topic: 'Narrative AI Filmmaking',
+    description: 'Guiding corporate professionals on maintaining character likeness and style across three distinct scenes in a 24-second AI film prompt sequence.',
+    image: '/assets/clapingo-live-session.webp',
+    label: 'Session 01 · Live prompt architecture',
+  },
+  {
+    title: 'Professional Headshot Prompt Engineering',
+    topic: 'Visual Identity Preservation',
+    description: 'Demonstrating structured Google Docs prompt architecture to preserve facial contours, studio lighting, and wardrobe in generative profile imagery.',
+    image: '/assets/clapingo-session-headshot.webp',
+    label: 'Session 02 · Identity prompts & assignments',
+  },
+  {
+    title: 'Presentation & Deck Architecture using AI',
+    topic: 'Executive Storytelling',
+    description: 'Live hands-on practice session teaching senior executives how to transform raw outlines into production-ready slide decks with AI.',
+    image: '/assets/clapingo-session-ppt.webp',
+    label: 'Session 03 · Live practice & Q&A',
+  },
+];
+
+const learnerLogos = [
+  { name: 'TCS', file: '/assets/learners/tcs.webp' },
+  { name: 'Cisco', file: '/assets/learners/cisco.webp' },
+  { name: 'Google', file: '/assets/learners/google.webp' },
+  { name: 'IBM', file: '/assets/learners/ibm.webp' },
+  { name: 'Infosys', file: '/assets/learners/infosys.webp' },
+  { name: 'Microsoft', file: '/assets/learners/microsoft.webp' },
+];
+
 const recordedCourses = [
-  'AI Image Formula to Unlock Unlimited Ideas',
-  'The AI Presentation Edge',
-  'The Prompt Engineering Mastery Program',
-  'Video Using AI — Phase 1',
+  {
+    id: 'explore-images',
+    title: 'AI Image Formula to Unlock Unlimited Ideas',
+    domain: 'Visual Synthesis & Art Direction',
+    summary: 'A comprehensive deep-dive into lighting mechanics, camera optics, composition, and prompt grammar to turn rough ideas into publication-ready imagery.',
+    image: '/assets/explore/images.webp',
+    assignment: 'Brand campaign asset generation & prompt critique',
+  },
+  {
+    id: 'explore-slides',
+    title: 'The AI Presentation Edge',
+    domain: 'Executive Slide Decks & Narrative',
+    summary: 'Transforming unstructured thoughts into clear narrative arcs, executive slide layouts, and persuasive visual proposals with generative AI.',
+    image: '/assets/explore/slides.webp',
+    assignment: 'End-to-end 10-slide executive pitch deck creation',
+  },
+  {
+    id: 'explore-prompts',
+    title: 'The Prompt Engineering Mastery Program',
+    domain: 'System Prompts & Logical Framing',
+    summary: 'Deep-dive into multi-turn reasoning, role conditioning, few-shot prompting, and strict constraints to eliminate model hallucination.',
+    image: '/assets/explore/prompts.webp',
+    assignment: 'Corporate document automation & custom prompt systems',
+  },
+  {
+    id: 'explore-video',
+    title: 'Video Using AI — Phase 1',
+    domain: 'Cinematic AI Video & Motion',
+    summary: 'End-to-end production pipeline from character sheet turnarounds to multi-shot prompts, camera pacing, and final timeline editing.',
+    image: '/assets/explore/video.webp',
+    assignment: '30-second multi-scene narrative brand video',
+  },
 ];
 
 export function People() {
@@ -36,28 +99,138 @@ export function People() {
 }
 
 export function Teaching() {
+  const [activeSession, setActiveSession] = useState(0);
+  const current = liveSessions[activeSession];
+
   return (
     <section className="practice-band practice-teaching" id="teaching" aria-labelledby="teaching-title">
-      <div className="practice-shell practice-teaching-grid">
-        <div className="practice-teaching-copy">
-          <h2 className="practice-heading" id="teaching-title">Teaching AI <br/><em>at Clapingo.</em></h2>
-          <p>In one live class, I took a character reference and showed the group how to carry it through three scenes of a 24-second AI film.</p>
-          <p>My first two sessions each drew 200+ participants, including corporate professionals aged 50 and up.</p>
+      <div className="practice-shell">
+        <div className="practice-teaching-grid">
+          <div className="practice-teaching-copy">
+            <span className="practice-eyebrow">AI Trainer &amp; Lead Creative Developer · Clapingo</span>
+            <h2 className="practice-heading" id="teaching-title">Teaching AI <br/><em>at Clapingo.</em></h2>
+            <p className="practice-lead">
+              As an AI Trainer at Clapingo, I conduct regular live training sessions, teaching working professionals, senior executives, and leaders how to integrate generative AI into their daily work.
+            </p>
+            <div className="teaching-metrics">
+              <div className="metric-card">
+                <span className="metric-number">200+</span>
+                <strong className="metric-label">Premium learners per cohort</strong>
+                <small>Corporate professionals aged 50+ &amp; industry leaders</small>
+              </div>
+              <div className="metric-card">
+                <span className="metric-number">100%</span>
+                <strong className="metric-label">Practical, graded assignments</strong>
+                <small>Curriculum &amp; prompts designed by me</small>
+              </div>
+            </div>
+            <p>
+              Beyond live lectures, I design the curriculum and structured assignments — from writing precision prompt systems to building 10-slide presentation decks and producing multi-scene AI videos.
+            </p>
+          </div>
+
+          <div className="practice-session-stage">
+            <div className="session-tab-bar" role="tablist" aria-label="Live training sessions">
+              {liveSessions.map((s, i) => (
+                <button
+                  key={s.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeSession === i}
+                  className={`session-tab-btn ${activeSession === i ? 'is-active' : ''}`}
+                  onClick={() => setActiveSession(i)}
+                >
+                  <span className="tab-idx">0{i + 1}</span>
+                  <span className="tab-name">{s.title.split('&')[0].trim()}</span>
+                </button>
+              ))}
+            </div>
+
+            <figure className="practice-session">
+              <a href={current.image} target="_blank" rel="noreferrer" aria-label={`Enlarge ${current.title}`}>
+                <img
+                  src={current.image}
+                  width="1024"
+                  height="588"
+                  loading="lazy"
+                  alt={`Ishant teaching ${current.title} live at Clapingo`}
+                  key={current.image}
+                />
+              </a>
+              <figcaption>
+                <div>
+                  <strong>{current.title}</strong>
+                  <span>{current.description}</span>
+                </div>
+                <a className="practice-link" href={current.image} target="_blank" rel="noreferrer" aria-label="View the full-size teaching image">
+                  Enlarge <ArrowUpRight size={14} />
+                </a>
+              </figcaption>
+            </figure>
+          </div>
         </div>
-        <figure className="practice-session">
-          <a href="/assets/clapingo-live-session.webp" target="_blank" rel="noreferrer" aria-label="Enlarge the actual live session image">
-            <img src="/assets/clapingo-live-session.webp" width="1600" height="868" loading="lazy" alt="Ishant teaching on camera alongside the shared character sheet and three-scene video prompt."/>
-          </a>
-          <figcaption><span>Live class · Character consistency and AI video</span><a className="practice-link" href="/assets/clapingo-live-session.webp" target="_blank" rel="noreferrer" aria-label="View the full-size teaching image">Enlarge <ArrowUpRight size={14}/></a></figcaption>
-        </figure>
-        <div className="practice-curriculum">
-          <h3>Four recorded courses</h3>
-          <div>
-            <p>I wrote the lessons, built the decks and screen demos, and edited the final videos. The on-screen presenter and voiceover were AI-generated.</p>
-            <details><summary><span>Course titles</span><Plus size={16} aria-hidden="true"/></summary>
-              <ol>{recordedCourses.map(title => <li key={title}>{title}</li>)}</ol>
-            </details>
-            <p className="practice-in-progress">I’m also developing Clapingo’s AI Growth &amp; Automation Programme, which pairs live teaching with guided practice and assignments.</p>
+
+        {/* Global Enterprise Learners Banner */}
+        <div className="teaching-learners-banner">
+          <div className="learners-banner-head">
+            <span className="learners-badge">TRUSTED BY PROFESSIONALS</span>
+            <h3>Learners from top companies across the globe</h3>
+            <p>Thousands of working professionals and leaders from top industry enterprises learn AI and communication at Clapingo:</p>
+          </div>
+          <div className="learner-marquee-wrap" aria-label="Logos of companies where learners work">
+            <div className="learner-marquee-track">
+              {[0, 1].map((copy) => (
+                <div key={copy} className="learner-marquee-group" aria-hidden={copy === 1 || undefined}>
+                  {learnerLogos.map((logo) => (
+                    <div key={logo.name} className="learner-logo-pill">
+                      <img src={logo.file} alt={logo.name} title={logo.name} loading="lazy" />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Four Detailed Recorded Courses */}
+        <div className="practice-courses-section">
+          <div className="courses-section-header">
+            <div>
+              <span className="courses-badge">COMPREHENSIVE CURRICULUM</span>
+              <h3>Four In-Depth Recorded Courses</h3>
+            </div>
+            <p>
+              I authored the lessons, built the presentation decks and demo screens, created the student assignments, and directed the recorded video production across four distinct generative AI disciplines:
+            </p>
+          </div>
+
+          <div className="courses-grid">
+            {recordedCourses.map((c, idx) => (
+              <article key={c.id} className="course-card">
+                <div className="course-card-thumb">
+                  <img src={c.image} alt={c.title} loading="lazy" />
+                  <span className="course-number">0{idx + 1}</span>
+                </div>
+                <div className="course-card-body">
+                  <span className="course-domain">{c.domain}</span>
+                  <h4>{c.title}</h4>
+                  <p>{c.summary}</p>
+                  <div className="course-assignment">
+                    <span className="assignment-label">Assignment:</span>
+                    <span>{c.assignment}</span>
+                  </div>
+                  <a href="#gallery" className="course-explore-link">
+                    Explore in gallery <ArrowUpRight size={14} />
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="courses-footer">
+            <p className="practice-in-progress">
+              I’m also developing Clapingo’s advanced <strong>AI Growth &amp; Automation Programme</strong>, combining live masterclasses with guided multi-week practice and portfolio assignments.
+            </p>
           </div>
         </div>
       </div>

@@ -69,6 +69,13 @@ const workTags: Record<string, string> = {
   "build-grip": "GRIP · Interactive bottle",
   "build-katosi": "KATOSI · Music experience",
   // Explore / Automation works
+  "explore-live-video": "Live Masterclass · Character Consistency",
+  "explore-session-headshot": "Live Masterclass · Headshot Prompt Engineering",
+  "explore-session-ppt": "Live Masterclass · AI Presentations",
+  "explore-images": "Recorded Course · AI Image Formula",
+  "explore-slides": "Recorded Course · The AI Presentation Edge",
+  "explore-prompts": "Recorded Course · Prompt Engineering Mastery",
+  "explore-video": "Recorded Course · Video Using AI",
   "automate-blog-tool": "Clapingo AI Blog Tool",
   "automate-thumbnail": "Thumbnail Engine",
   "automate-n8n": "n8n Lead Pipelines",
