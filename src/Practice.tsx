@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import './practice.css';
 
@@ -100,7 +100,15 @@ export function People() {
 
 export function Teaching() {
   const [activeSession, setActiveSession] = useState(0);
-  const current = liveSessions[activeSession];
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setActiveSession((prev) => (prev + 1) % liveSessions.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [isPaused]);
 
   return (
     <section className="practice-band practice-teaching" id="teaching" aria-labelledby="teaching-title">
@@ -130,43 +138,89 @@ export function Teaching() {
           </div>
 
           <div className="practice-session-stage">
-            <div className="session-tab-bar" role="tablist" aria-label="Live training sessions">
-              {liveSessions.map((s, i) => (
-                <button
-                  key={s.title}
-                  type="button"
-                  role="tab"
-                  aria-selected={activeSession === i}
-                  className={`session-tab-btn ${activeSession === i ? 'is-active' : ''}`}
-                  onClick={() => setActiveSession(i)}
-                >
-                  <span className="tab-idx">0{i + 1}</span>
-                  <span className="tab-name">{s.title.split('&')[0].trim()}</span>
-                </button>
-              ))}
-            </div>
-
-            <figure className="practice-session">
-              <a href={current.image} target="_blank" rel="noreferrer" aria-label={`Enlarge ${current.title}`}>
-                <img
-                  src={current.image}
-                  width="1024"
-                  height="588"
-                  loading="lazy"
-                  alt={`Ishant teaching ${current.title} live at Clapingo`}
-                  key={current.image}
-                />
-              </a>
-              <figcaption>
-                <div>
-                  <strong>{current.title}</strong>
-                  <span>{current.description}</span>
+            <figure
+              className="practice-session"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
+              <div className="session-carousel-frame">
+                {liveSessions.map((s, idx) => (
+                  <a
+                    key={s.image}
+                    href={s.image}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Enlarge session ${idx + 1}`}
+                    className={`session-slide ${activeSession === idx ? 'is-active' : ''}`}
+                    tabIndex={activeSession === idx ? 0 : -1}
+                  >
+                    <img
+                      src={s.image}
+                      width="1024"
+                      height="588"
+                      loading={idx === 0 ? 'eager' : 'lazy'}
+                      alt={`Live training session ${idx + 1} at Clapingo`}
+                    />
+                  </a>
+                ))}
+              </div>
+              <figcaption className="session-caption-minimal">
+                <div className="session-dots" role="tablist" aria-label="Session slides">
+                  {liveSessions.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      aria-label={`Jump to session ${i + 1}`}
+                      className={`session-dot ${activeSession === i ? 'is-active' : ''}`}
+                      onClick={() => setActiveSession(i)}
+                    />
+                  ))}
                 </div>
-                <a className="practice-link" href={current.image} target="_blank" rel="noreferrer" aria-label="View the full-size teaching image">
+                <a
+                  className="practice-link"
+                  href={liveSessions[activeSession].image}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="View full-size screenshot"
+                >
                   Enlarge <ArrowUpRight size={14} />
                 </a>
               </figcaption>
             </figure>
+
+            {/* Sample Class Notes & Prompt Sheets */}
+            <div className="teaching-notes-block">
+              <div className="teaching-notes-header">
+                <span className="notes-badge">CLASS MATERIALS</span>
+                <h4>Sample Class Notes &amp; Prompt Sheets</h4>
+                <p>Official reference guides and prompt sheets provided to learners after live practice sessions:</p>
+              </div>
+              <div className="teaching-notes-grid">
+                <a href="/assets/notes-ai-images.pdf" target="_blank" rel="noreferrer" className="note-card">
+                  <div className="note-card-preview">
+                    <img src="/assets/notes-ai-images-preview.webp" alt="Create and edit images with AI class notes" loading="lazy" />
+                  </div>
+                  <div className="note-card-info">
+                    <span className="note-meta">23 Nov 2026 · 5-Page Guide</span>
+                    <strong>Create &amp; edit images with AI</strong>
+                    <p>Headshot prompt sheet, car-wrap &amp; wallpaper styling, and thumbnail editing.</p>
+                    <span className="note-action">Open Notes PDF <ArrowUpRight size={13} /></span>
+                  </div>
+                </a>
+
+                <a href="/assets/notes-ai-presentations.pdf" target="_blank" rel="noreferrer" className="note-card">
+                  <div className="note-card-preview">
+                    <img src="/assets/notes-ai-presentations-preview.webp" alt="Presentations using AI class notes" loading="lazy" />
+                  </div>
+                  <div className="note-card-info">
+                    <span className="note-meta">20 Nov 2026 · 7-Page Guide</span>
+                    <strong>Presentations using AI (PPT S2)</strong>
+                    <p>Outline generation in Gamma, Canva export, CSS brand extraction, and spreadsheet conversion.</p>
+                    <span className="note-action">Open Notes PDF <ArrowUpRight size={13} /></span>
+                  </div>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
