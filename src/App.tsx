@@ -4,7 +4,6 @@ import { ArrowUpRight, ArrowRight, ArrowDown, Copy, Check, X, Mail, Workflow, Pa
 import { projects, tools, type Project } from './data';
 import Mind from './Mind';
 import { People, Teaching, About } from './Practice';
-import { Work, Playground } from './SelectedWork';
 function Github({size=18}:{size?:number}){return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M9 19c-4 1-4-2-6-2m12 5v-3.5c0-1-.1-1.5-.6-2 3.1-.4 6.6-1.5 6.6-7A5.4 5.4 0 0 0 19.5 6a5 5 0 0 0-.1-3.5S18.2 2 15.8 4a13 13 0 0 0-7.6 0C5.8 2 4.6 2.5 4.6 2.5A5 5 0 0 0 4.5 6 5.4 5.4 0 0 0 3 9.5c0 5.5 3.5 6.6 6.6 7-.5.5-.6 1-.6 2V22"/></svg>}
 function Linkedin({size=18}:{size?:number}){return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7m0-10v.2M11 17v-7m0 3c0-4 6-4 6 0v4"/></svg>}
 const Ring=lazy(()=>import('./Ring'));
@@ -113,10 +112,10 @@ export default function App(){
 
  async function copyEmail(){try{await navigator.clipboard.writeText(email);setCopied(true);setCopyError(false);setTimeout(()=>setCopied(false),2200)}catch{setCopyError(true)}}
  return <>
-  <a className="skip-link" href="#work">Skip to selected work</a>
+  <a className="skip-link" href="#gallery">Skip to work gallery</a>
   <header className="site-header">
     <a href="#top" className="wordmark"><span className="ia-mark" aria-hidden="true">ia.</span>Ishant Agarwal</a>
-    <nav aria-label="Main navigation"><a href="#work">Work</a><a href="#playground">Play</a><a href="#about">About</a><a href="#contact" className="nav-contact">Let’s talk <ArrowUpRight size={14}/></a></nav>
+    <nav aria-label="Main navigation"><a href="#gallery">Work</a><a href="#about">About</a><a href="#contact" className="nav-contact">Let’s talk <ArrowUpRight size={14}/></a></nav>
   </header>
   <main id="top">
     <section className="studio-hero" aria-labelledby="intro-title">
@@ -130,9 +129,9 @@ export default function App(){
         <div className="studio-portrait"><img className="portrait" src="/assets/ishant-portrait.webp" width="640" height="700" alt="Ishant Agarwal" fetchPriority="high"/><Mind motion={motion}/></div>
         <button className="studio-sample" onClick={()=>setProjectId('dubai')} aria-label="Open the Team India Properties editorial case study"><span className="sample-prints"><img src="/assets/dubai-spread.webp" alt=""/><img src="/assets/dubai.webp" alt=""/></span><span>Dubai, in print <ArrowUpRight size={14}/></span></button>
       </div>
-      <div className="studio-foot"><span>Design · Development · AI</span><a href="#work">Selected case studies <ArrowDown size={14}/></a></div>
+      <div className="studio-foot"><span>Design · Development · AI</span><a href="#gallery">Selected case studies <ArrowDown size={14}/></a></div>
     </section>
-    <Suspense fallback={<section id="gallery" className="ring-loading" aria-label="Work gallery"><a href="#work">Browse selected projects ↓</a></section>}><Ring motion={motion} onOpen={setProjectId}/></Suspense>
+    <Suspense fallback={<section id="gallery" className="ring-loading" aria-label="Work gallery"><a href="#gallery">Browse selected projects ↓</a></section>}><Ring motion={motion} onOpen={setProjectId}/></Suspense>
     <ClientStrip motion={motion}/>
-    <Work onOpen={setProjectId}/><Playground onOpen={setProjectId}/><Keyboard onOpen={setProjectId}/><People/><Teaching/><About/></main><footer id="contact"><div className="section footer-inner"><a className="contact-headline" href={`mailto:${email}`}>Have a project<br/><em>in mind?</em><ArrowUpRight/></a><div className="contact-bottom"><div><a href={`mailto:${email}`}>{email}</a><button className="copy-button" onClick={copyEmail} aria-label="Copy email address">{copied?<Check size={16}/>:<Copy size={16}/>}</button><span className="copy-status" role="status">{copied?'Copied!':copyError?'Please select the email to copy.':''}</span></div><div className="social-links"><a href={linkedin} target="_blank" rel="noreferrer"><Linkedin size={16}/>LinkedIn <ArrowUpRight size={14}/></a><a href={github} target="_blank" rel="noreferrer"><Github size={16}/>GitHub <ArrowUpRight size={14}/></a><a href={`mailto:${email}`}><Mail size={16}/>Email <ArrowUpRight size={14}/></a></div></div><div className="footer-colophon"><span>© {new Date().getFullYear()} Ishant Agarwal</span><button onClick={()=>setMotion(!motion)} aria-pressed={motion}>{motion?<Pause size={12}/>:<Play size={12}/>} Motion {motion?'on':'off'}</button><a href="#top">Back to top ↑</a></div></div></footer><CaseStudy project={projects.find(p=>p.id===projectId)||null} onClose={()=>setProjectId(null)}/></>
+    <Keyboard onOpen={setProjectId}/><People/><Teaching/><About/></main><footer id="contact"><div className="section footer-inner"><a className="contact-headline" href={`mailto:${email}`}>Have a project<br/><em>in mind?</em><ArrowUpRight/></a><div className="contact-bottom"><div><a href={`mailto:${email}`}>{email}</a><button className="copy-button" onClick={copyEmail} aria-label="Copy email address">{copied?<Check size={16}/>:<Copy size={16}/>}</button><span className="copy-status" role="status">{copied?'Copied!':copyError?'Please select the email to copy.':''}</span></div><div className="social-links"><a href={linkedin} target="_blank" rel="noreferrer"><Linkedin size={16}/>LinkedIn <ArrowUpRight size={14}/></a><a href={github} target="_blank" rel="noreferrer"><Github size={16}/>GitHub <ArrowUpRight size={14}/></a><a href={`mailto:${email}`}><Mail size={16}/>Email <ArrowUpRight size={14}/></a></div></div><div className="footer-colophon"><span>© {new Date().getFullYear()} Ishant Agarwal</span><button onClick={()=>setMotion(!motion)} aria-pressed={motion}>{motion?<Pause size={12}/>:<Play size={12}/>} Motion {motion?'on':'off'}</button><a href="#top">Back to top ↑</a></div></div></footer><CaseStudy project={projects.find(p=>p.id===projectId)||null} onClose={()=>setProjectId(null)}/></>
 }
