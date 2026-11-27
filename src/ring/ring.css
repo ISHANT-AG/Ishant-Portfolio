@@ -1372,12 +1372,13 @@ html.lenis, .cat-stream-scroll.lenis { scroll-behavior: auto; }
   max-width: 100%;
   margin-inline: auto;
 }
-.cat-stream-scroll[data-category='automate'] .cat-stream-frame img {
+.cat-stream-scroll[data-category='automate'] .cat-stream-frame :is(img, video) {
+  display: block;
   width: auto;
   height: auto;
   max-width: 100%;
   max-height: 76svh;
   object-fit: contain;
 }
-.explore-play { position: absolute; bottom: 12px; left: 12px; z-index: 2; padding: 6px 12px; color: white; background: #202020; border-radius: 16px; }
+.cat-strip-slice video { width: 100%; height: 100%; object-fit: contain; }
 .explore-player { display: block; margin-inline: auto; width: auto; height: auto; max-width: 100%; max-height: 70svh; object-fit: contain; background: #131313; }

@@ -24,6 +24,34 @@ import { animateDesignScroll } from './ring/designScroll';
 
 type LayoutMode = 'stream' | 'strips';
 
+function ExplorePreview({ src, poster, active }: { src: string; poster: string; active: boolean }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const video = ref.current;
+    if (!video || !active) return;
+    let visible = false;
+    function syncPlayback() {
+      if (visible && !document.hidden) {
+        void video!.play().catch(() => {});
+      } else {
+        video!.pause();
+      }
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      syncPlayback();
+    });
+    observer.observe(video);
+    document.addEventListener('visibilitychange', syncPlayback);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', syncPlayback);
+      video.pause();
+    };
+  }, [active, src]);
+  return <video ref={ref} src={src} poster={poster} muted loop playsInline preload="none" aria-hidden="true" />;
+}
+
 const TITLE_LETTERS = 'PORTFOLIO'.split('');
 // Repeated category sequence for continuous 1:1 horizontal marquee tracking in the dock
 const MARQUEE_ITEMS = [
@@ -748,8 +776,9 @@ export default function Ring({
                                   : '#f3f3f0',
                             }}
                           >
-                            <img src={src} alt={item.visual.alt} loading={idx === 0 ? 'eager' : 'lazy'} />
-                            {item.videoSrc && <span className="explore-play">▶ Play video</span>}
+                            {item.videoSrc ? (
+                              <ExplorePreview src={item.videoSrc} poster={src} active={galleryState === 'categoryGallery' && layoutMode === 'stream'} />
+                            ) : <img src={src} alt={item.visual.alt} loading={idx === 0 ? 'eager' : 'lazy'} />}
                           </div>
                         </button>
                         {item.categoryId === 'automate' ? (
@@ -809,7 +838,9 @@ export default function Ring({
                         onClick={() => handleOpenZoom(idx)}
                         aria-label={`${item.videoSrc ? "Play" : "Inspect"} ${item.title}`}
                       >
-                        <img src={src} alt={item.visual.alt} />
+                        {item.videoSrc ? (
+                          <ExplorePreview src={item.videoSrc} poster={src} active={galleryState === 'categoryGallery'} />
+                        ) : <img src={src} alt={item.visual.alt} />}
                         <span className="cat-strip-index mono">
                           {String(idx + 1).padStart(2, '0')}
                         </span>
@@ -868,7 +899,7 @@ export default function Ring({
                       allowFullScreen />
                   )
                 ) : zoomedItem.videoSrc ? (
-                  <video className="explore-player" src={zoomedItem.videoSrc} poster={itemMediaMap.get(zoomedItem.id)} controls autoPlay playsInline aria-label={zoomedItem.title} />
+                  <video className="explore-player" src={zoomedItem.videoSrc} poster={itemMediaMap.get(zoomedItem.id)} controls autoPlay loop playsInline aria-label={zoomedItem.title} />
                 ) : (
                 <div
                   className="cat-zoom-media-wrap"
