@@ -1161,8 +1161,8 @@ export const galleryCategories: GalleryCategory[] = [
         "links": [],
         "visual": {
           "kind": "image",
-          "src": "/assets/explore/walkthrough.webp",
-          "alt": "Client walkthroughs"
+          "src": "/assets/explore/zenovix-walkthrough.webp",
+          "alt": "Reviewing the Zenovix Technologies website with a client on Google Meet"
         },
         "accent": "#86639e"
       },
