@@ -7,25 +7,25 @@ const foundersTable = 'https://www.linkedin.com/feed/update/urn:li:activity:7479
 
 const liveSessions = [
   {
-    title: 'Character Consistency & AI Video',
-    topic: 'Narrative AI Filmmaking',
-    description: 'Guiding corporate professionals on maintaining character likeness and style across three distinct scenes in a 24-second AI film prompt sequence.',
+    title: 'Teaching AI Video & Consistency',
+    topic: 'Example Live Class · Generative Video',
+    description: 'An example of how I teach generative AI video pipelines live on screen, guiding corporate professionals through prompt logic and multi-scene character consistency.',
     image: '/assets/clapingo-live-session.webp',
-    label: 'Session 01 · Live prompt architecture',
+    label: 'Example Session 01 · Live video pipelines',
   },
   {
-    title: 'Professional Headshot Prompt Engineering',
-    topic: 'Visual Identity Preservation',
-    description: 'Demonstrating structured Google Docs prompt architecture to preserve facial contours, studio lighting, and wardrobe in generative profile imagery.',
+    title: 'Teaching Prompt Logic & Architecture',
+    topic: 'Example Live Class · Enterprise Prompts',
+    description: 'An example of teaching structured prompt architecture live on screen, showing learners from top global firms how to direct AI models with precision.',
     image: '/assets/clapingo-session-headshot.webp',
-    label: 'Session 02 · Identity prompts & assignments',
+    label: 'Example Session 02 · Identity & prompt systems',
   },
   {
-    title: 'Presentation & Deck Architecture using AI',
-    topic: 'Executive Storytelling',
-    description: 'Live hands-on practice session teaching senior executives how to transform raw outlines into production-ready slide decks with AI.',
+    title: 'Teaching AI Presentation Workflows',
+    topic: 'Example Live Class · Executive Tools',
+    description: 'An example of live interactive coaching, showing senior executives and leaders how to integrate AI presentation tools into their day-to-day workflow.',
     image: '/assets/clapingo-session-ppt.webp',
-    label: 'Session 03 · Live practice & Q&A',
+    label: 'Example Session 03 · Executive presentation decks',
   },
 ];
 
@@ -130,7 +130,7 @@ export function Teaching() {
               </span>
             </h2>
             <p className="practice-lead">
-              As an AI Trainer at Clapingo, I conduct regular live training sessions, teaching working professionals, senior executives, and leaders.
+              As an AI Trainer at Clapingo, I conduct regular live training sessions, teaching working professionals, senior executives, and industry leaders how to understand and apply emerging technologies in their work.
             </p>
             <div className="teaching-metrics">
               <div className="metric-card metric-card-emerald">
@@ -147,6 +147,10 @@ export function Teaching() {
           </div>
 
           <div className="practice-session-stage">
+            <div className="session-example-badge">
+              <span className="example-badge-tag">EXAMPLE LIVE SESSIONS</span>
+              <span className="example-badge-sub">Teaching people emerging technologies hands-on</span>
+            </div>
             <figure
               className="practice-session"
               onMouseEnter={() => setIsPaused(true)}

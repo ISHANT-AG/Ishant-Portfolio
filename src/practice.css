@@ -217,7 +217,30 @@
 
 
 
-.practice-session-stage { display: flex; flex-direction: column; gap: 16px; }
+.practice-session-stage { display: flex; flex-direction: column; gap: 14px; }
+.session-example-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 2px;
+}
+.example-badge-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #00a884;
+  background: rgba(0, 168, 132, 0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.example-badge-sub {
+  font-size: 12px;
+  color: var(--practice-muted);
+  font-weight: 500;
+}
 
 /* Sample Notes Block */
 .teaching-notes-block {
