@@ -130,7 +130,7 @@ export function Teaching() {
               </span>
             </h2>
             <p className="practice-lead">
-              As an AI Trainer at Clapingo, I conduct regular live training sessions, teaching working professionals, senior executives, and leaders how to integrate generative AI into their daily work.
+              As an AI Trainer at Clapingo, I conduct regular live training sessions, teaching working professionals, senior executives, and leaders.
             </p>
             <div className="teaching-metrics">
               <div className="metric-card metric-card-emerald">
@@ -142,14 +142,6 @@ export function Teaching() {
                 <span className="metric-number">100%</span>
                 <strong className="metric-label">Practical, graded assignments</strong>
                 <small>Curriculum &amp; prompts designed by me</small>
-              </div>
-            </div>
-            <div className="teaching-curriculum-card">
-              <p>Beyond live lectures, I design the hands-on curriculum and structured assignments across 3 core disciplines:</p>
-              <div className="teaching-pillar-chips">
-                <span className="pillar-chip">🎯 Precision Prompt Architecture</span>
-                <span className="pillar-chip">📊 Executive AI Presentations</span>
-                <span className="pillar-chip">🎬 Multi-Scene AI Video</span>
               </div>
             </div>
           </div>
@@ -280,9 +272,6 @@ export function Teaching() {
                   <span className="course-domain">{c.domain}</span>
                   <h4>{c.title}</h4>
                   <p>{c.summary}</p>
-                  <a href="#gallery" className="course-explore-link">
-                    Explore in gallery <ArrowUpRight size={14} />
-                  </a>
                 </div>
               </article>
             ))}
