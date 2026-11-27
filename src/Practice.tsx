@@ -118,26 +118,40 @@ export function Teaching() {
       <div className="practice-shell">
         <div className="practice-teaching-grid">
           <div className="practice-teaching-copy">
-            <span className="practice-eyebrow">AI Trainer &amp; Lead Creative Developer · Clapingo</span>
-            <h2 className="practice-heading" id="teaching-title">Teaching AI <br/><em>at Clapingo.</em></h2>
+            <div className="teaching-eyebrow-badge">
+              <span className="teaching-live-pulse" aria-hidden="true" />
+              <span>AI Trainer &amp; Lead Creative Developer</span>
+            </div>
+            <h2 className="practice-heading teaching-brand-heading" id="teaching-title">
+              Teaching AI <br />
+              <span className="heading-at-text">at</span>{' '}
+              <span className="teaching-brand-pill" title="Clapingo">
+                <img src="/client-logos/clapingo.webp" alt="Clapingo" />
+              </span>
+            </h2>
             <p className="practice-lead">
               As an AI Trainer at Clapingo, I conduct regular live training sessions, teaching working professionals, senior executives, and leaders how to integrate generative AI into their daily work.
             </p>
             <div className="teaching-metrics">
-              <div className="metric-card">
+              <div className="metric-card metric-card-emerald">
                 <span className="metric-number">200+</span>
                 <strong className="metric-label">Premium learners per cohort</strong>
                 <small>Corporate professionals aged 50+ &amp; industry leaders</small>
               </div>
-              <div className="metric-card">
+              <div className="metric-card metric-card-purple">
                 <span className="metric-number">100%</span>
                 <strong className="metric-label">Practical, graded assignments</strong>
                 <small>Curriculum &amp; prompts designed by me</small>
               </div>
             </div>
-            <p>
-              Beyond live lectures, I design the curriculum and structured assignments — from writing precision prompt systems to building 10-slide presentation decks and producing multi-scene AI videos.
-            </p>
+            <div className="teaching-curriculum-card">
+              <p>Beyond live lectures, I design the hands-on curriculum and structured assignments across 3 core disciplines:</p>
+              <div className="teaching-pillar-chips">
+                <span className="pillar-chip">🎯 Precision Prompt Architecture</span>
+                <span className="pillar-chip">📊 Executive AI Presentations</span>
+                <span className="pillar-chip">🎬 Multi-Scene AI Video</span>
+              </div>
+            </div>
           </div>
 
           <div className="practice-session-stage">

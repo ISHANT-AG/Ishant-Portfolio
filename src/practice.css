@@ -107,14 +107,139 @@
   width: 20px;
 }
 
+.teaching-eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid var(--practice-line);
+  padding: 5px 14px 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #2b2825;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+.teaching-live-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #00a884;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.22);
+  display: inline-block;
+}
+
+.teaching-brand-heading {
+  margin: 0 0 20px;
+}
+.heading-at-text {
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+}
+.teaching-brand-pill {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  background: #ffffff;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  padding: 6px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  margin-left: 10px;
+  transform: translateY(-4px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.teaching-brand-pill:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+.teaching-brand-pill img {
+  height: clamp(24px, 2.5vw, 34px);
+  width: auto;
+  display: block;
+}
+
 .practice-eyebrow { display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #674785; margin-bottom: 12px; }
 .practice-lead { font-size: clamp(16px, 1.4vw, 19px) !important; line-height: 1.5; color: #1c1a17; margin-top: 16px; }
 
 .teaching-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0 20px; }
-.metric-card { background: rgba(255, 255, 255, 0.7); border: 1px solid var(--practice-line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.metric-card {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--practice-line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+}
+.metric-card-emerald::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #00a884;
+}
+.metric-card-purple::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #674785;
+}
 .metric-number { font-size: clamp(26px, 3.2vw, 36px); font-weight: 650; line-height: 1; color: #201c18; letter-spacing: -0.04em; }
 .metric-label { font-size: 13px; font-weight: 600; line-height: 1.3; color: #282522; }
 .metric-card small { font-size: 11px; color: var(--practice-muted); line-height: 1.35; }
+
+.teaching-curriculum-card {
+  margin-top: 18px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--practice-line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+.teaching-curriculum-card p {
+  margin: 0 0 10px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: #383531;
+}
+.teaching-pillar-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pillar-chip {
+  font-size: 11px;
+  font-weight: 600;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  padding: 5px 11px;
+  border-radius: 6px;
+  color: #332f2b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+.pillar-chip:hover {
+  border-color: #674785;
+  color: #5a3875;
+}
 
 .practice-session-stage { display: flex; flex-direction: column; gap: 16px; }
 
