@@ -20,10 +20,11 @@
 .tool-space[aria-pressed=true]{outline:2px solid white;outline-offset:3px}
 
 .keyboard-stage{height:auto;padding:65px 0 85px}
-.keyboard-stage .keyboard{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;width:min(700px,83%);max-width:none;transform:rotateX(25deg) rotateZ(-8deg)}
+.keyboard-stage .keyboard{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:10px;width:min(1120px,96%);max-width:none;transform:rotateX(25deg) rotateZ(-8deg)}
 .keyboard .tool-key{width:100%;height:auto;aspect-ratio:1.22;gap:4px}
 .keyboard .tool-key .key-name{font-size:clamp(9px,.85vw,13px);font-weight:600;line-height:1.1;margin:0;text-transform:none;letter-spacing:0}
 .keyboard .tool-key .tool-logo{width:36%;height:41%}
+@media(min-width:761px) and (max-width:1023px){.keyboard-stage .keyboard{grid-template-columns:repeat(8,minmax(0,1fr))}}
 @media(max-width:760px){.keyboard-stage{padding:35px 0 45px}.keyboard-stage .keyboard{width:96%;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;transform:rotateX(12deg) rotateZ(-3deg)}.keyboard .tool-key{min-height:53px}.keyboard .tool-key .key-name{font-size:10px}}
 
 .client-strip{padding:20px 0 26px;background:white;border-block:1px solid var(--line);overflow:hidden}
