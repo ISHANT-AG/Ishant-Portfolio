@@ -44,3 +44,13 @@
 .featured-clients{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));justify-items:center;row-gap:28px}
 .featured-clients img[src$="wealth-full.webp"]{background:#221d32;padding:6px 10px;border-radius:4px}
 @media(max-width:700px){.featured-clients{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+@media (min-width:761px) and (hover:hover) and (prefers-reduced-motion:no-preference) {
+  .keyboard-stage .keyboard {
+    transform: rotateX(calc(22deg + var(--tilt-x, 0deg))) rotateY(var(--tilt-y, 0deg)) rotateZ(-6deg);
+    transition: transform 180ms ease-out;
+  }
+  .keyboard .tool-key:hover .tool-logo { transform: translateY(-3px) scale(1.08); }
+  .keyboard .tool-logo { transition: transform 160ms ease-out; }
+}
+.keyboard .tool-key:active { transform: translateY(5px); }

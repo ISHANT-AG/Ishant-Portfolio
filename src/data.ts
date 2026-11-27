@@ -11,7 +11,7 @@ export const ledger=[['Zenovix Technologies','zenovixtechnologies.com'],['Codeis
 export const tools=[
 {key:'1',name:'Figma',logo:'/tool-logos/figma-88f097f3.svg',color:'#e3cfff',group:'Visual thinking',description:'From a rough direction to a considered interface. Layout, hierarchy and interaction before the handover.',project:'web'},
 {key:'2',name:'Photoshop',logo:'/tool-logos/photoshop-05db8ed7.svg',color:'#b9d9ff',group:'Creative production',description:'Commercial visual assets, compositing, campaign treatments and the details that give a piece its character.',project:'dubai'},
-{key:'3',name:'Canva',logo:'/tool-logos/canva-56cd9841.svg',color:'#b9efec',group:'Learning & editorial',description:'Workshop narratives, investor presentations, course resources and repeatable editorial systems.',project:'fit'},
+{key:'3',name:'Canva',logo:'/tool-logos/canva-current.png',color:'#b9efec',group:'Learning & editorial',description:'Workshop narratives, investor presentations, course resources and repeatable editorial systems.',project:'fit'},
 {key:'4',name:'React',logo:'/tool-logos/react-5e92e61d.svg',color:'#9ae3ef',group:'Interactive interfaces',description:'Interfaces for creative tools and useful products. The Blog Image Tool and Thumbnail Engine use React.',project:'ai'},
 {key:'5',name:'TypeScript',logo:'/tool-logos/typescript-icon.svg',color:'#b9d1ff',group:'Creative engineering',description:'Structured, maintainable application logic behind the creative tools I build and use.',project:'ai'},
 {key:'6',name:'MongoDB',logo:'/tool-logos/mongodb-56a681ff.svg',color:'#b7e9be',group:'Data & leads',description:'Form submissions and lead dashboards that connect a client-facing experience with useful data.',project:'web'},
@@ -32,5 +32,11 @@ export const tools=[
 {"key": "m", "name": "Google Maps", "logo": "/tool-logos/googlemaps-5cfe4b3d.svg", "group": "Lead discovery", "description": "The source of business listings in my location-based workflow.", "project": "pipeline", "color": "#b9d9ff"},
 {"key": "e", "name": "Excel", "logo": "/tool-logos/excel-c4c87ec3.svg", "group": "Workflow output", "description": "Cleaned lead records are delivered in spreadsheet form.", "project": "pipeline", "color": "#dbceff"},
 {"key": "d", "name": "Google Drive", "logo": "/tool-logos/googledrive-1a8134c0.svg", "group": "Creative operations", "description": "I organized and delivered a researched collection of 200 videos in Drive.", "project": "people", "color": "#dee3da"},
-{key:'i',name:'Antigravity',logo:'/tool-logos/antigravity.png',color:'#dedaf4',group:'Portfolio development',description:'I use Antigravity to iterate on this portfolio and its interactive gallery.',project:'gallery'}
+{key:'i',name:'Antigravity',logo:'/tool-logos/antigravity.png',color:'#dedaf4',group:'Portfolio development',description:'I use Antigravity to iterate on this portfolio and its interactive gallery.',project:'gallery'},
+{key:'w',name:'SOLIDWORKS',logo:'/tool-logos/solidworks.png',color:'#ffd5ca',group:'CAD design',description:'I modeled the folded body, front lip and cutouts of the desktop phone stand shown in Explore.',project:'gallery'},
+{key:'y',name:'Python',logo:'/tool-logos/python.svg',color:'#f6e4ab',group:'Software development',description:'I used Python to track vehicles across video frames and export their speed measurements.',project:'pipeline'},
+{key:'o',name:'OpenCV',logo:'/tool-logos/opencv.svg',color:'#c4e4cf',group:'Computer vision',description:'I used OpenCV to process traffic footage and save a cropped image when a vehicle exceeded the speed threshold.',project:'pipeline'},
+{key:'u',name:'Google Meet',logo:'/tool-logos/meet.png',color:'#cde8dd',group:'Client walkthroughs',description:'I review websites with clients over screen share so we can discuss individual pages together.',project:'gallery'},
+{key:'z',name:'Zoom',logo:'/tool-logos/zoom.png',color:'#c5ddff',group:'Live training',description:'I led Clapingo practice sessions on building presentations with AI and answered questions during the demo.',project:'gallery'},
+{key:'b',name:'Google Docs',logo:'/tool-logos/docs.png',color:'#d5ddfa',group:'Teaching materials',description:'I used a shared prompt document to walk learners through lighting, framing and wardrobe for a professional headshot.',project:'gallery'}
 ];
