@@ -30,6 +30,18 @@ function CaseStudy({project,onClose}:{project:Project|null;onClose:()=>void}){
 function Keyboard(){
  const [active,setActive]=useState(3);const section=useRef<HTMLElement>(null);
  useEffect(()=>{const key=(e:KeyboardEvent)=>{if(e.altKey||e.ctrlKey||e.metaKey||(e.target as HTMLElement)?.closest('input,textarea,dialog,[contenteditable=true]')||document.querySelector('dialog[open], [aria-modal=true]'))return;const b=section.current?.getBoundingClientRect();if(!b||b.top>innerHeight*.8||b.bottom<0)return;const n=tools.findIndex(t=>t.key===e.key.toLowerCase());if(n>=0){e.preventDefault();setActive(n)}};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key)},[]);
+ const stageRef = useRef<HTMLDivElement>(null);
+ useEffect(() => {
+   const stage = stageRef.current;
+   if (!stage) return;
+   const observer = new IntersectionObserver(([entry]) => {
+     if (!entry.isIntersecting) return;
+     stage.classList.add('has-entered');
+     observer.disconnect();
+   }, { threshold: 0.08 });
+   observer.observe(stage);
+   return () => observer.disconnect();
+ }, []);
  function tiltKeyboard(event: React.PointerEvent<HTMLDivElement>) {
    if (event.pointerType !== 'mouse') return;
    const stage = event.currentTarget;
@@ -37,7 +49,7 @@ function Keyboard(){
    stage.style.setProperty('--tilt-x', ((0.5 - (event.clientY - rect.top) / rect.height) * 8) + 'deg');
    stage.style.setProperty('--tilt-y', (((event.clientX - rect.left) / rect.width - 0.5) * 10) + 'deg');
  }
- return <section ref={section} className="stack-section" id="stack"><div className="section stack-inner"><header className="section-heading"><div><h2>Inside my <em>toolkit.</em></h2></div><p>Choose a tool to see where I used it.<br/><span className="keyboard-hint">Press the shortcut shown on any key.</span></p></header><div className="keyboard-stage" onPointerMove={tiltKeyboard} onPointerLeave={event => {
+ return <section ref={section} className="stack-section" id="stack"><div className="section stack-inner"><header className="section-heading"><div><h2>Inside my <em>toolkit.</em></h2></div><p>Choose a tool to see where I used it.<br/><span className="keyboard-hint">Press the shortcut shown on any key.</span></p></header><div ref={stageRef} className="keyboard-stage" onPointerMove={tiltKeyboard} onPointerLeave={event => {
    event.currentTarget.style.removeProperty('--tilt-x');
    event.currentTarget.style.removeProperty('--tilt-y');
  }}><div className="keyboard" role="group" aria-label="Interactive tools keyboard">{tools.map((t,i)=><button key={t.name} aria-label={t.name} title={t.name} className={`tool-key ${active===i?'active':''}`} aria-pressed={active===i} onPointerEnter={event => { if (event.pointerType === "mouse") setActive(i); }} onFocus={()=>setActive(i)} onClick={()=>setActive(i)} style={{'--key-color':t.color} as React.CSSProperties}><span className="key-number">{t.key.toUpperCase()}</span><img className="tool-logo" src={t.logo} alt=""/><span className="key-name">{t.name}</span></button>)}</div></div><div className="tool-detail" aria-live="polite"><span className="tool-detail-index">{tools[active].key.padStart(2,'0')} /</span><div><span className="eyebrow">{tools[active].group}</span><h3>{tools[active].name}</h3><p>{tools[active].description}</p></div></div><Contributions/></div></section>
