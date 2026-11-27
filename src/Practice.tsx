@@ -2,7 +2,28 @@ import { useState, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import './practice.css';
 
-const recommendations = 'https://www.linkedin.com/in/ishant-agarwal-266b22364/details/recommendations/';
+const testimonials = [
+  {
+    id: 'sameer', name: 'Sameer Agrawal', role: 'Founder & CEO, Clapingo',
+    profile: 'sameer-agrawal-945927108',
+    quote: 'With his background in design, Ishant contributed significantly as a Designer and Editor, consistently delivering high-quality work at an exceptional speed. Beyond his technical abilities, what stood out most was his proactive attitude and eagerness to grow beyond a single skill set.',
+  },
+  {
+    id: 'avishek', name: 'Avishek Bhattacharjee', role: 'Founder & CEO, Nutaan AI',
+    profile: 'wbavishek',
+    quote: 'He listens deeply, understands requirements perfectly, and consistently delivers work that reflects true expertise in his craft. Beyond design skills, he is a strong team player — dependable, collaborative, and highly suited for the fast-paced environment of a startup.',
+  },
+  {
+    id: 'parth', name: 'Parth Gattani', role: 'Vice President, Platforms and Structuring',
+    profile: 'parth-gattani-3240a917',
+    quote: 'Ishant is great team player and has very sincere approach towards learning new things. with passion in tech he will excel in computer science',
+  },
+  {
+    id: 'haraprasad', name: 'Haraprasad Hota', role: 'Co-Founder & CTO, Tecosys AI',
+    profile: 'haraprasad-hota',
+    quote: 'His ability to quickly understand requirements, pay attention to detail, and bring innovative ideas into visual storytelling has made a significant impact on our projects.',
+  },
+];
 const foundersTable = 'https://www.linkedin.com/feed/update/urn:li:activity:7479411279942590464/';
 
 const liveSessions = [
@@ -77,24 +98,37 @@ const recordedCourses = [
 ];
 
 export function People() {
+  const [index, setIndex] = useState(0);
+  const person = testimonials[index];
+  const move = (step: number) => setIndex(i => (i + step + testimonials.length) % testimonials.length);
+  const asset = '/assets/recommendations/' + person.id;
   return (
     <section className="practice-band practice-people" id="people" aria-labelledby="people-title">
       <div className="practice-shell">
-        <h2 className="practice-section-label" id="people-title">Working with me</h2>
-        <figure className="practice-quote">
-          <blockquote>“Consistently delivering high-quality work at an <em>exceptional speed.</em>”</blockquote>
-          <figcaption>
-            <div><strong>Sameer Agrawal</strong><span>Founder &amp; CEO, Clapingo · My direct manager</span></div>
-            <a className="practice-link" href={recommendations} target="_blank" rel="noreferrer">Read his recommendation <ArrowUpRight size={16}/></a>
-          </figcaption>
-        </figure>
+        <h2 className="voices-title" id="people-title">What leaders I’ve worked with say about me</h2>
+        <div className="voices-layout">
+          <div className="voices-profile">
+            <img src={asset + '-mark.webp'} alt={person.id === 'haraprasad' ? 'Tecosys AI logo' : ''} />
+            <h3>{person.name}</h3><p>{person.role}</p>
+            <a className="practice-link" href={'https://www.linkedin.com/in/' + person.profile + '/'} target="_blank" rel="noreferrer">LinkedIn profile <ArrowUpRight size={15}/></a>
+          </div>
+          <div className="voices-panel">
+            <blockquote aria-live="polite">“{person.quote}”</blockquote>
+            <div className="voices-controls">
+              <a className="practice-link" href={asset + '.webp'} target="_blank" rel="noreferrer">{person.id === 'haraprasad' ? 'Read the signed letter' : 'Read the full recommendation'} <ArrowUpRight size={16}/></a>
+              <div><button aria-label="Previous recommendation" onClick={() => move(-1)}>←</button>
+              <button aria-label="Next recommendation" onClick={() => move(1)}>→</button></div>
+            </div>
+          </div>
+          <div className="voices-picker" role="group" aria-label="Choose a recommendation">
+            {testimonials.map((author, i) => <button key={author.id} aria-label={author.name} aria-pressed={i === index} onClick={() => setIndex(i)}>
+              <img src={'/assets/recommendations/' + author.id + '-mark.webp'} alt="" />{author.name.split(' ')[0]}
+            </button>)}
+          </div>
+        </div>
         <div className="practice-pace">
           <h3>One day to deliver 200 videos.</h3>
           <p>I had a week to research, select and organize 200 YouTube videos for my team. I delivered the collection in Drive within a day.</p>
-        </div>
-        <div className="practice-references">
-          <a href={recommendations} target="_blank" rel="noreferrer"><span><strong>Avishek Bhattacharjee</strong><small>Founder &amp; CEO, Nutaan AI</small></span><span>On understanding a brief <ArrowUpRight size={14}/></span></a>
-          <a href={recommendations} target="_blank" rel="noreferrer"><span><strong>Parth Gattani</strong><small>Vice President, J.P. Morgan</small></span><span>On teamwork <ArrowUpRight size={14}/></span></a>
         </div>
       </div>
     </section>

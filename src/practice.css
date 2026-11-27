@@ -464,3 +464,22 @@
   .practice-path > div { grid-template-columns: 72px 1fr; gap: 12px; }
   .teaching-metrics { grid-template-columns: 1fr; }
 }
+
+.voices-title { max-width: 22ch; font-size: clamp(32px, 4.5vw, 64px); line-height: 1.04; margin-bottom: clamp(26px, 4vw, 60px); }
+.voices-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 12px; margin-bottom: 40px; }
+.voices-profile, .voices-panel { background: #efefeb; padding: clamp(22px, 3vw, 44px); border-radius: 6px; }
+.voices-profile { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.voices-profile img { width: 84px; height: 84px; border-radius: 50%; object-fit: contain; margin-bottom: 20px; }
+.voices-profile h3 { font-size: clamp(23px, 2.4vw, 36px); line-height: 1.12; }
+.voices-profile p { margin: 6px 0 20px; }
+.voices-panel { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
+.voices-panel blockquote { margin: 0; font-size: clamp(21px, 2.1vw, 32px); letter-spacing: -.03em; line-height: 1.35; }
+.voices-controls, .voices-picker, .voices-controls div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.voices-controls { justify-content: space-between; }
+.voices-controls button, .voices-picker button { min-height: 44px; padding: 8px 12px; border-radius: 4px; background: #e4e4de; }
+.voices-controls button { min-width: 44px; font-size: 22px; }
+.voices-picker { grid-column: 2; }
+.voices-picker button { display: inline-flex; align-items: center; gap: 7px; }
+.voices-picker img { width: 28px; height: 28px; border-radius: 50%; }
+.voices-picker button[aria-pressed=true] { background: #242522; color: white; }
+@media(max-width:680px){ .voices-layout { grid-template-columns: 1fr; } .voices-picker { grid-column: 1; } }
