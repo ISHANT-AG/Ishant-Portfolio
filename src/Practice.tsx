@@ -378,12 +378,12 @@ const milestones = [
     title: 'From page spreads to thumbnails',
     note: '2,000+ commercial assets',
     text: 'A thumbnail has to read at a glance. A publication gives you room to tell a story. I’ve designed both, alongside campaign creative for audiences in India, the US and Dubai.',
-    image: 'journey-palette.webp', width: 1280, height: 853, alt: 'Colorful art supplies',
+    image: 'journey-blue-screen.webp', width: 904, height: 1200, alt: 'A figure typing at a monitor surrounded by streaks of blue light',
   },
   {
     title: 'Creative Designer', note: 'Clapingo · Joined July 2025',
     text: 'I joined as a design intern, creating graphics and editing videos for the team.',
-    image: 'journey-studio.webp', width: 1280, height: 853, alt: 'Swirls of brightly colored paint',
+    image: 'journey-purple-studio.webp', width: 1200, height: 1200, alt: 'A designer at a desk facing a mood board against a purple backdrop',
   },
   {
     title: 'Creative Technologist', note: 'Clapingo',
