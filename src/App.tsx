@@ -91,6 +91,7 @@ function ClientStrip({motion}:{motion:boolean}) {
 }
 
 export default function App(){
+ const [cardOpen, setCardOpen] = useState(false);
  const galleryPlaceholder = useRef<HTMLElement>(null);
  const [loadGallery, setLoadGallery] = useState(false);
  useEffect(() => {
@@ -188,5 +189,21 @@ export default function App(){
     </section>
     {loadGallery ? <Suspense fallback={galleryFallback}><Ring motion={motion} onOpen={setProjectId}/></Suspense> : galleryFallback}
     <ClientStrip motion={motion}/>
-    <Keyboard/><People/><Teaching/><About/></main><footer id="contact"><div className="section footer-inner"><a className="contact-headline" href={`mailto:${email}`}>Have a project<br/><em>in mind?</em><ArrowUpRight/></a><div className="contact-bottom"><div><a href={`mailto:${email}`}>{email}</a><button className="copy-button" onClick={copyEmail} aria-label="Copy email address">{copied?<Check size={16}/>:<Copy size={16}/>}</button><span className="copy-status" role="status">{copied?'Copied!':copyError?'Please select the email to copy.':''}</span></div><div className="social-links"><a href={linkedin} target="_blank" rel="noreferrer"><Linkedin size={16}/>LinkedIn <ArrowUpRight size={14}/></a><a href={github} target="_blank" rel="noreferrer"><Github size={16}/>GitHub <ArrowUpRight size={14}/></a><a href={`mailto:${email}`}><Mail size={16}/>Email <ArrowUpRight size={14}/></a></div></div><div className="footer-colophon"><span>© {new Date().getFullYear()} Ishant Agarwal</span><button onClick={()=>setMotion(!motion)} aria-pressed={motion}>{motion?<Pause size={12}/>:<Play size={12}/>} Motion {motion?'on':'off'}</button><a href="#top">Back to top ↑</a></div></div></footer><CaseStudy project={projects.find(p=>p.id===projectId)||null} onClose={()=>setProjectId(null)}/></>
+    <Keyboard/><People/><Teaching/><About/></main><footer id="contact"><div className="section footer-inner"><div className="contact-invite">
+      <div>
+        <h2 className="contact-headline">Have a project<br/><em>in mind?</em></h2>
+        <a className="contact-compose" href={`mailto:${email}`}>Email Ishant <ArrowUpRight size={18}/></a>
+      </div>
+      <div className="contact-card" data-open={cardOpen}>
+        <button type="button" className="contact-card-toggle" aria-expanded={cardOpen} aria-controls="contact-card-details" onClick={()=>setCardOpen(!cardOpen)}>
+          <img src="/assets/ishant-crowd-avatar.webp" width="496" height="600" alt="" loading="lazy"/>
+          <span>{cardOpen ? 'Close contact card' : 'My contact card'} <span aria-hidden="true">{cardOpen ? '−' : '+'}</span></span>
+        </button>
+        <div id="contact-card-details" hidden={!cardOpen}>
+          <strong>Ishant Agarwal</strong>
+          <p>Lead Creative Developer · Jaipur</p>
+          <a href={`mailto:${email}`}>{email} ↗</a>
+        </div>
+      </div>
+    </div><div className="contact-bottom"><div><a href={`mailto:${email}`}>{email}</a><button className="copy-button" onClick={copyEmail} aria-label="Copy email address">{copied?<Check size={16}/>:<Copy size={16}/>}</button><span className="copy-status" role="status">{copied?'Copied!':copyError?'Please select the email to copy.':''}</span></div><div className="social-links"><a href={linkedin} target="_blank" rel="noreferrer"><Linkedin size={16}/>LinkedIn <ArrowUpRight size={14}/></a><a href={github} target="_blank" rel="noreferrer"><Github size={16}/>GitHub <ArrowUpRight size={14}/></a><a href={`mailto:${email}`}><Mail size={16}/>Email <ArrowUpRight size={14}/></a></div></div><div className="footer-colophon"><span>© {new Date().getFullYear()} Ishant Agarwal</span><button onClick={()=>setMotion(!motion)} aria-pressed={motion}>{motion?<Pause size={12}/>:<Play size={12}/>} Motion {motion?'on':'off'}</button><a href="#top">Back to top ↑</a></div></div></footer><CaseStudy project={projects.find(p=>p.id===projectId)||null} onClose={()=>setProjectId(null)}/></>
 }
