@@ -171,6 +171,29 @@ export function People() {
 }
 
 export function Teaching() {
+  const section = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!section.current || !("IntersectionObserver" in window)) return;
+    const items = section.current.querySelectorAll<HTMLElement>(
+      ".teaching-eyebrow-badge, .teaching-brand-heading, .practice-lead, .metric-card, .practice-session, .teaching-notes-block, .teaching-learners-banner, .courses-section-header, .course-card"
+    );
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        const item = entry.target as HTMLElement;
+        if (entry.isIntersecting) item.dataset.teachingReveal = "visible";
+        else if (entry.boundingClientRect.top >= window.innerHeight)
+          item.dataset.teachingReveal = "waiting";
+      }
+    }, { rootMargin: "0px 0px -5% 0px" });
+    items.forEach(item => {
+      item.dataset.teachingReveal = "waiting";
+      observer.observe(item);
+    });
+    return () => {
+      observer.disconnect();
+      items.forEach(item => delete item.dataset.teachingReveal);
+    };
+  }, []);
   const [activeSession, setActiveSession] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -183,7 +206,7 @@ export function Teaching() {
   }, [isPaused]);
 
   return (
-    <section className="practice-band practice-teaching" id="teaching" aria-labelledby="teaching-title">
+    <section ref={section} className="practice-band practice-teaching" id="teaching" aria-labelledby="teaching-title">
       <div className="practice-shell">
         <div className="practice-teaching-grid">
           <div className="practice-teaching-copy">

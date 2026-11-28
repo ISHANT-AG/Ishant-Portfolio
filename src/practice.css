@@ -609,7 +609,7 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    [data-motion="true"] :is(.practice-people, .practice-teaching)
+    [data-motion="true"] .practice-people
       :is(.voices-title, .voices-profile, .voices-panel, .voices-picker, .practice-pace,
           .teaching-brand-heading, .practice-lead, .metric-card, .practice-session,
           .teaching-notes-block, .teaching-learners-banner, .courses-section-header, .course-card) {
@@ -617,7 +617,7 @@
       animation-timeline: view();
       animation-range: entry 0% cover var(--reveal-distance);
     }
-    [data-motion="true"] :is(.practice-people, .practice-teaching) :focus-within {
+    [data-motion="true"] .practice-people :focus-within {
       animation-name: none;
     }
   }
@@ -628,3 +628,20 @@
 }
 
 .practice-band { --reveal-distance: clamp(64px, 14svh, 120px); --reveal-lift: clamp(8px, 1.4vw, 18px); }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-motion="true"] [data-teaching-reveal="waiting"]:not(:focus-within) {
+    opacity: .15;
+    translate: 0 32px;
+  }
+  [data-motion="true"] [data-teaching-reveal="visible"]:not(:focus-within) {
+    animation: teaching-rise 720ms cubic-bezier(.2,.72,.22,1) backwards;
+  }
+  [data-motion="true"] .metric-card:nth-child(2)[data-teaching-reveal="visible"] {
+    animation-delay: 90ms;
+  }
+}
+@keyframes teaching-rise {
+  from { opacity: .15; translate: 0 32px; }
+  to { opacity: 1; translate: 0 0; }
+}
