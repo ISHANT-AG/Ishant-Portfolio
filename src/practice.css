@@ -483,3 +483,7 @@
 .voices-picker img { width: 28px; height: 28px; border-radius: 50%; }
 .voices-picker button[aria-pressed=true] { background: #242522; color: white; }
 @media(max-width:680px){ .voices-layout { grid-template-columns: 1fr; } .voices-picker { grid-column: 1; } }
+
+.voices-companies { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0 0 18px; list-style: none; }
+.voices-companies li { display: flex; align-items: center; gap: 7px; padding: 5px 9px; background: white; border-radius: 4px; font-size: 13px; }
+.voices-profile .voices-companies img { width: auto; max-width: 66px; height: 24px; object-fit: contain; border-radius: 0; margin: 0; }
