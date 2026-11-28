@@ -366,7 +366,6 @@ const milestones = [
   { title: 'My early design roles', text: 'I worked with Internshala, TravelBug Goa, Tecosys (US) and Team India Properties (Dubai).' },
   { title: '2,000+ commercial assets', text: 'My work spans thumbnails, campaign creative and publications across India, the US and Dubai.' },
   { title: 'From intern to creative lead', text: 'I joined Clapingo as a design intern in July 2025, then moved into creative technology and development. I became Lead Creative Developer in November 2026.' },
-  { title: 'Building on campus', text: 'I’m the Incubation Team Co-Lead and Newsletter Head at VIT Bhopal Startup Club. I also organized and hosted The Founders’ Table 2026.', link: foundersTable },
 ];
 
 export function About() {
@@ -378,13 +377,12 @@ export function About() {
           <p className="practice-location">Jaipur, India · B.Tech Computer Science, VIT Bhopal</p>
         </header>
         <ol className="journey">
-          {milestones.map(({ title, text, link }, index) => (
+          {milestones.map(({ title, text }, index) => (
             <li key={title}>
               <article className="journey-card">
                 <span aria-hidden="true">{String(index + 1).padStart(2, '0')}.</span>
                 <h3>{title}</h3>
                 <p>{text}</p>
-                {link && <a className="practice-link" href={link} target="_blank" rel="noreferrer">View the event post <ArrowUpRight size={15}/></a>}
               </article>
             </li>
           ))}
