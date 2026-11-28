@@ -361,6 +361,37 @@ export function Teaching() {
   );
 }
 
+const clapingoRoles = [
+  { label: 'Creative Designer', detail: 'I joined Clapingo as a design intern in July 2025, designing graphics and editing videos for the team.' },
+  { label: 'Creative Technologist', detail: 'I brought automation into my design work, building tools for repeatable tasks like creating thumbnails and blog images.' },
+  { label: 'Creative Developer + Trainer', detail: 'I became Lead Creative Developer in November 2026. Alongside development, I teach professionals how to turn their own material into AI-assisted videos and presentations.' },
+];
+
+function ClapingoRoles() {
+  const [selected, setSelected] = useState(clapingoRoles.length - 1);
+  return <>
+    <div className="career-tabs" role="tablist" aria-label="Roles at Clapingo">
+      {clapingoRoles.map(({ label }, index) => (
+        <button key={label} id={'career-tab-' + index} role="tab" aria-selected={index === selected}
+          aria-controls={'career-panel-' + index} tabIndex={index === selected ? 0 : -1}
+          onClick={() => setSelected(index)} onKeyDown={event => {
+            const last = clapingoRoles.length - 1;
+            const targets: Record<string, number> = { Home: 0, End: last, ArrowRight: (index + 1) % (last + 1), ArrowLeft: (index + last) % (last + 1) };
+            if (!(event.key in targets)) return;
+            event.preventDefault();
+            const next = targets[event.key];
+            setSelected(next);
+            document.getElementById('career-tab-' + next)?.focus();
+          }}>{label}</button>
+      ))}
+    </div>
+    {clapingoRoles.map(({ label, detail }, index) => (
+      <p key={label} role="tabpanel" id={'career-panel-' + index} aria-labelledby={'career-tab-' + index}
+        tabIndex={0} hidden={selected !== index}>{detail}</p>
+    ))}
+  </>;
+}
+
 const milestones = [
   {
     title: 'My first briefs came across a counter',
@@ -381,9 +412,9 @@ const milestones = [
     image: 'journey-palette.webp', alt: 'Colorful art supplies',
   },
   {
-    title: 'I started designing. Then I started building.',
+    title: 'Now Lead Creative Developer',
+    showRoles: true,
     note: 'Clapingo · July 2025 onward',
-    text: 'I joined Clapingo as a design intern, then moved into development and automation. In November 2026, I became Lead Creative Developer. I also teach the AI workflows I use.',
     image: 'journey-keys.webp', alt: 'Playful keyboard caps beside a neon light',
   },
 ];
@@ -397,7 +428,7 @@ export function About() {
           <p className="practice-location">Jaipur, India · B.Tech Computer Science, VIT Bhopal</p>
         </header>
         <ol className="journey">
-          {milestones.map(({ title, text, note, image, alt }) => (
+          {milestones.map(({ title, text, note, image, alt, showRoles }) => (
             <li key={title}>
               <article className="journey-card">
                 <figure className="journey-print">
@@ -407,7 +438,7 @@ export function About() {
                 <div className="journey-note">
                   <small>{note}</small>
                   <h3>{title}</h3>
-                  <p>{text}</p>
+                  {showRoles ? <ClapingoRoles /> : <p>{text}</p>}
                 </div>
               </article>
             </li>
