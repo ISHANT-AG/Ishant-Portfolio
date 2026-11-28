@@ -68,7 +68,7 @@
   }
 }
 
-.studio-hero { min-height: 100dvh; grid-template-rows: auto 1fr; }
+.studio-hero { margin-bottom: clamp(32px, 6vh, 72px); min-height: 100dvh; grid-template-rows: auto 1fr; }
 .hero-crowd { align-self: end; position: relative; overflow: hidden; container-type: inline-size; height: calc(clamp(90px, 11vw, 175px) * 1.35 + 158px); margin-top: 8px; }
 .crowd-street { position: absolute; inset: 0 0 25px; overflow: hidden; border-bottom: 1px solid #d9d6ce; }
 .crowd-walker {
