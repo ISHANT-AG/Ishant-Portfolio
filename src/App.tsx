@@ -159,7 +159,7 @@ export default function App(){
   <main id="top">
     <section className="studio-hero" aria-labelledby="intro-title">
       <div className="studio-intro">
-        <h1 id="intro-title">A designer’s eye.<br/><em><span className="hero-script-initial">A</span> developer’s hands.</em></h1>
+        <h1 id="intro-title">A designer’s eye.<br/><em>Developer’s hands.</em></h1>
         <p>I’m Ishant, Lead Creative Developer at <strong>Clapingo.</strong><br/>I design websites, build them, and automate the work behind them.</p>
       </div>
       <div className="hero-crowd">

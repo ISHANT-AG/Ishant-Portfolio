@@ -179,8 +179,3 @@ html.lenis { scroll-behavior: auto; }
 @media (max-width: 600px) {
   .studio-intro h1 em { font-size: min(1em, 10vw); }
 }
-.hero-script-initial {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-style: italic;
-  color: inherit;
-}
