@@ -175,7 +175,7 @@ export function Teaching() {
   useEffect(() => {
     if (!section.current || !("IntersectionObserver" in window)) return;
     const items = section.current.querySelectorAll<HTMLElement>(
-      ".teaching-eyebrow-badge, .teaching-brand-heading, .practice-lead, .metric-card, .practice-session, .teaching-notes-block, .teaching-learners-banner, .courses-section-header, .course-card"
+      ".teaching-eyebrow-badge, .teaching-brand-heading, .practice-lead, .metric-card, .practice-session, .teaching-notes-block, .learners-banner-head, .learner-logo-pill, .courses-section-header > *, .course-card"
     );
     const observer = new IntersectionObserver(entries => {
       for (const entry of entries) {
@@ -337,8 +337,8 @@ export function Teaching() {
             <p>Thousands of working professionals and leaders from top industry enterprises learn AI and communication at Clapingo:</p>
           </div>
           <div className="learner-logos-grid" aria-label="Logos of top companies where learners work">
-            {learnerLogos.map((logo) => (
-              <div key={logo.name} className="learner-logo-pill" title={logo.name}>
+            {learnerLogos.map((logo, index) => (
+              <div key={logo.name} className="learner-logo-pill" style={{ animationDelay: `${index * 45}ms` }} title={logo.name}>
                 <img src={logo.file} alt={logo.name} loading="lazy" />
               </div>
             ))}
@@ -359,7 +359,7 @@ export function Teaching() {
 
           <div className="courses-grid">
             {recordedCourses.map((c, idx) => (
-              <article key={c.id} className="course-card">
+              <article key={c.id} className="course-card" style={{ animationDelay: `${idx * 85}ms` }}>
                 <div className="course-card-thumb">
                   <img src={c.image} alt={c.title} loading="lazy" />
                   <span className="course-number">0{idx + 1}</span>
