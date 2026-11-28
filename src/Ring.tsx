@@ -637,7 +637,7 @@ export default function Ring({
             </>
           ) : (
             <p className="gallery-photographer-line">
-              <a href="#about" className="gallery-bio-link">Ishant Agarwal</a> is a creative developer.
+              <a href="#about" className="gallery-bio-link">Ishant Agarwal</a> is a Creative Developer.
             </p>
           )}
         </div>
