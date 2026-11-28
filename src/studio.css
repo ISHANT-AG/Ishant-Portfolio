@@ -76,9 +76,10 @@
   width: clamp(90px, 11vw, 175px);
   aspect-ratio: 240 / 324;
   max-height: 92%;
-  animation: cross-street var(--duration) linear var(--delay) infinite;
+  animation: cross-street var(--duration) linear var(--delay) infinite var(--direction);
 }
 .crowd-walker span {
+  scale: var(--facing) 1;
   display: block;
   height: 100%;
   aspect-ratio: 240 / 324;

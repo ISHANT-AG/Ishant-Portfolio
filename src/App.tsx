@@ -150,9 +150,13 @@ export default function App(){
         <div className="crowd-street" aria-hidden="true">
           {[3, 19, 46, 12, 67, 39, 81, 54, 25, 99, 72, 8, 58, 30, 89, 63, 50, 10, 75, 35].map((tile, index, crowd) => {
             const duration = 24;
+            const walksLeft = index % 4 >= 2;
+            const position = (index + 0.5) / crowd.length;
             return <div key={tile} className="crowd-walker" style={{
               '--duration': duration + 's',
-              '--delay': -(index + 0.5) / crowd.length * duration + 's',
+              '--delay': -(walksLeft ? 1 - position : position) * duration + 's',
+              '--direction': walksLeft ? 'reverse' : 'normal',
+              '--facing': walksLeft ? -1 : 1,
               '--lane': (index % 3) * 9 + 'px',
               '--sprite-x': (tile % 15) / 14 * 100 + '%',
               '--sprite-y': Math.floor(tile / 15) / 6 * 100 + '%',
