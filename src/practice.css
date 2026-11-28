@@ -565,7 +565,7 @@
 
 .journey-board { position: relative; max-width: 940px; margin-inline: auto; isolation: isolate; }
 .journey-thread { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-.journey-thread polyline { fill: none; stroke: #7849a0; stroke-width: 3.5; stroke-linejoin: round; filter: drop-shadow(1px 2px 1px #39214a38); }
+.journey-thread g { filter: drop-shadow(1px 3px 1.5px #47334850); }
 .journey::before, .journey::after, .journey li::before, .journey li::after, .journey-print::before { content: none; }
 .journey-pin {
   position: absolute; top: 49%; right: -5px; width: 15px; height: 15px; border-radius: 50%;
@@ -596,4 +596,13 @@
 @keyframes unwind-thread {
   from { clip-path: inset(0 0 100%); }
   to { clip-path: inset(0); }
+}
+
+.journey-print {
+  background: linear-gradient(148deg, #fffefa 35%, #f4f0e6);
+  box-shadow: 0 1px 2px #47372538, 2px 7px 9px -5px #46382755, 6px 15px 20px -12px #342d244a;
+}
+.journey-print img { border: 1px solid #38312418; }
+.journey-pin {
+  box-shadow: inset -.8px -1px 1px #45214d88, .8px 1.5px 0 #56315f, 2px 4px 3px #3e284a60;
 }
