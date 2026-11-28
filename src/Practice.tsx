@@ -137,7 +137,8 @@ export function People() {
             <h3>{person.name}</h3><p>{person.role}</p>
             <ul className="voices-companies" aria-label="Company affiliations">
               {person.companies.map(company => <li key={company.name}>
-                <img src={'/client-logos/' + company.logo} alt="" />{company.name}
+                <img src={'/client-logos/' + company.logo} alt={company.name === 'Clapingo' ? company.name : ''} />
+                {company.name !== 'Clapingo' && company.name}
               </li>)}
             </ul>
             <p>{person.background}</p>
