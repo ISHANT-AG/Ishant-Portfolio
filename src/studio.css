@@ -67,3 +67,30 @@
     to { opacity: 1; translate: 0 0; rotate: x 0deg; }
   }
 }
+
+.studio-hero { grid-template-rows: auto minmax(0, 1fr); }
+.hero-crowd { position: relative; overflow: hidden; container-type: inline-size; }
+.crowd-street { position: absolute; inset: 0 0 25px; overflow: hidden; border-bottom: 1px solid #d9d6ce; }
+.crowd-walker {
+  position: absolute;
+  bottom: var(--lane);
+  width: clamp(90px, 12cqw, 175px);
+  aspect-ratio: 240 / 324;
+  max-height: 92%;
+  animation: cross-street var(--duration) linear var(--delay) infinite var(--direction);
+}
+.crowd-walker span {
+  display: block;
+  height: 100%;
+  aspect-ratio: 240 / 324;
+  background: url('/assets/open-peeps.png') var(--sprite-x) var(--sprite-y) / 1500% 700%;
+  animation: crowd-step .42s ease-in-out var(--delay) infinite alternate;
+}
+@keyframes cross-street { from { transform: translateX(-100%); } to { transform: translateX(100cqw); } }
+@keyframes crowd-step {
+  from { transform: scaleX(var(--facing)) translateY(0) rotate(-1deg); }
+  to { transform: scaleX(var(--facing)) translateY(-3px) rotate(1deg); }
+}
+.crowd-credit { position: absolute; right: 0; bottom: 4px; color: var(--muted); font-size: 10px; }
+[data-motion="false"] .crowd-walker, [data-motion="false"] .crowd-walker span { animation-play-state: paused; }
+@media (max-width: 650px) { .crowd-walker:nth-child(even) { display: none; } }

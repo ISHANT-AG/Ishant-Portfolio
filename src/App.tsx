@@ -2,7 +2,7 @@ import Lenis from 'lenis';
 import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { ArrowUpRight, ArrowRight, ArrowDown, Copy, Check, X, Mail, Workflow, Pause, Play } from 'lucide-react';
 import { projects, tools, type Project } from './data';
-import Mind from './Mind';
+import type { CSSProperties } from 'react';
 import { People, Teaching, About } from './Practice';
 function Github({size=18}:{size?:number}){return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M9 19c-4 1-4-2-6-2m12 5v-3.5c0-1-.1-1.5-.6-2 3.1-.4 6.6-1.5 6.6-7A5.4 5.4 0 0 0 19.5 6a5 5 0 0 0-.1-3.5S18.2 2 15.8 4a13 13 0 0 0-7.6 0C5.8 2 4.6 2.5 4.6 2.5A5 5 0 0 0 4.5 6 5.4 5.4 0 0 0 3 9.5c0 5.5 3.5 6.6 6.6 7-.5.5-.6 1-.6 2V22"/></svg>}
 function Linkedin({size=18}:{size?:number}){return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7m0-10v.2M11 17v-7m0 3c0-4 6-4 6 0v4"/></svg>}
@@ -146,12 +146,23 @@ export default function App(){
         <p>I’m Ishant, Lead Creative Developer at <strong>Clapingo.</strong><br/>I design websites, build them, and automate the work behind them.</p>
         <a className="studio-cta" href="#gallery">Explore my work <ArrowDown size={15}/></a>
       </div>
-      <div className="studio-stage">
-        <div className="studio-origin"><span>Based in</span><strong>Jaipur, India</strong><p>Working across India,<br/>the US and Dubai.</p></div>
-        <div className="studio-portrait"><img className="portrait" src="/assets/ishant-portrait.webp" width="640" height="700" alt="Ishant Agarwal" fetchPriority="high"/><Mind motion={motion}/></div>
-        <button className="studio-sample" onClick={()=>setProjectId('dubai')} aria-label="Open the Team India Properties editorial case study"><span className="sample-prints"><img src="/assets/dubai-spread.webp" alt=""/><img src="/assets/dubai.webp" alt=""/></span><span>Dubai, in print <ArrowUpRight size={14}/></span></button>
+      <div className="hero-crowd">
+        <div className="crowd-street" aria-hidden="true">
+          {[3, 19, 46, 12, 67, 39, 81, 54, 25, 99, 72, 8].map((tile, index) => {
+            const duration = 24 + index % 5 * 2;
+            return <div key={tile} className="crowd-walker" style={{
+              '--duration': duration + 's',
+              '--delay': -(index + 0.5) / 12 * duration + 's',
+              '--lane': (index % 3) * 9 + 'px',
+              '--direction': index % 3 === 0 ? 'reverse' : 'normal',
+              '--facing': index % 3 === 0 ? -1 : 1,
+              '--sprite-x': (tile % 15) / 14 * 100 + '%',
+              '--sprite-y': Math.floor(tile / 15) / 6 * 100 + '%',
+            } as CSSProperties}><span /></div>;
+          })}
+        </div>
+        <small className="crowd-credit"><a href="https://www.openpeeps.com/">Open Peeps</a> · <a href="https://skiper-ui.com/">Skiper UI</a></small>
       </div>
-      <div className="studio-foot"><span>Design · Development · AI</span><a href="#gallery">Selected case studies <ArrowDown size={14}/></a></div>
     </section>
     <Suspense fallback={<section id="gallery" className="ring-loading" aria-label="Work gallery"><a href="#gallery">Browse selected projects ↓</a></section>}><Ring motion={motion} onOpen={setProjectId}/></Suspense>
     <ClientStrip motion={motion}/>
