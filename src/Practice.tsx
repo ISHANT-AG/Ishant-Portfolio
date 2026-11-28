@@ -393,12 +393,12 @@ const milestones = [
   {
     title: 'Creative Developer + Trainer', note: 'Clapingo',
     text: 'Alongside development, I taught professionals how to turn their own documents and screenshots into narrated videos and presentations.',
-    image: 'journey-workshop.webp', width: 1280, height: 853, alt: 'People working together at a laptop',
+    image: 'journey-session.webp', width: 1280, height: 853, alt: 'A group learning together in a classroom',
   },
   {
     title: 'Lead Creative Developer', note: 'Clapingo · November 2026 – present',
     text: 'Today I design and build websites and automate the work behind them. I also teach the AI workflows I use.',
-    image: 'journey-code.webp', width: 1280, height: 853, alt: 'Code on a computer screen',
+    image: 'journey-workstation.webp', width: 1280, height: 852, alt: 'A developer’s workspace with an open laptop',
   },
 ];
 
