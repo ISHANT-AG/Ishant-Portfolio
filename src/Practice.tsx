@@ -388,17 +388,17 @@ const milestones = [
   {
     title: 'Creative Technologist', note: 'Clapingo',
     text: 'I turned repetitive design tasks into tools, including workflows for producing thumbnails and blog images.',
-    image: 'journey-keys.webp', width: 760, height: 507, alt: 'Playful keyboard caps beside a neon light',
+    image: 'journey-design-tools.webp', width: 736, height: 736, alt: 'A laptop and stylus drawing a curve against a purple grid',
   },
   {
     title: 'Creative Developer + Trainer', note: 'Clapingo',
     text: 'Alongside development, I taught professionals how to turn their own documents and screenshots into narrated videos and presentations.',
-    image: 'journey-session.webp', width: 1280, height: 853, alt: 'A group learning together in a classroom',
+    image: 'journey-space-computer.webp', width: 1200, height: 1556, alt: 'An astronaut and satellite emerge from a vintage computer screen',
   },
   {
     title: 'Lead Creative Developer', note: 'Clapingo · November 2026 – present',
     text: 'Today I design and build websites and automate the work behind them. I also teach the AI workflows I use.',
-    image: 'journey-workstation.webp', width: 1280, height: 852, alt: 'A developer’s workspace with an open laptop',
+    image: 'journey-monitor-library.webp', width: 736, height: 883, alt: 'A developer surrounded by books and towering colorful monitors',
   },
 ];
 
