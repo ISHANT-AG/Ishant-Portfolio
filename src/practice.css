@@ -489,9 +489,4 @@
 .voices-profile .voices-companies img { width: auto; max-width: 66px; height: 24px; object-fit: contain; border-radius: 0; margin: 0; }
 .voices-more { font-size: 14px; color: #575750; margin-inline-start: 4px; }
 
-.campus-recognition { display: grid; grid-template-columns: 1fr 1.25fr; gap: clamp(24px, 4vw, 60px); align-items: center; border-top: 1px solid #d6d6d0; padding-block: clamp(28px, 4vw, 60px); }
-.campus-recognition h3 { font-size: clamp(24px, 3vw, 38px); line-height: 1.1; }
-.campus-recognition p { margin-block: 14px; max-width: 48ch; }
-.campus-recognition blockquote { margin: 20px 0; font-size: clamp(23px, 2.4vw, 34px); }
-.campus-recognition iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; background: #151515; }
-@media (max-width: 700px) { .campus-recognition { grid-template-columns: 1fr; } }
+.voices-video { width: 100%; aspect-ratio: 16 / 9; border: 0; background: #151515; }

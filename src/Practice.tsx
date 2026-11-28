@@ -2,7 +2,18 @@ import { useState, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import './practice.css';
 
+const foundersTable = 'https://www.linkedin.com/feed/update/urn:li:activity:7479411279942590464/';
 const testimonials = [
+  {
+    id: 'sameer-vit', name: 'Sameer Agrawal', shortName: 'VIT talk', role: 'Founder & CEO, Clapingo',
+    companies: [{name: 'Clapingo', logo: 'clapingo.webp'}],
+    mark: '/assets/recommendations/sameer-mark.webp',
+    background: 'I hosted The Founders’ Table at VIT Bhopal. Sameer joined virtually as a guest speaker and spoke to the audience about my work at Clapingo.',
+    profile: 'sameer-agrawal-945927108',
+    quote: 'If you have to learn AI, go to Ishant.',
+    video: 'https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7479411120055693313?compact=1',
+    fullText: foundersTable,
+  },
   {
     companies: [{'name': 'J.P. Morgan', 'logo': 'jpmorgan.png'}, {name: 'Barclays', logo: 'barclays.png'}],
     background: 'Previously worked in equity derivatives at Barclays.',
@@ -39,7 +50,6 @@ const testimonials = [
     quote: 'His ability to quickly understand requirements, pay attention to detail, and bring innovative ideas into visual storytelling has made a significant impact on our projects.',
   },
 ];
-const foundersTable = 'https://www.linkedin.com/feed/update/urn:li:activity:7479411279942590464/';
 
 const liveSessions = [
   {
@@ -135,29 +145,21 @@ export function People() {
           </div>
           <div className="voices-panel">
             <blockquote aria-live="polite">“{person.quote}”</blockquote>
+            {person.video && <iframe className="voices-video" src={person.video}
+              title="Sameer Agrawal speaking at The Founders’ Table" loading="lazy" allowFullScreen />}
             <div className="voices-controls">
-              <a className="practice-link" href={person.fullText ?? asset + '.webp'} target="_blank" rel="noreferrer">{person.id === 'haraprasad' ? 'Read the signed letter' : 'Read the full recommendation'} <ArrowUpRight size={16}/></a>
+              <a className="practice-link" href={person.fullText ?? asset + '.webp'} target="_blank" rel="noreferrer">{person.video ? 'Watch on LinkedIn' : person.id === 'haraprasad' ? 'Read the signed letter' : 'Read the full recommendation'} <ArrowUpRight size={16}/></a>
               <div><button aria-label="Previous recommendation" onClick={() => move(-1)}>←</button>
               <button aria-label="Next recommendation" onClick={() => move(1)}>→</button></div>
             </div>
           </div>
           <div className="voices-picker" role="group" aria-label="Choose a recommendation">
-            {testimonials.map((author, i) => <button key={author.id} aria-label={author.name} aria-pressed={i === index} onClick={() => setIndex(i)}>
+            {testimonials.map((author, i) => <button key={author.id} aria-label={author.video ? author.name + ' at VIT' : author.name} aria-pressed={i === index} onClick={() => setIndex(i)}>
               <img src={author.tabMark ?? author.mark ?? '/assets/recommendations/' + author.id + '-mark.webp'} alt="" />{author.shortName ?? author.name.split(' ')[0]}
             </button>)}
             <span className="voices-more">+many more</span>
           </div>
         </div>
-        <article className="campus-recognition" aria-labelledby="campus-recognition-title">
-          <div>
-            <h3 id="campus-recognition-title">Sameer Agrawal at The Founders’ Table</h3>
-            <p>I hosted The Founders’ Table at VIT Bhopal. Sameer joined us virtually as a guest speaker. While speaking to the audience about my work at Clapingo, he said:</p>
-            <blockquote>“If you have to learn AI, go to Ishant.”</blockquote>
-            <a className="practice-link" href={foundersTable} target="_blank" rel="noreferrer">Watch the original video on LinkedIn <ArrowUpRight size={16}/></a>
-          </div>
-          <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7479411120055693313?compact=1"
-            title="Sameer Agrawal speaking about Ishant at The Founders’ Table" loading="lazy" allowFullScreen />
-        </article>
         <div className="practice-pace">
           <h3>One day to deliver 200 videos.</h3>
           <p>I had a week to research, select and organize 200 YouTube videos for my team. I delivered the collection in Drive within a day.</p>
