@@ -148,7 +148,7 @@ export default function App(){
       </div>
       <div className="hero-crowd">
         <div className="crowd-street" aria-hidden="true">
-          {[3, 19, 46, 12, 67, 39, 81, 54, 25, 99, 72, 8, 58, 30, 89, 63, 50, 10, 75, 35].map((tile, index, crowd) => {
+          {[3, 19, 46, 12, 67, 39, 81, 54, 25, 99, 72, 8, 58, 30, 89, 63, 50, 10, 75, 35, 6, 22, 42, 60, 84, 101, 14, 32, 57, 69, 88, 97].map((tile, index, crowd) => {
             const duration = 24;
             const walksLeft = index % 4 >= 2;
             const position = (index + 0.5) / crowd.length;
