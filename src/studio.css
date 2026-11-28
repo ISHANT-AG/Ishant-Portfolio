@@ -92,19 +92,4 @@
 }
 .crowd-credit { position: absolute; right: 0; bottom: 4px; color: var(--muted); font-size: 10px; }
 [data-motion="false"] .crowd-walker, [data-motion="false"] .crowd-walker span { animation-play-state: paused; }
-@media (min-width: 900px) {
-  .studio-hero {
-    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-    grid-template-rows: auto;
-    align-items: center;
-    gap: 3vw;
-    padding-bottom: 30px;
-  }
-  .studio-intro { text-align: left; }
-  .studio-intro h1 { font-size: clamp(50px, 5.1vw, 78px); }
-  .hero-crowd { margin: 0; }
-}
-@media (max-width: 650px) {
-  .hero-crowd { height: 138px; margin-top: 4px; }
-  .crowd-walker { width: 74px; }
-}
+@media (max-width: 650px) { .crowd-walker:nth-child(even) { display: none; } }
