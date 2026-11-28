@@ -148,6 +148,16 @@ export function People() {
             <span className="voices-more">+many more</span>
           </div>
         </div>
+        <article className="campus-recognition" aria-labelledby="campus-recognition-title">
+          <div>
+            <h3 id="campus-recognition-title">Sameer Agrawal at The Founders’ Table</h3>
+            <p>I hosted The Founders’ Table at VIT Bhopal. Sameer joined us virtually as a guest speaker. While speaking to the audience about my work at Clapingo, he said:</p>
+            <blockquote>“If you have to learn AI, go to Ishant.”</blockquote>
+            <a className="practice-link" href={foundersTable} target="_blank" rel="noreferrer">Watch the original video on LinkedIn <ArrowUpRight size={16}/></a>
+          </div>
+          <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7479411120055693313?compact=1"
+            title="Sameer Agrawal speaking about Ishant at The Founders’ Table" loading="lazy" allowFullScreen />
+        </article>
         <div className="practice-pace">
           <h3>One day to deliver 200 videos.</h3>
           <p>I had a week to research, select and organize 200 YouTube videos for my team. I delivered the collection in Drive within a day.</p>
