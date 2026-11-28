@@ -162,6 +162,7 @@ export default function App(){
               '--sprite-y': Math.floor(tile / 15) / 6 * 100 + '%',
             } as CSSProperties}><span /></div>;
           })}
+          <img className="crowd-avatar" src="/assets/ishant-crowd-avatar.webp" alt="" />
         </div>
         <small className="crowd-credit"><a href="https://www.openpeeps.com/">Open Peeps</a> · <a href="https://skiper-ui.com/">Skiper UI</a></small>
       </div>

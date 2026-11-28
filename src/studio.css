@@ -94,3 +94,14 @@
 .crowd-credit { position: absolute; right: 0; bottom: 4px; color: var(--muted); font-size: 10px; }
 [data-motion="false"] .crowd-walker, [data-motion="false"] .crowd-walker span { animation-play-state: paused; }
 @media (max-width: 650px) { .crowd-walker:nth-child(even) { display: none; } }
+
+.crowd-avatar {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 94%;
+  width: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: drop-shadow(0 0 2px white) drop-shadow(0 0 9px #ffd57c) drop-shadow(0 0 16px #efae5470);
+}
