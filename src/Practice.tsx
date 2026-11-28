@@ -366,39 +366,39 @@ const milestones = [
     title: 'My first briefs came across a counter',
     note: 'December 2020 – January 2023',
     text: 'At the print shop, customers told me what they needed. My job was to turn that conversation into a design ready for the press.',
-    image: 'journey-press.webp', alt: 'Rainbow ink rolled across a letterpress',
+    image: 'journey-press.webp', width: 760, height: 760, alt: 'Rainbow ink rolled across a letterpress',
   },
   {
     title: 'A brief from Dubai',
     note: 'Team India Properties',
     text: 'One of my early roles took me back to print, designing for Team India Properties in Dubai. I also worked with Internshala, TravelBug Goa and Tecosys in the US.',
-    image: 'journey-dubai.webp', alt: 'Dubai skyline',
+    image: 'journey-dubai.webp', width: 760, height: 507, alt: 'Dubai skyline',
   },
   {
     title: 'From page spreads to thumbnails',
     note: '2,000+ commercial assets',
     text: 'A thumbnail has to read at a glance. A publication gives you room to tell a story. I’ve designed both, alongside campaign creative for audiences in India, the US and Dubai.',
-    image: 'journey-palette.webp', alt: 'Colorful art supplies',
+    image: 'journey-palette.webp', width: 760, height: 507, alt: 'Colorful art supplies',
   },
   {
     title: 'Creative Designer', note: 'Clapingo · Joined July 2025',
     text: 'I joined as a design intern, creating graphics and editing videos for the team.',
-    image: 'journey-studio.webp', alt: 'Swirls of brightly colored paint',
+    image: 'journey-studio.webp', width: 800, height: 533, alt: 'Swirls of brightly colored paint',
   },
   {
     title: 'Creative Technologist', note: 'Clapingo',
     text: 'I turned repetitive design tasks into tools, including workflows for producing thumbnails and blog images.',
-    image: 'journey-keys.webp', alt: 'Playful keyboard caps beside a neon light',
+    image: 'journey-keys.webp', width: 760, height: 507, alt: 'Playful keyboard caps beside a neon light',
   },
   {
     title: 'Creative Developer + Trainer', note: 'Clapingo',
     text: 'Alongside development, I taught professionals how to turn their own documents and screenshots into narrated videos and presentations.',
-    image: 'journey-workshop.webp', alt: 'People working together at a laptop',
+    image: 'journey-workshop.webp', width: 800, height: 533, alt: 'People working together at a laptop',
   },
   {
     title: 'Lead Creative Developer', note: 'Clapingo · November 2026 – present',
     text: 'Today I design and build websites and automate the work behind them. I also teach the AI workflows I use.',
-    image: 'journey-code.webp', alt: 'Code on a computer screen',
+    image: 'journey-code.webp', width: 800, height: 533, alt: 'Code on a computer screen',
   },
 ];
 
@@ -433,11 +433,11 @@ export function About() {
         <div className="journey-board" ref={board}>
           <svg className="journey-thread" aria-hidden="true"><polyline ref={thread} /></svg>
           <ol className="journey">
-          {milestones.map(({ title, text, note, image, alt }) => (
+          {milestones.map(({ title, text, note, image, width, height, alt }) => (
             <li key={title}>
               <article className="journey-card">
                 <figure className="journey-print">
-                  <img src={'/assets/' + image} alt={alt} loading="lazy" />
+                  <img src={'/assets/' + image} width={width} height={height} alt={alt} loading="lazy" />
                   <i className="journey-pin" aria-hidden="true" />
                 </figure>
                 <div className="journey-note">

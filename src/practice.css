@@ -580,3 +580,20 @@
   .journey li:nth-child(odd) .journey-note { margin-right: 16px; }
   .journey li:nth-child(even) .journey-note { margin-left: 16px; }
 }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-motion="true"] .journey-board {
+      view-timeline-name: --thread-progress;
+      view-timeline-inset: 60% 40%;
+    }
+    [data-motion="true"] .journey-thread {
+      animation: unwind-thread linear both;
+      animation-timeline: --thread-progress;
+    }
+  }
+}
+@keyframes unwind-thread {
+  from { clip-path: inset(0 0 100%); }
+  to { clip-path: inset(0); }
+}
