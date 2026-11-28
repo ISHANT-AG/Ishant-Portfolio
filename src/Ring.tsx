@@ -257,7 +257,12 @@ export default function Ring({
       setCursorMode('none');
 
       // Align gallery cleanly into viewport before expanding into full stage
-      sectionRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      const section = sectionRef.current;
+      if (section) {
+        const pageScroll = (window as Window & { __lenis?: Lenis }).__lenis;
+        if (pageScroll) pageScroll.scrollTo(section, { immediate: true });
+        else section.scrollIntoView({ behavior: 'instant', block: 'start' });
+      }
 
       if (webglFallback || !sceneRef.current) {
         setGalleryState('categoryGallery');
@@ -359,11 +364,7 @@ export default function Ring({
     });
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.hash === '#gallery') {
-      sectionRef.current?.scrollIntoView({ behavior: 'instant', block: 'start' });
-    }
-  }, []);
+
 
   useEffect(() => {
     const root = sectionRef.current;
@@ -636,7 +637,7 @@ export default function Ring({
             </>
           ) : (
             <p className="gallery-photographer-line">
-              <a href="#about" className="gallery-bio-link">Ishant Agarwal</a> is a designer &amp; creative technologist.
+              <a href="#about" className="gallery-bio-link">Ishant Agarwal</a> is a creative developer.
             </p>
           )}
         </div>
@@ -687,7 +688,6 @@ export default function Ring({
         <div
           ref={canvasHostRef}
           className={`ring-canvas-host ${galleryState === 'ringIdle' ? 'is-interactive' : ''}`}
-          data-lenis-prevent="true"
           aria-hidden="true"
         />
 

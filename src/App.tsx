@@ -50,7 +50,7 @@ function Keyboard(){
    stage.style.setProperty('--tilt-x', ((0.5 - (event.clientY - rect.top) / rect.height) * 8) + 'deg');
    stage.style.setProperty('--tilt-y', (((event.clientX - rect.left) / rect.width - 0.5) * 10) + 'deg');
  }
- return <section ref={section} className="stack-section" id="stack"><div className="section stack-inner"><header className="section-heading"><div><h2>Inside my <em>toolkit.</em></h2></div><p>Choose a tool to see where I used it.<br/><span className="keyboard-hint">Press the shortcut shown on any key.</span></p></header><div ref={stageRef} className="keyboard-stage" onPointerMove={tiltKeyboard} onPointerLeave={event => {
+ return <section ref={section} className="stack-section" id="stack"><div className="section stack-inner"><header className="section-heading"><div><h2>Inside my <em>toolkit.</em></h2></div></header><div ref={stageRef} className="keyboard-stage" onPointerMove={tiltKeyboard} onPointerLeave={event => {
    event.currentTarget.style.removeProperty('--tilt-x');
    event.currentTarget.style.removeProperty('--tilt-y');
  }}><div className="keyboard" role="group" aria-label="Interactive tools keyboard">{tools.map((t,i)=><button key={t.name} aria-label={t.name} title={t.name} className={`tool-key ${active===i?'active':''}`} aria-pressed={active===i} onPointerEnter={event => { if (event.pointerType === "mouse") setActive(i); }} onFocus={()=>setActive(i)} onClick={()=>setActive(i)} style={{'--key-color':t.color} as React.CSSProperties}><span className="key-number">{t.key.toUpperCase()}</span><img className="tool-logo" src={t.logo} alt=""/><span className="key-name">{t.name}</span></button>)}</div></div><div className="tool-detail" aria-live="polite"><span className="tool-detail-index">{tools[active].key.padStart(2,'0')} /</span><div><span className="eyebrow">{tools[active].group}</span><h3>{tools[active].name}</h3><p>{tools[active].description}</p></div></div><Contributions/></div></section>
@@ -117,9 +117,9 @@ export default function App(){
      duration: 1.2,
      smoothWheel: true,
      wheelMultiplier: 1.0,
-     touchMultiplier: 1.8,
+     virtualScroll: ({ event }) => !event.defaultPrevented,
      prevent: (node) =>
-       !!node.closest('[aria-modal="true"], dialog[open], .ring-canvas-host, [data-lenis-prevent]'),
+       !!node.closest('[aria-modal="true"], dialog[open], [data-lenis-prevent]'),
    });
    (window as any).__lenis = scroll;
 
@@ -154,7 +154,7 @@ export default function App(){
  return <>
   <a className="skip-link" href="#gallery">Skip to work gallery</a>
   <header className="site-header">
-    <a href="#top" className="wordmark"><span className="ia-mark" aria-hidden="true">ia.</span>Ishant Agarwal</a>
+    <a href="#top" className="wordmark">Ishant Agarwal</a>
     <nav aria-label="Main navigation"><a href="#gallery">Work</a><a href="#about">About</a><a href="#contact" className="nav-contact">Let’s talk <ArrowUpRight size={14}/></a></nav>
   </header>
   <main id="top">
@@ -184,7 +184,6 @@ export default function App(){
             <Mind motion={motion} />
           </div>
         </div>
-        <small className="crowd-credit"><a href="https://www.openpeeps.com/">Open Peeps</a> · <a href="https://skiper-ui.com/">Skiper UI</a></small>
       </div>
     </section>
     {loadGallery ? <Suspense fallback={galleryFallback}><Ring motion={motion} onOpen={setProjectId}/></Suspense> : galleryFallback}
@@ -216,5 +215,5 @@ export default function App(){
           <a href={`mailto:${email}`}>{email} ↗</a>
         </div>
       </div>
-    </div><div className="contact-bottom"><div><a href={`mailto:${email}`}>{email}</a><button className="copy-button" onClick={copyEmail} aria-label="Copy email address">{copied?<Check size={16}/>:<Copy size={16}/>}</button><span className="copy-status" role="status">{copied?'Copied!':copyError?'Please select the email to copy.':''}</span></div><div className="social-links"><a href={linkedin} target="_blank" rel="noreferrer"><Linkedin size={16}/>LinkedIn <ArrowUpRight size={14}/></a><a href={github} target="_blank" rel="noreferrer"><Github size={16}/>GitHub <ArrowUpRight size={14}/></a><a href={`mailto:${email}`}><Mail size={16}/>Email <ArrowUpRight size={14}/></a></div></div><div className="footer-colophon"><span>© {new Date().getFullYear()} Ishant Agarwal</span><button onClick={()=>setMotion(!motion)} aria-pressed={motion}>{motion?<Pause size={12}/>:<Play size={12}/>} Motion {motion?'on':'off'}</button><a href="#top">Back to top ↑</a></div></div></footer><CaseStudy project={projects.find(p=>p.id===projectId)||null} onClose={()=>setProjectId(null)}/></>
+    </div><div className="contact-bottom"><div><a href={`mailto:${email}`}>{email}</a><button className="copy-button" onClick={copyEmail} aria-label="Copy email address">{copied?<Check size={16}/>:<Copy size={16}/>}</button><span className="copy-status" role="status">{copied?'Copied!':copyError?'Please select the email to copy.':''}</span></div><div className="social-links"><a href={linkedin} target="_blank" rel="noreferrer"><Linkedin size={16}/>LinkedIn <ArrowUpRight size={14}/></a><a href={github} target="_blank" rel="noreferrer"><Github size={16}/>GitHub <ArrowUpRight size={14}/></a><a href={`mailto:${email}`}><Mail size={16}/>Email <ArrowUpRight size={14}/></a></div></div><div className="footer-colophon"><span>© {new Date().getFullYear()} Ishant Agarwal</span></div></div></footer><CaseStudy project={projects.find(p=>p.id===projectId)||null} onClose={()=>setProjectId(null)}/></>
 }
