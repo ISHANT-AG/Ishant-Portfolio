@@ -606,3 +606,23 @@
 .journey-pin {
   box-shadow: inset -.8px -1px 1px #45214d88, .8px 1.5px 0 #56315f, 2px 4px 3px #3e284a60;
 }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-motion="true"] :is(.practice-people, .practice-teaching)
+      :is(.voices-title, .voices-profile, .voices-panel, .voices-picker, .practice-pace,
+          .teaching-brand-heading, .practice-lead, .metric-card, .practice-session,
+          .teaching-notes-block, .teaching-learners-banner, .courses-section-header, .course-card) {
+      animation: practice-scroll-in ease-out both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+    [data-motion="true"] :is(.practice-people, .practice-teaching) :focus-within {
+      animation-name: none;
+    }
+  }
+}
+@keyframes practice-scroll-in {
+  from { opacity: .15; translate: 0 20px; }
+  to { opacity: 1; translate: 0 0; }
+}
