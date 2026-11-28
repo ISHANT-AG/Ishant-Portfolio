@@ -562,3 +562,21 @@
   .journey li:nth-child(even) .journey-print { grid-column: 2; grid-row: 1; }
   .journey li:nth-child(even) .journey-note { grid-column: 1; grid-row: 1; }
 }
+
+.journey-board { position: relative; max-width: 940px; margin-inline: auto; isolation: isolate; }
+.journey-thread { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.journey-thread polyline { fill: none; stroke: #7849a0; stroke-width: 3.5; stroke-linejoin: round; filter: drop-shadow(1px 2px 1px #39214a38); }
+.journey::before, .journey::after, .journey li::before, .journey li::after, .journey-print::before { content: none; }
+.journey-pin {
+  position: absolute; top: 49%; right: -5px; width: 15px; height: 15px; border-radius: 50%;
+  background: radial-gradient(circle at 33% 24%, #c0a0e6, #8959b4 38%, #543078 78%);
+  box-shadow: 1px 3px 3px #32164866;
+}
+.journey li:nth-child(even) .journey-pin { left: -5px; right: auto; }
+.journey-note { position: relative; background: #f5f2ea; }
+@keyframes journey-reveal { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 650px) {
+  .journey li, .journey li:nth-child(even) { padding-inline: 12px; }
+  .journey li:nth-child(odd) .journey-note { margin-right: 16px; }
+  .journey li:nth-child(even) .journey-note { margin-left: 16px; }
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import './practice.css';
 
@@ -403,6 +403,26 @@ const milestones = [
 ];
 
 export function About() {
+  const board = useRef<HTMLDivElement>(null);
+  const thread = useRef<SVGPolylineElement>(null);
+  useEffect(() => {
+    const root = board.current;
+    if (!root) return;
+    const pins = Array.from(root.querySelectorAll('.journey-pin'));
+    function connectPins() {
+      const bounds = root!.getBoundingClientRect();
+      const points = pins.map(pin => {
+        const box = pin.getBoundingClientRect();
+        return [box.left + box.width / 2 - bounds.left, box.top + box.height / 2 - bounds.top].join(',');
+      });
+      thread.current?.setAttribute('points', points.join(' '));
+    }
+    const observer = new ResizeObserver(connectPins);
+    observer.observe(root);
+    root.querySelectorAll('li, figure').forEach(element => observer.observe(element));
+    connectPins();
+    return () => observer.disconnect();
+  }, []);
   return (
     <section className="practice-band practice-about" id="about" aria-labelledby="about-title">
       <div className="practice-shell">
@@ -410,13 +430,15 @@ export function About() {
           <h2 className="practice-heading" id="about-title">I started in <em>a print shop.</em></h2>
           <p className="practice-location">Jaipur, India · B.Tech Computer Science, VIT Bhopal</p>
         </header>
-        <ol className="journey">
+        <div className="journey-board" ref={board}>
+          <svg className="journey-thread" aria-hidden="true"><polyline ref={thread} /></svg>
+          <ol className="journey">
           {milestones.map(({ title, text, note, image, alt }) => (
             <li key={title}>
               <article className="journey-card">
                 <figure className="journey-print">
                   <img src={'/assets/' + image} alt={alt} loading="lazy" />
-                  
+                  <i className="journey-pin" aria-hidden="true" />
                 </figure>
                 <div className="journey-note">
                   <small>{note}</small>
@@ -426,7 +448,8 @@ export function About() {
               </article>
             </li>
           ))}
-        </ol>
+          </ol>
+        </div>
       </div>
     </section>
   );
