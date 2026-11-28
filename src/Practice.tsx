@@ -15,7 +15,7 @@ const testimonials = [
     background: 'Before founding Clapingo, Sameer spent a year at L&T and six years at Coal India.',
     id: 'sameer', name: 'Sameer Agrawal', role: 'Founder & CEO, Clapingo',
     profile: 'sameer-agrawal-945927108',
-    quote: 'With his background in design, Ishant contributed significantly as a Designer and Editor, consistently delivering high-quality work at an exceptional speed. Beyond his technical abilities, what stood out most was his proactive attitude and eagerness to grow beyond a single skill set.',
+    quote: 'At just 18, he impressed us not only with his skills but also with the maturity and drive he brought to the team. With his background in design, Ishant contributed significantly as a Designer and Editor, consistently delivering high-quality work at an exceptional speed.',
   },
   {
     companies: [{'name': 'Nutaan AI', 'logo': 'nutaan.png'}, {'name': 'Tecosys AI', 'logo': 'tecosys.webp'}],
@@ -26,10 +26,10 @@ const testimonials = [
   },
   {
     companies: [{name: 'Life Insurance Corporation of India', logo: 'lic.webp'}],
-    background: 'Clapingo learner who used one-to-one coaching to turn screenshots into narrated tutorials.',
-    id: 'ajanta', name: 'R. Ajanta', shortName: 'Ajanta', role: 'Senior Product Manager, LIC',
+    background: 'Ajanta came to me when she couldn’t turn her documents and screenshots into tutorial videos on deadline. I worked out a repeatable workflow and taught her how to use it. She then produced a video with her own screenshots, narration and subtitles.',
+    id: 'ajanta', name: 'R. Ajanta', shortName: 'Ajanta', role: 'Senior Product Manager, LIC · One-to-one client',
     mark: '/client-logos/lic.webp', fullText: '/assets/recommendations/ajanta.html',
-    quote: 'With this guidance I have created the automated video wherein I could give the image, then screenshots, and then I can create a video along with audio narration and subtitles.',
+    quote: 'In the first session he described what should my workflow is and how I should go about it. That clarity and insight, whatever Ishan Sir said, has given me a different direction for creating the tutorial videos.',
   },
   {
     companies: [{'name': 'Tecosys AI', 'logo': 'tecosys.webp'}, {'name': 'CYNERZA', 'logo': 'cynerza.png'}],
