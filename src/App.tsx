@@ -1,3 +1,4 @@
+import Mind from './Mind';
 import Lenis from 'lenis';
 import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { ArrowUpRight, ArrowRight, Copy, Check, X, Mail, Workflow, Pause, Play } from 'lucide-react';
@@ -161,7 +162,10 @@ export default function App(){
               '--sprite-y': Math.floor(tile / 15) / 6 * 100 + '%',
             } as CSSProperties}><span /></div>;
           })}
-          <img className="crowd-avatar" src="/assets/ishant-crowd-avatar.webp" alt="" />
+          <div className="crowd-avatar">
+            <img src="/assets/ishant-crowd-avatar.webp" alt="" />
+            <Mind motion={motion} />
+          </div>
         </div>
         <small className="crowd-credit"><a href="https://www.openpeeps.com/">Open Peeps</a> · <a href="https://skiper-ui.com/">Skiper UI</a></small>
       </div>
