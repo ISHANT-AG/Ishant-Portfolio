@@ -4,25 +4,29 @@ import './practice.css';
 
 const testimonials = [
   {
-    companies: [{'name': 'Clapingo', 'logo': 'clapingo.webp'}],
+    companies: [{'name': 'J.P. Morgan', 'logo': 'jpmorgan.png'}, {name: 'Barclays', logo: 'barclays.png'}],
+    background: 'Previously worked in equity derivatives at Barclays.',
+    id: 'parth', name: 'Parth Gattani', role: 'Vice President, Platforms and Structuring · J.P. Morgan',
+    profile: 'parth-gattani-3240a917',
+    quote: 'Ishant is great team player and has very sincere approach towards learning new things. with passion in tech he will excel in computer science',
+  },
+  {
+    companies: [{'name': 'Clapingo', 'logo': 'clapingo.webp'}, {name: 'L&T Construction', logo: 'lt.png'}, {name: 'Coal India', logo: 'coalindia.svg'}],
+    background: 'Before founding Clapingo, Sameer spent a year at L&T and six years at Coal India.',
     id: 'sameer', name: 'Sameer Agrawal', role: 'Founder & CEO, Clapingo',
     profile: 'sameer-agrawal-945927108',
     quote: 'With his background in design, Ishant contributed significantly as a Designer and Editor, consistently delivering high-quality work at an exceptional speed. Beyond his technical abilities, what stood out most was his proactive attitude and eagerness to grow beyond a single skill set.',
   },
   {
     companies: [{'name': 'Nutaan AI', 'logo': 'nutaan.png'}, {'name': 'Tecosys AI', 'logo': 'tecosys.webp'}],
+    background: 'Also founded Tecosys AI, where he served as CEO.',
     id: 'avishek', name: 'Avishek Bhattacharjee', role: 'Founder & CEO, Nutaan AI',
     profile: 'wbavishek',
     quote: 'He listens deeply, understands requirements perfectly, and consistently delivers work that reflects true expertise in his craft. Beyond design skills, he is a strong team player — dependable, collaborative, and highly suited for the fast-paced environment of a startup.',
   },
   {
-    companies: [{'name': 'J.P. Morgan', 'logo': 'jpmorgan.png'}],
-    id: 'parth', name: 'Parth Gattani', role: 'Vice President, Platforms and Structuring',
-    profile: 'parth-gattani-3240a917',
-    quote: 'Ishant is great team player and has very sincere approach towards learning new things. with passion in tech he will excel in computer science',
-  },
-  {
     companies: [{'name': 'Tecosys AI', 'logo': 'tecosys.webp'}, {'name': 'CYNERZA', 'logo': 'cynerza.png'}],
+    background: 'Also co-founded CYNERZA.',
     id: 'haraprasad', name: 'Haraprasad Hota', role: 'Co-Founder & CTO, Tecosys AI',
     profile: 'haraprasad-hota',
     quote: 'His ability to quickly understand requirements, pay attention to detail, and bring innovative ideas into visual storytelling has made a significant impact on our projects.',
@@ -119,6 +123,7 @@ export function People() {
                 <img src={'/client-logos/' + company.logo} alt="" />{company.name}
               </li>)}
             </ul>
+            <p>{person.background}</p>
             <a className="practice-link" href={'https://www.linkedin.com/in/' + person.profile + '/'} target="_blank" rel="noreferrer">LinkedIn profile <ArrowUpRight size={15}/></a>
           </div>
           <div className="voices-panel">
