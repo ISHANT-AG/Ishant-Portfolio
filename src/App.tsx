@@ -189,12 +189,23 @@ export default function App(){
     </section>
     {loadGallery ? <Suspense fallback={galleryFallback}><Ring motion={motion} onOpen={setProjectId}/></Suspense> : galleryFallback}
     <ClientStrip motion={motion}/>
-    <Keyboard/><People/><Teaching/><About/></main><footer id="contact"><div className="section footer-inner"><div className="contact-invite">
-      <div>
+    <Keyboard/><People/><Teaching/><About/></main><footer id="contact"><div className="section footer-inner"><div className="contact-heading-row">
         <h2 className="contact-headline">Have a project<br/><em>in mind?</em></h2>
         <a className="contact-compose" href={`mailto:${email}`}>Email Ishant <ArrowUpRight size={18}/></a>
       </div>
-      <div className="contact-card" data-open={cardOpen}>
+      <div className="contact-invite">
+        <svg className="contact-orbits" viewBox="-520 -260 1040 520" aria-hidden="true" focusable="false">
+          {['Creative development · Design systems · AI training · ', 'Print design · Video editing · Web development · ', 'Automation · Visual storytelling · Interaction design · '].map((words, i) => {
+            const radius = 166 + i * 82;
+            return <g key={words}>
+              <defs><path id={'contact-orbit-' + i} d={`M 0 -${radius} a ${radius} ${radius} 0 1 1 0 ${2 * radius} a ${radius} ${radius} 0 1 1 0 -${2 * radius}`}/></defs>
+              <text textLength={2 * Math.PI * radius} lengthAdjust="spacingAndGlyphs">
+                <textPath href={'#contact-orbit-' + i}>{words.repeat(i + 2)}</textPath>
+              </text>
+            </g>;
+          })}
+        </svg>
+        <div className="contact-card" data-open={cardOpen}>
         <button type="button" className="contact-card-toggle" aria-expanded={cardOpen} aria-controls="contact-card-details" onClick={()=>setCardOpen(!cardOpen)}>
           <img src="/assets/ishant-crowd-avatar.webp" width="496" height="600" alt="" loading="lazy"/>
           <span>{cardOpen ? 'Close contact card' : 'My contact card'} <span aria-hidden="true">{cardOpen ? '−' : '+'}</span></span>
