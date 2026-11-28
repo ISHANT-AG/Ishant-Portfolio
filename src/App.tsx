@@ -215,5 +215,9 @@ export default function App(){
           <a href={`mailto:${email}`}>{email} ↗</a>
         </div>
       </div>
-    </div><div className="contact-bottom"><div><a href={`mailto:${email}`}>{email}</a><button className="copy-button" onClick={copyEmail} aria-label="Copy email address">{copied?<Check size={16}/>:<Copy size={16}/>}</button><span className="copy-status" role="status">{copied?'Copied!':copyError?'Please select the email to copy.':''}</span></div><div className="social-links"><a href={linkedin} target="_blank" rel="noreferrer"><Linkedin size={16}/>LinkedIn <ArrowUpRight size={14}/></a><a href={github} target="_blank" rel="noreferrer"><Github size={16}/>GitHub <ArrowUpRight size={14}/></a><a href={`mailto:${email}`}><Mail size={16}/>Email <ArrowUpRight size={14}/></a></div></div><div className="footer-colophon"><span>© {new Date().getFullYear()} Ishant Agarwal</span></div></div></footer><CaseStudy project={projects.find(p=>p.id===projectId)||null} onClose={()=>setProjectId(null)}/></>
+    </div><div className="contact-bottom"><div><a href={`mailto:${email}`}>{email}</a><button className="copy-button" onClick={copyEmail} aria-label="Copy email address">{copied?<Check size={16}/>:<Copy size={16}/>}</button><span className="copy-status" role="status">{copied?'Copied!':copyError?'Please select the email to copy.':''}</span></div><nav className="social-links" aria-label="Contact links">
+      <a href={linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn"><Linkedin size={22}/></a>
+      <a href={github} target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub"><Github size={22}/></a>
+      <a href={`mailto:${email}`} aria-label="Email Ishant" title="Email Ishant"><Mail size={22} aria-hidden="true"/></a>
+    </nav></div><div className="footer-colophon"><span>© {new Date().getFullYear()} Ishant Agarwal</span></div></div></footer><CaseStudy project={projects.find(p=>p.id===projectId)||null} onClose={()=>setProjectId(null)}/></>
 }

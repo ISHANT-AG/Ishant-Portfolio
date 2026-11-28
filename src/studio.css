@@ -159,3 +159,7 @@
 .ring-loading { min-height: max(640px, 100svh); }
 html.lenis { scroll-behavior: auto; }
 @media (max-width: 760px) { .ring-loading { min-height: clamp(400px,66svh,572px); } }
+
+#contact .social-links { gap: 8px; }
+#contact .social-links a { width: 44px; height: 44px; justify-content: center; border-radius: 50%; color: #51445b; }
+#contact .social-links a:is(:hover, :focus-visible) { background: #ebe5ed; }
