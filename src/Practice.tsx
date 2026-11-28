@@ -11,7 +11,7 @@ const testimonials = [
     background: 'I hosted The Founders’ Table at VIT Bhopal. Sameer joined virtually as a guest speaker and spoke to the audience about my work at Clapingo.',
     profile: 'sameer-agrawal-945927108',
     quote: 'If you have to learn AI, go to Ishant.',
-    video: 'https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7479411120055693313?compact=1',
+    video: '/assets/recommendations/vit-talk.mp4',
     fullText: foundersTable,
   },
   {
@@ -145,8 +145,8 @@ export function People() {
           </div>
           <div className="voices-panel">
             <blockquote aria-live="polite">“{person.quote}”</blockquote>
-            {person.video && <iframe className="voices-video" src={person.video}
-              title="Sameer Agrawal speaking at The Founders’ Table" loading="lazy" allowFullScreen />}
+            {person.video && <video className="voices-video" src={person.video} controls playsInline preload="metadata" poster="/assets/recommendations/vit-talk.jpg"
+              aria-label="Sameer Agrawal speaking at The Founders’ Table" />}
             <div className="voices-controls">
               <a className="practice-link" href={person.fullText ?? asset + '.webp'} target="_blank" rel="noreferrer">{person.video ? 'Watch on LinkedIn' : person.id === 'haraprasad' ? 'Read the signed letter' : 'Read the full recommendation'} <ArrowUpRight size={16}/></a>
               <div><button aria-label="Previous recommendation" onClick={() => move(-1)}>←</button>
