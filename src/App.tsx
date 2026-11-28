@@ -148,14 +148,12 @@ export default function App(){
       </div>
       <div className="hero-crowd">
         <div className="crowd-street" aria-hidden="true">
-          {[3, 19, 46, 12, 67, 39, 81, 54, 25, 99, 72, 8].map((tile, index) => {
-            const duration = 24 + index % 5 * 2;
+          {[3, 19, 46, 12, 67, 39].map((tile, index) => {
+            const duration = 24;
             return <div key={tile} className="crowd-walker" style={{
               '--duration': duration + 's',
-              '--delay': -(index + 0.5) / 12 * duration + 's',
+              '--delay': -(index + 0.5) / 6 * duration + 's',
               '--lane': (index % 3) * 9 + 'px',
-              '--direction': index % 3 === 0 ? 'reverse' : 'normal',
-              '--facing': index % 3 === 0 ? -1 : 1,
               '--sprite-x': (tile % 15) / 14 * 100 + '%',
               '--sprite-y': Math.floor(tile / 15) / 6 * 100 + '%',
             } as CSSProperties}><span /></div>;
