@@ -361,23 +361,34 @@ export function Teaching() {
   );
 }
 
+const milestones = [
+  { title: 'At the print counter', text: 'From December 2020 to January 2023, I worked with walk-in customers and prepared their designs for print. I still like taking a brief all the way through to something people can use.' },
+  { title: 'My early design roles', text: 'I worked with Internshala, TravelBug Goa, Tecosys (US) and Team India Properties (Dubai).' },
+  { title: '2,000+ commercial assets', text: 'My work spans thumbnails, campaign creative and publications across India, the US and Dubai.' },
+  { title: 'From intern to creative lead', text: 'I joined Clapingo as a design intern in July 2025, then moved into creative technology and development. I became Lead Creative Developer in November 2026.' },
+  { title: 'Building on campus', text: 'I’m the Incubation Team Co-Lead and Newsletter Head at VIT Bhopal Startup Club. I also organized and hosted The Founders’ Table 2026.', link: foundersTable },
+];
+
 export function About() {
   return (
     <section className="practice-band practice-about" id="about" aria-labelledby="about-title">
-      <div className="practice-shell practice-about-grid">
-        <div>
-          <h2 className="practice-heading" id="about-title">I started in <br/><em>a print shop.</em></h2>
+      <div className="practice-shell">
+        <header className="journey-header">
+          <h2 className="practice-heading" id="about-title">I started in <em>a print shop.</em></h2>
           <p className="practice-location">Jaipur, India · B.Tech Computer Science, VIT Bhopal</p>
-        </div>
-        <div className="practice-history">
-          <p>From December 2020 to January 2023, I worked with walk-in customers and prepared their designs for print. I still like taking a brief all the way through to something people can use.</p>
-          <p>Since then, I’ve made 2,000+ commercial assets, including thumbnails, campaign creative and publications, across India, the US and Dubai.</p>
-          <dl className="practice-path">
-            <div><dt>Early roles</dt><dd>Internshala, TravelBug Goa, Tecosys (US) and Team India Properties (Dubai).</dd></div>
-            <div><dt>Clapingo</dt><dd>I joined as a design intern in July 2025, then moved into creative technology and development. I became Lead Creative Developer in November 2026.</dd></div>
-            <div><dt>On campus</dt><dd>Incubation Team Co-Lead and Newsletter Head at VIT Bhopal Startup Club. I also organized and hosted The Founders’ Table 2026.<br/><a className="practice-link" href={foundersTable} target="_blank" rel="noreferrer">View the event post <ArrowUpRight size={15}/></a></dd></div>
-          </dl>
-        </div>
+        </header>
+        <ol className="journey">
+          {milestones.map(({ title, text, link }, index) => (
+            <li key={title}>
+              <article className="journey-card">
+                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}.</span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+                {link && <a className="practice-link" href={link} target="_blank" rel="noreferrer">View the event post <ArrowUpRight size={15}/></a>}
+              </article>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

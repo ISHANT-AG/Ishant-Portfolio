@@ -490,3 +490,42 @@
 .voices-more { font-size: 14px; color: #575750; margin-inline-start: 4px; }
 
 .voices-video { width: 100%; aspect-ratio: 16 / 9; border: 0; background: #151515; }
+
+.practice-about {
+  background-color: #faf9f6;
+  background-image: linear-gradient(90deg, #26231808 1px, transparent 1px);
+  background-size: 64px 100%;
+}
+.journey-header { text-align: center; margin-bottom: clamp(40px, 6vw, 84px); }
+.journey { --gutter: clamp(28px, 4vw, 62px); position: relative; max-width: 940px; margin: auto; padding: 0; list-style: none; }
+.journey::before, .journey::after { content: ''; position: absolute; inset: 0 auto 0 50%; width: 3px; border-radius: 4px; background: #deded9; }
+.journey::after { background: linear-gradient(#3973ad, #168b81); transform-origin: top; }
+.journey li { --accent: #3374a3; position: relative; padding-right: calc(50% + var(--gutter)); padding-block: 8px; }
+.journey li:nth-child(even) { padding-right: 0; padding-left: calc(50% + var(--gutter)); }
+.journey li:nth-child(3) { --accent: #287785; }
+.journey li:nth-child(n+4) { --accent: #167b6c; }
+.journey li::before { content: ''; position: absolute; width: var(--gutter); height: 1px; background: var(--accent); right: 50%; top: 50%; }
+.journey li:nth-child(even)::before { left: 50%; right: auto; }
+.journey li::after { content: ''; position: absolute; z-index: 1; left: calc(50% - 5px); top: calc(50% - 6px); width: 13px; height: 13px; border-radius: 50%; background: var(--accent); }
+.journey-card { background: #fff; border: 1px solid #deded7; border-radius: 12px; padding: clamp(20px, 2.5vw, 34px); box-shadow: 0 5px 16px #29271809; }
+.journey-card > span { color: var(--accent); font-size: 1.4rem; font-weight: 650; }
+.journey-card h3 { font-size: clamp(22px, 2vw, 30px); letter-spacing: -.035em; line-height: 1.12; margin: 8px 0; }
+.journey-card p { line-height: 1.55; color: var(--practice-muted); }
+.journey-card a { margin-top: 12px; }
+@media (max-width: 650px) {
+  .journey-header { text-align: left; }
+  .journey::before, .journey::after { left: 5px; }
+  .journey li, .journey li:nth-child(even) { padding: 8px 0 8px 34px; }
+  .journey li::before, .journey li:nth-child(even)::before { left: 6px; right: auto; width: 28px; }
+  .journey li::after { left: 0; }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-motion="true"] .journey { view-timeline-name: --journey; }
+    [data-motion="true"] .journey::after { animation: journey-trace linear both; animation-timeline: --journey; animation-range: cover 12% cover 88%; }
+    [data-motion="true"] .journey-card { animation: journey-reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 85%; }
+    .journey-card:focus-within { opacity: 1 !important; transform: none !important; }
+  }
+}
+@keyframes journey-trace { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes journey-reveal { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
