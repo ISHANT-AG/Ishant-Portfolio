@@ -529,3 +529,25 @@
 }
 @keyframes journey-trace { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 @keyframes journey-reveal { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
+/* Photographs and notes on the career timeline. */
+.practice-about { background-color: #f5f2ea; background-image: radial-gradient(#5e4c3522 .7px, transparent .8px); background-size: 6px 6px; }
+.journey::after { background: #785a90; }
+.journey li { --tilt: -3deg; --accent: #785a90; }
+.journey li:nth-child(even) { --tilt: 3deg; }
+.journey li:nth-child(n+3) { --accent: #785a90; }
+.journey-card { background: transparent; border: 0; box-shadow: none; padding: 14px clamp(8px, 2vw, 25px) 24px; }
+.journey-print {
+  position: relative; margin: 0 4px 24px; padding: 9px 9px 7px; background: #fffefa;
+  rotate: var(--tilt); box-shadow: 0 2px 3px #413d3520, 1px 8px 16px #413d3514;
+}
+.journey-print::before {
+  content: ''; position: absolute; z-index: 1; width: 72px; height: 22px;
+  top: -9px; left: 13%; rotate: -9deg; background: #ccce9bc7;
+  clip-path: polygon(2% 0,100% 4%,97% 25%,100% 48%,97% 68%,100% 97%,0 100%,3% 74%,0 50%,3% 26%);
+}
+.journey li:nth-child(even) .journey-print::before { left: auto; right: 10%; rotate: 8deg; background: #d4c2dacc; }
+.journey-print img { width: 100%; height: clamp(150px, 16vw, 205px); display: block; object-fit: contain; background: #eeece6; }
+.journey-print figcaption { padding: 8px 3px 2px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 20px; text-align: center; }
+.journey-card h3 { max-width: 23ch; }
+@media (max-width: 650px) { .journey li { --tilt: -1.5deg; } .journey li:nth-child(even) { --tilt: 1.5deg; } }

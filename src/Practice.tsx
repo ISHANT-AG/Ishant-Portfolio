@@ -362,10 +362,30 @@ export function Teaching() {
 }
 
 const milestones = [
-  { title: 'At the print counter', text: 'From December 2020 to January 2023, I worked with walk-in customers and prepared their designs for print. I still like taking a brief all the way through to something people can use.' },
-  { title: 'My early design roles', text: 'I worked with Internshala, TravelBug Goa, Tecosys (US) and Team India Properties (Dubai).' },
-  { title: '2,000+ commercial assets', text: 'My work spans thumbnails, campaign creative and publications across India, the US and Dubai.' },
-  { title: 'From intern to creative lead', text: 'I joined Clapingo as a design intern in July 2025, then moved into creative technology and development. I became Lead Creative Developer in November 2026.' },
+  {
+    title: 'My first briefs came across a counter',
+    note: 'December 2020 – January 2023',
+    text: 'At the print shop, customers told me what they needed. My job was to turn that conversation into a design ready for the press.',
+    image: 'ishant-portrait.webp', alt: 'Portrait of Ishant Agarwal',
+  },
+  {
+    title: 'A brief from Dubai',
+    note: 'Team India Properties',
+    text: 'One of my early roles took me back to print, designing for Team India Properties in Dubai. I also worked with Internshala, TravelBug Goa and Tecosys in the US.',
+    image: 'dubai-spread.webp', alt: 'Editorial spread designed for Team India Properties',
+  },
+  {
+    title: 'From page spreads to thumbnails',
+    note: '2,000+ commercial assets',
+    text: 'A thumbnail has to read at a glance. A publication gives you room to tell a story. I’ve designed both, alongside campaign creative for audiences in India, the US and Dubai.',
+    image: 'explore/thumbnails.webp', alt: 'Examples of thumbnail designs from my portfolio',
+  },
+  {
+    title: 'I started designing. Then I started building.',
+    note: 'Clapingo · July 2025 onward',
+    text: 'I joined Clapingo as a design intern, then moved into development and automation. In November 2026, I became Lead Creative Developer. I also teach the AI workflows I use.',
+    image: 'clapingo-live-session.webp', alt: 'A live training session at Clapingo',
+  },
 ];
 
 export function About() {
@@ -377,10 +397,13 @@ export function About() {
           <p className="practice-location">Jaipur, India · B.Tech Computer Science, VIT Bhopal</p>
         </header>
         <ol className="journey">
-          {milestones.map(({ title, text }, index) => (
+          {milestones.map(({ title, text, note, image, alt }) => (
             <li key={title}>
               <article className="journey-card">
-                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}.</span>
+                <figure className="journey-print">
+                  <img src={'/assets/' + image} alt={alt} loading="lazy" />
+                  <figcaption>{note}</figcaption>
+                </figure>
                 <h3>{title}</h3>
                 <p>{text}</p>
               </article>
