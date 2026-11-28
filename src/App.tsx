@@ -1,6 +1,6 @@
 import Lenis from 'lenis';
 import { useEffect, useRef, useState, lazy, Suspense } from 'react';
-import { ArrowUpRight, ArrowRight, ArrowDown, Copy, Check, X, Mail, Workflow, Pause, Play } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Copy, Check, X, Mail, Workflow, Pause, Play } from 'lucide-react';
 import { projects, tools, type Project } from './data';
 import type { CSSProperties } from 'react';
 import { People, Teaching, About } from './Practice';
@@ -144,7 +144,6 @@ export default function App(){
       <div className="studio-intro">
         <h1 id="intro-title">A designer’s eye.<br/><em>A developer’s hands.</em></h1>
         <p>I’m Ishant, Lead Creative Developer at <strong>Clapingo.</strong><br/>I design websites, build them, and automate the work behind them.</p>
-        <a className="studio-cta" href="#gallery">Explore my work <ArrowDown size={15}/></a>
       </div>
       <div className="hero-crowd">
         <div className="crowd-street" aria-hidden="true">

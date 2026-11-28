@@ -68,7 +68,7 @@
   }
 }
 
-.hero-crowd { position: relative; overflow: hidden; container-type: inline-size; height: calc(clamp(90px, 11vw, 175px) * 1.35 + 52px); margin-top: 8px; }
+.hero-crowd { position: relative; overflow: hidden; container-type: inline-size; height: calc(clamp(90px, 11vw, 175px) * 1.35 + 108px); margin-top: 8px; }
 .crowd-street { position: absolute; inset: 0 0 25px; overflow: hidden; border-bottom: 1px solid #d9d6ce; }
 .crowd-walker {
   position: absolute;
@@ -99,9 +99,20 @@
   position: absolute;
   left: 50%;
   bottom: 0;
-  height: 94%;
+  height: 98%;
   width: auto;
   transform: translateX(-50%);
   pointer-events: none;
-  filter: drop-shadow(0 0 2px white) drop-shadow(0 0 9px #ffd57c) drop-shadow(0 0 16px #efae5470);
+  transform-origin: bottom center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-motion="true"] .crowd-avatar {
+    animation: portrait-arrival 850ms ease-out both;
+  }
+}
+@keyframes portrait-arrival {
+  from { translate: 0 24%; scale: .91; rotate: -3deg; }
+  70% { translate: 0 0; scale: 1.01; rotate: 1deg; }
+  to { translate: 0 0; scale: 1; rotate: 0deg; }
 }
