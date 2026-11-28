@@ -8,7 +8,7 @@ const testimonials = [
     id: 'sameer-vit', name: 'Sameer Agrawal', shortName: 'VIT talk', role: 'Founder & CEO, Clapingo',
     companies: [{name: 'Clapingo', logo: 'clapingo.webp'}],
     mark: '/assets/recommendations/sameer-mark.webp',
-    background: 'I hosted The Founders’ Table at VIT Bhopal. Sameer joined virtually as a guest speaker and spoke to the audience about my work at Clapingo.',
+    background: 'VIT Bhopal hosted The Founders’ Table online. As a guest speaker, Sameer spoke about my work at Clapingo.',
     profile: 'sameer-agrawal-945927108',
     quote: 'If you have to learn AI, go to Ishant.',
     video: '/assets/recommendations/vit-talk.mp4',
