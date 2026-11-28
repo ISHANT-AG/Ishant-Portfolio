@@ -130,7 +130,7 @@ export function People() {
   return (
     <section className="practice-band practice-people" id="people" aria-labelledby="people-title">
       <div className="practice-shell">
-        <h2 className="voices-title" id="people-title">What leaders I’ve worked with say about me</h2>
+        <h2 className="voices-title" id="people-title">Backed by Leaders</h2>
         <div className="voices-layout">
           <div className="voices-profile">
             <img src={person.mark ?? asset + '-mark.webp'} alt={person.id === 'haraprasad' ? 'Tecosys AI logo' : ''} />
