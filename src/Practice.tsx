@@ -26,8 +26,8 @@ const testimonials = [
   },
   {
     companies: [{name: 'Life Insurance Corporation of India', logo: 'lic.webp'}],
-    background: 'Ajanta came to me when she couldn’t turn her documents and screenshots into tutorial videos on deadline. I worked out a repeatable workflow and taught her how to use it. She then produced a video with her own screenshots, narration and subtitles.',
-    id: 'ajanta', name: 'R. Ajanta', shortName: 'Ajanta', role: 'Senior Product Manager, LIC · One-to-one client',
+    background: 'I taught Ajanta how to turn documents and screenshots into narrated tutorials with subtitles.',
+    id: 'ajanta', name: 'R. Ajanta', shortName: 'Ajanta', tabMark: '/assets/recommendations/lic-tab.webp', role: 'Senior Product Manager, LIC · One-to-one client',
     mark: '/client-logos/lic.webp', fullText: '/assets/recommendations/ajanta.html',
     quote: 'In the first session he described what should my workflow is and how I should go about it. That clarity and insight, whatever Ishan Sir said, has given me a different direction for creating the tutorial videos.',
   },
@@ -143,8 +143,9 @@ export function People() {
           </div>
           <div className="voices-picker" role="group" aria-label="Choose a recommendation">
             {testimonials.map((author, i) => <button key={author.id} aria-label={author.name} aria-pressed={i === index} onClick={() => setIndex(i)}>
-              <img src={author.mark ?? '/assets/recommendations/' + author.id + '-mark.webp'} alt="" />{author.shortName ?? author.name.split(' ')[0]}
+              <img src={author.tabMark ?? author.mark ?? '/assets/recommendations/' + author.id + '-mark.webp'} alt="" />{author.shortName ?? author.name.split(' ')[0]}
             </button>)}
+            <span className="voices-more">+many more</span>
           </div>
         </div>
         <div className="practice-pace">
