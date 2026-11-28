@@ -25,6 +25,13 @@ const testimonials = [
     quote: 'He listens deeply, understands requirements perfectly, and consistently delivers work that reflects true expertise in his craft. Beyond design skills, he is a strong team player — dependable, collaborative, and highly suited for the fast-paced environment of a startup.',
   },
   {
+    companies: [{name: 'Life Insurance Corporation of India', logo: 'lic.webp'}],
+    background: 'Clapingo learner who used one-to-one coaching to turn screenshots into narrated tutorials.',
+    id: 'ajanta', name: 'R. Ajanta', shortName: 'Ajanta', role: 'Senior Product Manager, LIC',
+    mark: '/client-logos/lic.webp', fullText: '/assets/recommendations/ajanta.html',
+    quote: 'With this guidance I have created the automated video wherein I could give the image, then screenshots, and then I can create a video along with audio narration and subtitles.',
+  },
+  {
     companies: [{'name': 'Tecosys AI', 'logo': 'tecosys.webp'}, {'name': 'CYNERZA', 'logo': 'cynerza.png'}],
     background: 'Also co-founded CYNERZA.',
     id: 'haraprasad', name: 'Haraprasad Hota', role: 'Co-Founder & CTO, Tecosys AI',
@@ -116,7 +123,7 @@ export function People() {
         <h2 className="voices-title" id="people-title">What leaders I’ve worked with say about me</h2>
         <div className="voices-layout">
           <div className="voices-profile">
-            <img src={asset + '-mark.webp'} alt={person.id === 'haraprasad' ? 'Tecosys AI logo' : ''} />
+            <img src={person.mark ?? asset + '-mark.webp'} alt={person.id === 'haraprasad' ? 'Tecosys AI logo' : ''} />
             <h3>{person.name}</h3><p>{person.role}</p>
             <ul className="voices-companies" aria-label="Company affiliations">
               {person.companies.map(company => <li key={company.name}>
@@ -124,19 +131,19 @@ export function People() {
               </li>)}
             </ul>
             <p>{person.background}</p>
-            <a className="practice-link" href={'https://www.linkedin.com/in/' + person.profile + '/'} target="_blank" rel="noreferrer">LinkedIn profile <ArrowUpRight size={15}/></a>
+            {person.profile && <a className="practice-link" href={'https://www.linkedin.com/in/' + person.profile + '/'} target="_blank" rel="noreferrer">LinkedIn profile <ArrowUpRight size={15}/></a>}
           </div>
           <div className="voices-panel">
             <blockquote aria-live="polite">“{person.quote}”</blockquote>
             <div className="voices-controls">
-              <a className="practice-link" href={asset + '.webp'} target="_blank" rel="noreferrer">{person.id === 'haraprasad' ? 'Read the signed letter' : 'Read the full recommendation'} <ArrowUpRight size={16}/></a>
+              <a className="practice-link" href={person.fullText ?? asset + '.webp'} target="_blank" rel="noreferrer">{person.id === 'haraprasad' ? 'Read the signed letter' : 'Read the full recommendation'} <ArrowUpRight size={16}/></a>
               <div><button aria-label="Previous recommendation" onClick={() => move(-1)}>←</button>
               <button aria-label="Next recommendation" onClick={() => move(1)}>→</button></div>
             </div>
           </div>
           <div className="voices-picker" role="group" aria-label="Choose a recommendation">
             {testimonials.map((author, i) => <button key={author.id} aria-label={author.name} aria-pressed={i === index} onClick={() => setIndex(i)}>
-              <img src={'/assets/recommendations/' + author.id + '-mark.webp'} alt="" />{author.name.split(' ')[0]}
+              <img src={author.mark ?? '/assets/recommendations/' + author.id + '-mark.webp'} alt="" />{author.shortName ?? author.name.split(' ')[0]}
             </button>)}
           </div>
         </div>
