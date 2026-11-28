@@ -523,12 +523,12 @@
   @media (prefers-reduced-motion: no-preference) {
     [data-motion="true"] .journey { view-timeline-name: --journey; }
     [data-motion="true"] .journey::after { animation: journey-trace linear both; animation-timeline: --journey; animation-range: cover 12% cover 88%; }
-    [data-motion="true"] .journey-card { animation: journey-reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 85%; }
+    [data-motion="true"] .journey-card { animation: journey-reveal cubic-bezier(.2,.7,.2,1) both; animation-timeline: view(); animation-range: entry 0% cover var(--reveal-distance); }
     .journey-card:focus-within { opacity: 1 !important; transform: none !important; }
   }
 }
 @keyframes journey-trace { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-@keyframes journey-reveal { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
 
 /* Photographs and notes on the career timeline. */
 .practice-about { background-color: #f5f2ea; background-image: radial-gradient(#5e4c3522 .7px, transparent .8px); background-size: 6px 6px; }
@@ -574,7 +574,7 @@
 }
 .journey li:nth-child(even) .journey-pin { left: -5px; right: auto; }
 .journey-note { position: relative; background: #f5f2ea; }
-@keyframes journey-reveal { from { opacity: 0; } to { opacity: 1; } }
+@keyframes journey-reveal { from { opacity: .35; } to { opacity: 1; } }
 @media (max-width: 650px) {
   .journey li, .journey li:nth-child(even) { padding-inline: 12px; }
   .journey li:nth-child(odd) .journey-note { margin-right: 16px; }
@@ -613,9 +613,9 @@
       :is(.voices-title, .voices-profile, .voices-panel, .voices-picker, .practice-pace,
           .teaching-brand-heading, .practice-lead, .metric-card, .practice-session,
           .teaching-notes-block, .teaching-learners-banner, .courses-section-header, .course-card) {
-      animation: practice-scroll-in ease-out both;
+      animation: practice-scroll-in cubic-bezier(.2,.7,.2,1) both;
       animation-timeline: view();
-      animation-range: entry 0% entry 80%;
+      animation-range: entry 0% cover var(--reveal-distance);
     }
     [data-motion="true"] :is(.practice-people, .practice-teaching) :focus-within {
       animation-name: none;
@@ -623,6 +623,8 @@
   }
 }
 @keyframes practice-scroll-in {
-  from { opacity: .15; translate: 0 20px; }
+  from { opacity: .35; translate: 0 var(--reveal-lift); }
   to { opacity: 1; translate: 0 0; }
 }
+
+.practice-band { --reveal-distance: clamp(64px, 14svh, 120px); --reveal-lift: clamp(8px, 1.4vw, 18px); }

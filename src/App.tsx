@@ -113,8 +113,7 @@ export default function App(){
    if (!motion || projectId) return;
    const scroll = new Lenis({
      autoRaf: true,
-     lerp: 0.10,
-     duration: 1.2,
+     lerp: 0.14,
      smoothWheel: true,
      wheelMultiplier: 1.0,
      virtualScroll: ({ event }) => !event.defaultPrevented,
